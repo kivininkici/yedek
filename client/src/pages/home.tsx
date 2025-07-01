@@ -155,6 +155,84 @@ export default function Home() {
       {/* Floating Particles Background */}
       <FloatingParticles />
       
+      {/* Additional Static Particles like in auth */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Large gradual orbs */}
+        <motion.div 
+          className="absolute w-80 h-80 bg-blue-500/6 rounded-full blur-3xl"
+          animate={{ 
+            x: [0, 40, 0],
+            y: [0, -30, 0],
+            scale: [1, 1.15, 1]
+          }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+          style={{ top: '10%', left: '5%' }}
+        />
+        <motion.div 
+          className="absolute w-96 h-96 bg-purple-500/5 rounded-full blur-3xl"
+          animate={{ 
+            x: [0, -35, 0],
+            y: [0, 25, 0],
+            scale: [1, 0.85, 1]
+          }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+          style={{ top: '50%', right: '5%' }}
+        />
+        
+        {/* Small floating dots */}
+        <motion.div 
+          className="absolute w-3 h-3 bg-blue-400/50 rounded-full"
+          animate={{ 
+            y: [0, -40, 0],
+            opacity: [0.5, 1, 0.5]
+          }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          style={{ top: '25%', left: '20%' }}
+        />
+        
+        <motion.div 
+          className="absolute w-2 h-2 bg-purple-400/60 rounded-full"
+          animate={{ 
+            y: [0, -25, 0],
+            x: [0, 15, 0],
+            opacity: [0.6, 1, 0.6]
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          style={{ top: '70%', left: '80%' }}
+        />
+        
+        <motion.div 
+          className="absolute w-4 h-4 bg-cyan-400/40 rounded-full"
+          animate={{ 
+            y: [0, -35, 0],
+            opacity: [0.4, 1, 0.4]
+          }}
+          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 4 }}
+          style={{ top: '80%', left: '15%' }}
+        />
+        
+        <motion.div 
+          className="absolute w-3 h-3 bg-pink-400/50 rounded-full"
+          animate={{ 
+            y: [0, -45, 0],
+            x: [0, -20, 0],
+            opacity: [0.5, 1, 0.5]
+          }}
+          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          style={{ top: '30%', right: '20%' }}
+        />
+        
+        <motion.div 
+          className="absolute w-2 h-2 bg-emerald-400/70 rounded-full"
+          animate={{ 
+            y: [0, -20, 0],
+            opacity: [0.7, 1, 0.7]
+          }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+          style={{ top: '85%', right: '35%' }}
+        />
+      </div>
+      
       {/* User Cursor Effect */}
       <UserCursorFollower />
       

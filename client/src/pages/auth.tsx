@@ -275,14 +275,30 @@ export default function Auth() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-6"
         >
-          <Button
-            variant="ghost"
-            onClick={() => (window.location.href = "/")}
-            className="bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-400/30 text-slate-200 hover:text-white hover:bg-blue-500/30 backdrop-blur-sm rounded-xl px-6 py-3 transition-all duration-300"
+          <motion.div
+            whileHover={{ 
+              scale: 1.05,
+              y: -2,
+              boxShadow: "0 10px 25px rgba(255, 255, 255, 0.1)"
+            }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            ANA SAYFAYA DÖN
-          </Button>
+            <Button
+              variant="ghost"
+              onClick={() => (window.location.href = "/")}
+              className="bg-white/90 hover:bg-white text-slate-800 hover:text-slate-900 backdrop-blur-sm rounded-xl px-6 py-3 transition-all duration-300 font-medium shadow-lg border border-white/20"
+            >
+              <motion.div
+                className="flex items-center"
+                whileHover={{ x: -3 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                ANA SAYFAYA DÖN
+              </motion.div>
+            </Button>
+          </motion.div>
         </motion.div>
 
         {/* Auth Card */}
@@ -317,12 +333,12 @@ export default function Auth() {
 
             <CardContent className="space-y-6 px-8 pb-8">
               {/* Tab Switcher */}
-              <div className="relative bg-slate-700/30 rounded-2xl p-2 backdrop-blur-sm">
+              <div className="relative bg-slate-700/30 rounded-2xl p-1 backdrop-blur-sm">
                 <motion.div
-                  className="absolute top-2 bottom-2 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl shadow-lg"
+                  className="absolute top-1 bottom-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl shadow-lg"
                   animate={{
-                    left: activeTab === "login" ? "8px" : "calc(50% + 4px)",
-                    width: "calc(50% - 12px)"
+                    left: activeTab === "login" ? "4px" : "50%",
+                    width: "calc(50% - 4px)"
                   }}
                   transition={{
                     type: "spring",
@@ -332,27 +348,27 @@ export default function Auth() {
                   }}
                 />
                 
-                <div className="grid grid-cols-2 relative z-10">
+                <div className="grid grid-cols-2 relative z-10 gap-1">
                   <button
                     onClick={() => setActiveTab("login")}
-                    className={`py-3 px-4 rounded-xl text-sm font-medium transition-all duration-300 ${
+                    className={`py-4 px-4 rounded-xl text-sm font-medium transition-all duration-300 flex items-center justify-center ${
                       activeTab === "login" 
                         ? "text-white" 
                         : "text-slate-400 hover:text-slate-200"
                     }`}
                   >
-                    <LogIn className="w-4 h-4 mr-2 inline" />
+                    <LogIn className="w-4 h-4 mr-2" />
                     Giriş Yap
                   </button>
                   <button
                     onClick={() => setActiveTab("register")}
-                    className={`py-3 px-4 rounded-xl text-sm font-medium transition-all duration-300 ${
+                    className={`py-4 px-4 rounded-xl text-sm font-medium transition-all duration-300 flex items-center justify-center ${
                       activeTab === "register" 
                         ? "text-white" 
                         : "text-slate-400 hover:text-slate-200"
                     }`}
                   >
-                    <UserPlus className="w-4 h-4 mr-2 inline" />
+                    <UserPlus className="w-4 h-4 mr-2" />
                     Kayıt Ol
                   </button>
                 </div>
@@ -375,20 +391,76 @@ export default function Auth() {
                     >
                       <AnimatePresence mode="wait">
                         {isLoginSuccess ? (
-                          <motion.div
-                            key="login-success"
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="text-center py-12 space-y-6"
-                          >
-                            <div className="w-16 h-16 bg-emerald-500 rounded-full flex items-center justify-center mx-auto">
-                              <CheckCircle className="w-8 h-8 text-white" />
-                            </div>
-                            <h3 className="text-xl font-semibold text-emerald-400">
-                              Giriş Başarılı!
-                            </h3>
-                            <p className="text-slate-400">Yönlendiriliyor...</p>
-                          </motion.div>
+                          <>
+                            {/* Blue Wave Effect */}
+                            <motion.div
+                              initial={{ scale: 0, opacity: 0.8 }}
+                              animate={{ scale: 50, opacity: 0 }}
+                              transition={{ duration: 1.5, ease: "easeOut" }}
+                              className="fixed inset-0 bg-blue-500 rounded-full z-50 pointer-events-none"
+                              style={{
+                                transformOrigin: "center center",
+                                left: "50%",
+                                top: "50%",
+                                transform: "translate(-50%, -50%)"
+                              }}
+                            />
+                            
+                            <motion.div
+                              key="login-success"
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              className="text-center py-12 space-y-6 relative z-10"
+                            >
+                              {/* Animated Check Mark */}
+                              <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{ 
+                                  delay: 0.2,
+                                  type: "spring", 
+                                  stiffness: 200, 
+                                  damping: 15 
+                                }}
+                                className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mx-auto shadow-2xl"
+                              >
+                                <motion.div
+                                  initial={{ pathLength: 0 }}
+                                  animate={{ pathLength: 1 }}
+                                  transition={{ delay: 0.5, duration: 0.8, ease: "easeInOut" }}
+                                >
+                                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <motion.path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={3}
+                                      d="M5 13l4 4L19 7"
+                                      initial={{ pathLength: 0 }}
+                                      animate={{ pathLength: 1 }}
+                                      transition={{ delay: 0.5, duration: 0.8, ease: "easeInOut" }}
+                                    />
+                                  </svg>
+                                </motion.div>
+                              </motion.div>
+                              
+                              <motion.h3 
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.8, duration: 0.5 }}
+                                className="text-xl font-semibold text-blue-400"
+                              >
+                                Giriş Başarılı!
+                              </motion.h3>
+                              <motion.p 
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 1, duration: 0.5 }}
+                                className="text-slate-300"
+                              >
+                                Yönlendiriliyor...
+                              </motion.p>
+                            </motion.div>
+                          </>
                         ) : isLoginLoading ? (
                           <motion.div
                             key="login-loading"
@@ -526,20 +598,76 @@ export default function Auth() {
                     >
                       <AnimatePresence mode="wait">
                         {isRegisterSuccess ? (
-                          <motion.div
-                            key="register-success"
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="text-center py-12 space-y-6"
-                          >
-                            <div className="w-16 h-16 bg-emerald-500 rounded-full flex items-center justify-center mx-auto">
-                              <CheckCircle className="w-8 h-8 text-white" />
-                            </div>
-                            <h3 className="text-xl font-semibold text-emerald-400">
-                              Kayıt Başarılı!
-                            </h3>
-                            <p className="text-slate-400">Otomatik giriş yapılıyor...</p>
-                          </motion.div>
+                          <>
+                            {/* Blue Wave Effect */}
+                            <motion.div
+                              initial={{ scale: 0, opacity: 0.8 }}
+                              animate={{ scale: 50, opacity: 0 }}
+                              transition={{ duration: 1.5, ease: "easeOut" }}
+                              className="fixed inset-0 bg-blue-500 rounded-full z-50 pointer-events-none"
+                              style={{
+                                transformOrigin: "center center",
+                                left: "50%",
+                                top: "50%",
+                                transform: "translate(-50%, -50%)"
+                              }}
+                            />
+                            
+                            <motion.div
+                              key="register-success"
+                              initial={{ opacity: 0, scale: 0.8 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              className="text-center py-12 space-y-6 relative z-10"
+                            >
+                              {/* Animated Check Mark */}
+                              <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{ 
+                                  delay: 0.2,
+                                  type: "spring", 
+                                  stiffness: 200, 
+                                  damping: 15 
+                                }}
+                                className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mx-auto shadow-2xl"
+                              >
+                                <motion.div
+                                  initial={{ pathLength: 0 }}
+                                  animate={{ pathLength: 1 }}
+                                  transition={{ delay: 0.5, duration: 0.8, ease: "easeInOut" }}
+                                >
+                                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <motion.path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={3}
+                                      d="M5 13l4 4L19 7"
+                                      initial={{ pathLength: 0 }}
+                                      animate={{ pathLength: 1 }}
+                                      transition={{ delay: 0.5, duration: 0.8, ease: "easeInOut" }}
+                                    />
+                                  </svg>
+                                </motion.div>
+                              </motion.div>
+                              
+                              <motion.h3 
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.8, duration: 0.5 }}
+                                className="text-xl font-semibold text-blue-400"
+                              >
+                                Kayıt Başarılı!
+                              </motion.h3>
+                              <motion.p 
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 1, duration: 0.5 }}
+                                className="text-slate-300"
+                              >
+                                Otomatik giriş yapılıyor...
+                              </motion.p>
+                            </motion.div>
+                          </>
                         ) : isRegisterLoading ? (
                           <motion.div
                             key="register-loading"

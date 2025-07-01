@@ -64,11 +64,92 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-cyan-950">
-      {/* Background Effects */}
-      <div className="absolute inset-0">
-        <div className="absolute top-20 left-20 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-20 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-green-500/5 rounded-full blur-3xl animate-pulse delay-2000"></div>
+      {/* Enhanced Background Effects */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Large gradual orbs with smooth animations */}
+        <motion.div 
+          className="absolute w-80 h-80 bg-blue-500/8 rounded-full blur-3xl"
+          animate={{ 
+            x: [0, 50, 0],
+            y: [0, -40, 0],
+            scale: [1, 1.2, 1]
+          }}
+          transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+          style={{ top: '5%', left: '10%' }}
+        />
+        <motion.div 
+          className="absolute w-96 h-96 bg-cyan-500/6 rounded-full blur-3xl"
+          animate={{ 
+            x: [0, -40, 0],
+            y: [0, 30, 0],
+            scale: [1, 0.8, 1]
+          }}
+          transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+          style={{ top: '60%', right: '8%' }}
+        />
+        <motion.div 
+          className="absolute w-72 h-72 bg-emerald-500/4 rounded-full blur-3xl"
+          animate={{ 
+            x: [0, 25, 0],
+            y: [0, -25, 0],
+            scale: [1, 1.1, 1]
+          }}
+          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+          style={{ top: '45%', left: '45%' }}
+        />
+        
+        {/* Floating particles */}
+        <motion.div 
+          className="absolute w-4 h-4 bg-blue-400/40 rounded-full"
+          animate={{ 
+            y: [0, -50, 0],
+            opacity: [0.4, 1, 0.4]
+          }}
+          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+          style={{ top: '20%', left: '25%' }}
+        />
+        
+        <motion.div 
+          className="absolute w-3 h-3 bg-cyan-400/50 rounded-full"
+          animate={{ 
+            y: [0, -35, 0],
+            x: [0, 20, 0],
+            opacity: [0.5, 1, 0.5]
+          }}
+          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          style={{ top: '75%', left: '75%' }}
+        />
+        
+        <motion.div 
+          className="absolute w-2 h-2 bg-emerald-400/60 rounded-full"
+          animate={{ 
+            y: [0, -30, 0],
+            opacity: [0.6, 1, 0.6]
+          }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 4 }}
+          style={{ top: '85%', left: '20%' }}
+        />
+        
+        <motion.div 
+          className="absolute w-3 h-3 bg-blue-300/45 rounded-full"
+          animate={{ 
+            y: [0, -40, 0],
+            x: [0, -15, 0],
+            opacity: [0.45, 1, 0.45]
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          style={{ top: '35%', right: '25%' }}
+        />
+        
+        <motion.div 
+          className="absolute w-2 h-2 bg-cyan-300/55 rounded-full"
+          animate={{ 
+            y: [0, -25, 0],
+            opacity: [0.55, 1, 0.55]
+          }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+          style={{ top: '90%', right: '40%' }}
+        />
       </div>
 
       {/* Grid Pattern */}
