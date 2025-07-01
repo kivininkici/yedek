@@ -124,7 +124,7 @@ export default function LoginAttempts() {
       <Sidebar />
       <div className="lg:ml-64">
         <Header title="Giriş Denemeleri" description="Admin panel giriş güvenlik logları" />
-        <main className="p-4 lg:p-6 space-y-6">
+        <main className="p-4 lg:p-6">
           {/* Page Header */}
           <div className="flex items-center gap-3 mb-6">
             <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
@@ -140,8 +140,8 @@ export default function LoginAttempts() {
             </div>
           </div>
 
-          {/* Statistics Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          {/* Statistics Cards - Moved directly after header */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <StatsCard
               title="Başarılı Giriş"
               value={successfulAttempts}
