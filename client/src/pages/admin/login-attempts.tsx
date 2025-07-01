@@ -126,7 +126,7 @@ export default function LoginAttempts() {
         <Header title="Giriş Denemeleri" description="Admin panel giriş güvenlik logları" />
         <main className="p-2 lg:p-4">
           {/* Statistics Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-2">
             <StatsCard
               title="Başarılı Giriş"
               value={successfulAttempts}
