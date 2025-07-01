@@ -273,24 +273,24 @@ export default function Auth() {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-6"
+          className="mb-6 w-full"
         >
           <motion.div
             whileHover={{ 
-              scale: 1.05,
+              scale: 1.02,
               y: -2,
-              boxShadow: "0 10px 25px rgba(255, 255, 255, 0.1)"
+              boxShadow: "0 10px 25px rgba(59, 130, 246, 0.3)"
             }}
-            whileTap={{ scale: 0.95 }}
+            whileTap={{ scale: 0.98 }}
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
             <Button
               variant="ghost"
               onClick={() => (window.location.href = "/")}
-              className="bg-white/90 hover:bg-white text-slate-800 hover:text-slate-900 backdrop-blur-sm rounded-xl px-6 py-3 transition-all duration-300 font-medium shadow-lg border border-white/20"
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white backdrop-blur-sm rounded-xl px-6 py-4 transition-all duration-300 font-medium shadow-lg border border-blue-400/20"
             >
               <motion.div
-                className="flex items-center"
+                className="flex items-center justify-center"
                 whileHover={{ x: -3 }}
                 transition={{ type: "spring", stiffness: 400, damping: 10 }}
               >
@@ -307,7 +307,7 @@ export default function Auth() {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
-          <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-xl rounded-3xl overflow-visible min-h-[650px]">
+          <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-xl rounded-3xl overflow-hidden min-h-[700px]">
             <CardHeader className="text-center pb-4 pt-8">
               <motion.div 
                 className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-6"
@@ -375,17 +375,17 @@ export default function Auth() {
               </div>
 
               {/* Content Area */}
-              <div className="min-h-[480px] relative pb-4">
+              <div className="min-h-[550px] relative pb-4">
                 <AnimatePresence mode="wait">
                   {activeTab === "login" ? (
                     <motion.div
                       key="login"
-                      initial={{ opacity: 0, x: -30 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -30 }}
+                      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -20, scale: 0.95 }}
                       transition={{ 
-                        duration: 0.4, 
-                        ease: [0.25, 0.46, 0.45, 0.94]
+                        duration: 0.5, 
+                        ease: [0.16, 1, 0.3, 1]
                       }}
                       className="absolute inset-0"
                     >
@@ -587,12 +587,12 @@ export default function Auth() {
                   ) : (
                     <motion.div
                       key="register"
-                      initial={{ opacity: 0, x: 30 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 30 }}
+                      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -20, scale: 0.95 }}
                       transition={{ 
-                        duration: 0.4, 
-                        ease: [0.25, 0.46, 0.45, 0.94]
+                        duration: 0.5, 
+                        ease: [0.16, 1, 0.3, 1]
                       }}
                       className="absolute inset-0"
                     >
