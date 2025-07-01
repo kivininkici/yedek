@@ -307,8 +307,8 @@ export default function Auth() {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
-          <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-xl rounded-3xl overflow-hidden">
-            <CardHeader className="text-center pb-6 pt-8">
+          <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-xl rounded-3xl overflow-visible min-h-[650px]">
+            <CardHeader className="text-center pb-4 pt-8">
               <motion.div 
                 className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-6"
                 animate={{ 
@@ -331,14 +331,14 @@ export default function Auth() {
               </p>
             </CardHeader>
 
-            <CardContent className="space-y-6 px-8 pb-8">
+            <CardContent className="space-y-4 px-8 pb-8">
               {/* Tab Switcher */}
-              <div className="relative bg-slate-700/30 rounded-2xl p-1 backdrop-blur-sm">
+              <div className="relative bg-slate-700/30 rounded-2xl p-0 backdrop-blur-sm">
                 <motion.div
-                  className="absolute top-1 bottom-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl shadow-lg"
+                  className="absolute top-0 bottom-0 bg-blue-500 rounded-2xl shadow-lg"
                   animate={{
-                    left: activeTab === "login" ? "4px" : "50%",
-                    width: "calc(50% - 4px)"
+                    left: activeTab === "login" ? "0%" : "50%",
+                    width: "50%"
                   }}
                   transition={{
                     type: "spring",
@@ -348,10 +348,10 @@ export default function Auth() {
                   }}
                 />
                 
-                <div className="grid grid-cols-2 relative z-10 gap-1">
+                <div className="grid grid-cols-2 relative z-10">
                   <button
                     onClick={() => setActiveTab("login")}
-                    className={`py-4 px-4 rounded-xl text-sm font-medium transition-all duration-300 flex items-center justify-center ${
+                    className={`py-4 px-4 rounded-2xl text-sm font-medium transition-all duration-300 flex items-center justify-center ${
                       activeTab === "login" 
                         ? "text-white" 
                         : "text-slate-400 hover:text-slate-200"
@@ -362,7 +362,7 @@ export default function Auth() {
                   </button>
                   <button
                     onClick={() => setActiveTab("register")}
-                    className={`py-4 px-4 rounded-xl text-sm font-medium transition-all duration-300 flex items-center justify-center ${
+                    className={`py-4 px-4 rounded-2xl text-sm font-medium transition-all duration-300 flex items-center justify-center ${
                       activeTab === "register" 
                         ? "text-white" 
                         : "text-slate-400 hover:text-slate-200"
@@ -375,7 +375,7 @@ export default function Auth() {
               </div>
 
               {/* Content Area */}
-              <div className="h-[480px] relative overflow-hidden">
+              <div className="min-h-[480px] relative pb-4">
                 <AnimatePresence mode="wait">
                   {activeTab === "login" ? (
                     <motion.div
