@@ -268,6 +268,19 @@ export default function Auth() {
       {/* User Cursor Effect */}
       <UserCursorFollower />
       
+      {/* Success Wave Animation - Outside Card */}
+      <AnimatePresence>
+        {(isLoginSuccess || isRegisterSuccess) && (
+          <motion.div
+            initial={{ scale: 0, opacity: 0.8 }}
+            animate={{ scale: 30, opacity: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.8, ease: "easeOut" }}
+            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-blue-500 rounded-full z-50 pointer-events-none"
+          />
+        )}
+      </AnimatePresence>
+      
       <div className="relative z-10 w-full max-w-md">
         {/* Ana Sayfaya Dön Button */}
         <motion.div
@@ -392,20 +405,6 @@ export default function Auth() {
                       <AnimatePresence mode="wait">
                         {isLoginSuccess ? (
                           <>
-                            {/* Blue Wave Effect - emanating from card boundary to outside */}
-                            <motion.div
-                              initial={{ scale: 1, opacity: 0.6 }}
-                              animate={{ scale: 15, opacity: 0 }}
-                              transition={{ duration: 2, ease: "easeOut" }}
-                              className="fixed bg-blue-500/30 rounded-full z-40 pointer-events-none"
-                              style={{
-                                width: "500px",
-                                height: "500px",
-                                left: "50%",
-                                top: "50%",
-                                transform: "translate(-50%, -50%)"
-                              }}
-                            />
                             
                             <motion.div
                               key="login-success"
@@ -600,20 +599,6 @@ export default function Auth() {
                       <AnimatePresence mode="wait">
                         {isRegisterSuccess ? (
                           <>
-                            {/* Blue Wave Effect - emanating from card boundary to outside */}
-                            <motion.div
-                              initial={{ scale: 1, opacity: 0.6 }}
-                              animate={{ scale: 15, opacity: 0 }}
-                              transition={{ duration: 2, ease: "easeOut" }}
-                              className="fixed bg-blue-500/30 rounded-full z-40 pointer-events-none"
-                              style={{
-                                width: "500px",
-                                height: "500px",
-                                left: "50%",
-                                top: "50%",
-                                transform: "translate(-50%, -50%)"
-                              }}
-                            />
                             
                             <motion.div
                               key="register-success"
