@@ -96,9 +96,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
-        {/* Global Cursor Effects */}
-        <CursorFollower />
-        <CursorTrail />
+
         <Router />
       </TooltipProvider>
     </QueryClientProvider>

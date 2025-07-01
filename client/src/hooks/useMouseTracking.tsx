@@ -36,11 +36,11 @@ export const LandingCursorFollower = () => {
       }}
     >
       {/* Outer glow ring */}
-      <div className="absolute w-40 h-40 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-full blur-md animate-pulse"></div>
+      <div className="absolute w-40 h-40 bg-gradient-to-r from-purple-500/5 to-blue-500/5 rounded-full blur-md animate-pulse"></div>
       {/* Main circle */}
-      <div className="absolute w-32 h-32 bg-gradient-to-br from-purple-400/15 to-blue-400/15 rounded-full top-4 left-4"></div>
+      <div className="absolute w-32 h-32 bg-gradient-to-br from-purple-400/8 to-blue-400/8 rounded-full top-4 left-4"></div>
       {/* Inner bright center */}
-      <div className="absolute w-16 h-16 bg-gradient-to-br from-purple-200/20 to-blue-200/20 rounded-full top-12 left-12"></div>
+      <div className="absolute w-16 h-16 bg-gradient-to-br from-purple-200/10 to-blue-200/10 rounded-full top-12 left-12"></div>
     </div>
   );
 };
