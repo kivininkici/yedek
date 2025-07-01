@@ -39,7 +39,7 @@ export const LandingCursorFollower = () => {
         className="absolute w-40 h-40 rounded-full blur-lg"
         style={{
           background: `radial-gradient(circle, #ec4899, #f472b6)`,
-          opacity: 0.04
+          opacity: 0.12
         }}
       ></div>
     </div>
@@ -79,7 +79,7 @@ export const UserCursorFollower = () => {
         className="absolute w-40 h-40 rounded-full blur-lg"
         style={{
           background: `radial-gradient(circle, #ec4899, #f472b6)`,
-          opacity: 0.04
+          opacity: 0.12
         }}
       ></div>
     </div>
@@ -99,7 +99,7 @@ export const CursorFollower = () => {
       }}
     >
       {/* Outer glow */}
-      <div className="absolute w-6 h-6 bg-gradient-to-r from-pink-500/30 to-rose-500/30 rounded-full blur-md animate-pulse"></div>
+      <div className="absolute w-6 h-6 bg-gradient-to-r from-pink-500/60 to-rose-500/60 rounded-full blur-md animate-pulse"></div>
       {/* Inner dot */}
       <div className="absolute w-3 h-3 bg-gradient-to-r from-pink-400 to-rose-400 rounded-full top-1.5 left-1.5"></div>
     </div>
@@ -129,7 +129,7 @@ export const CursorTrail = () => {
       {trail.map((dot, index) => (
         <div
           key={dot.id}
-          className="absolute w-2 h-2 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full transition-all duration-300"
+          className="absolute w-2 h-2 bg-gradient-to-r from-pink-400 to-rose-400 rounded-full transition-all duration-300"
           style={{
             left: dot.x - 4,
             top: dot.y - 4,
