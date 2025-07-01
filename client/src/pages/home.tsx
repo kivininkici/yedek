@@ -467,7 +467,10 @@ export default function Home() {
             >
               <Button 
                 size="lg" 
-                className="bg-gradient-to-r from-cyan-500/20 to-cyan-600/20 hover:from-cyan-500/30 hover:to-cyan-600/30 border border-cyan-400/30 text-cyan-300 hover:text-cyan-200 font-bold px-12 py-6 text-xl rounded-2xl transition-all duration-300 flex items-center space-x-3 shadow-lg"
+                className="bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 hover:text-cyan-200 font-bold px-12 py-6 text-xl rounded-2xl transition-all duration-300 flex items-center space-x-3"
+                style={{
+                  boxShadow: '0 0 0 2px rgba(34, 211, 238, 0.3), 0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                }}
                 onClick={() => window.location.href = '/user'}
               >
                 <KeyRound className="w-6 h-6" />
@@ -486,7 +489,10 @@ export default function Home() {
             >
               <Button 
                 size="lg" 
-                className="bg-gradient-to-r from-emerald-500/20 to-emerald-600/20 hover:from-emerald-500/30 hover:to-emerald-600/30 border border-emerald-400/30 text-emerald-300 hover:text-emerald-200 font-bold px-12 py-6 text-xl rounded-2xl transition-all duration-300 flex items-center space-x-3 shadow-lg"
+                className="bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 hover:text-emerald-200 font-bold px-12 py-6 text-xl rounded-2xl transition-all duration-300 flex items-center space-x-3"
+                style={{
+                  boxShadow: '0 0 0 2px rgba(34, 197, 94, 0.3), 0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                }}
                 onClick={() => window.location.href = '/order-search'}
               >
                 <Search className="w-6 h-6" />
