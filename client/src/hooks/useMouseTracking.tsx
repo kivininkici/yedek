@@ -23,6 +23,28 @@ export const useMousePosition = () => {
   return mousePosition;
 };
 
+// Glowing circle cursor follower for landing page
+export const LandingCursorFollower = () => {
+  const mousePosition = useMousePosition();
+
+  return (
+    <div
+      className="fixed pointer-events-none z-50 transition-all duration-200 ease-out"
+      style={{
+        left: mousePosition.x - 20,
+        top: mousePosition.y - 20,
+      }}
+    >
+      {/* Outer glow ring */}
+      <div className="absolute w-10 h-10 bg-gradient-to-r from-purple-500/40 to-blue-500/40 rounded-full blur-sm animate-pulse"></div>
+      {/* Main circle */}
+      <div className="absolute w-8 h-8 bg-gradient-to-br from-purple-400 to-blue-400 rounded-full top-1 left-1 opacity-80"></div>
+      {/* Inner bright center */}
+      <div className="absolute w-4 h-4 bg-gradient-to-br from-purple-200 to-blue-200 rounded-full top-3 left-3 opacity-60"></div>
+    </div>
+  );
+};
+
 // Smooth cursor follower with glowing effect
 export const CursorFollower = () => {
   const mousePosition = useMousePosition();
