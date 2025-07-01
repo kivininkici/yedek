@@ -7,7 +7,7 @@ import NotFound from "@/pages/not-found";
 import Landing from "@/pages/landing";
 import Home from "@/pages/home";
 import Auth from "@/pages/auth";
-import UserInterface from "@/pages/user-interface";
+import UserInterface from "@/pages/user-interface-new";
 import AdminLogin from "@/pages/admin-login";
 import Dashboard from "@/pages/admin/dashboard";
 import Keys from "@/pages/admin/keys";
