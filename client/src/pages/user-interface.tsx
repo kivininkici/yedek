@@ -669,11 +669,7 @@ export default function UserInterface() {
                               </span>
                             </div>
                             
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                              <div>
-                                <span className="text-slate-400">Servis:</span>
-                                <p className="text-slate-200">{order.service?.name || 'Bilinmiyor'}</p>
-                              </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                               <div>
                                 <span className="text-slate-400">Miktar:</span>
                                 <p className="text-slate-200">{order.quantity}</p>

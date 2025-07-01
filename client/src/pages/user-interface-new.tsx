@@ -615,18 +615,10 @@ export default function UserInterface() {
                               <h3 className="font-bold text-green-800 dark:text-green-400 text-lg">
                                 Key Doğrulandı
                               </h3>
-                              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-3">
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
                                 <div>
                                   <p className="text-sm text-green-600 dark:text-green-400">Kategori</p>
                                   <p className="font-semibold text-green-800 dark:text-green-300">{validatedKey.category}</p>
-                                </div>
-                                <div>
-                                  <p className="text-sm text-green-600 dark:text-green-400">Servis</p>
-                                  <p className="font-semibold text-green-800 dark:text-green-300">{validatedKey.service.name}</p>
-                                </div>
-                                <div>
-                                  <p className="text-sm text-green-600 dark:text-green-400">Platform</p>
-                                  <p className="font-semibold text-green-800 dark:text-green-300">{validatedKey.service.platform}</p>
                                 </div>
                                 <div>
                                   <p className="text-sm text-green-600 dark:text-green-400">Kalan Miktar</p>
@@ -872,18 +864,10 @@ export default function UserInterface() {
                                 </div>
                               </div>
                               
-                              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                                <div>
-                                  <p className="text-gray-500 dark:text-gray-400">Servis</p>
-                                  <p className="font-semibold text-gray-900 dark:text-gray-100">{order.service.name}</p>
-                                </div>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                                 <div>
                                   <p className="text-gray-500 dark:text-gray-400">Miktar</p>
                                   <p className="font-semibold text-gray-900 dark:text-gray-100">{order.quantity.toLocaleString()}</p>
-                                </div>
-                                <div>
-                                  <p className="text-gray-500 dark:text-gray-400">Platform</p>
-                                  <p className="font-semibold text-gray-900 dark:text-gray-100">{order.service.platform}</p>
                                 </div>
                                 <div>
                                   <p className="text-gray-500 dark:text-gray-400">Tarih</p>
