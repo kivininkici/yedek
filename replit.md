@@ -175,11 +175,12 @@ Changelog:
 - Hızlı API ekleme: Popüler API'ler için tek tıkla ekleme butonları
 - Universal format: Her iki API de aynı v2 formatını kullandığı için tek sistem yeterli
 - Sistem production seviyesinde güvenilir ve optimize edilmiş şekilde çalışıyor
-- July 1, 2025: Admin login güvenlik sorusu sistemi eklendi
-- Admin giriş formuna güvenlik sorusu alanı eklendi ("En sevdiğiniz renk nedir?")
-- Backend'de güvenlik sorusu validasyonu eklendi (doğru cevap: "mavi")
-- Adminler artık kullanıcı adı, şifre ve güvenlik sorusu cevabını girmelidir
-- Ek güvenlik katmanı eklenerek admin paneline yetkisiz erişim engellendi
+- July 1, 2025: Gelişmiş admin login güvenlik sorusu sistemi eklendi
+- 6 farklı kişisel güvenlik sorusu tanımlandı (Kiwi doğum tarihi, anne/baba bilgileri)
+- Her girişte rastgele 1 soru sorulur: Kiwi doğum tarihi (29/05/2020), Anne adı (Halime), Anne kızlık soyadı (Bahat), Anne doğum tarihi (17/12/1978), Baba adı (Muhammed), Baba soyadı (Yazar)
+- Hatalı girişte yeni rastgele soru çekilir - maksimum güvenlik
+- Backend'de tüm doğru cevaplar kontrol edilir, case-insensitive validasyon
+- Dynamic güvenlik sorusu API endpoint'i (/api/admin/security-question) eklendi
 - June 30, 2025: Key kategori sistemi tamamlandı ve UI iyileştirmeleri yapıldı
 - Database schema'ya category field eklendi ve API endpoint'leri güncellendi
 - Key oluşturma modal'ına kategori seçimi eklendi (Instagram, YouTube, Twitter, vb.)

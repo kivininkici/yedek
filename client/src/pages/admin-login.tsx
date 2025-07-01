@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,6 +20,7 @@ export default function AdminLogin() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showUsername, setShowUsername] = useState(false);
+  const [securityQuestion, setSecurityQuestion] = useState<string>("Güvenlik sorusu yükleniyor...");
 
   const {
     register,
@@ -28,6 +29,22 @@ export default function AdminLogin() {
   } = useForm<AdminLogin>({
     resolver: zodResolver(adminLoginSchema),
   });
+
+  // Rastgele güvenlik sorusu çek
+  useEffect(() => {
+    const fetchSecurityQuestion = async () => {
+      try {
+        const response = await fetch('/api/admin/security-question');
+        const data = await response.json();
+        setSecurityQuestion(data.question);
+      } catch (error) {
+        console.error('Güvenlik sorusu yüklenemedi:', error);
+        setSecurityQuestion("Güvenlik sorusu yüklenemedi");
+      }
+    };
+    
+    fetchSecurityQuestion();
+  }, []);
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: AdminLogin) => {
@@ -54,6 +71,18 @@ export default function AdminLogin() {
         description: error.message || "Kullanıcı adı veya şifre hatalı",
         variant: "destructive",
       });
+      
+      // Hatalı girişte yeni rastgele soru çek
+      const fetchNewQuestion = async () => {
+        try {
+          const response = await fetch('/api/admin/security-question');
+          const data = await response.json();
+          setSecurityQuestion(data.question);
+        } catch (error) {
+          console.error('Yeni güvenlik sorusu yüklenemedi:', error);
+        }
+      };
+      fetchNewQuestion();
     },
   });
 
@@ -352,7 +381,7 @@ export default function AdminLogin() {
 
                     <div className="space-y-2">
                       <Label htmlFor="securityAnswer" className="text-slate-300 text-sm font-medium">
-                        Güvenlik Sorusu: En sevdiğiniz renk nedir?
+                        Güvenlik Sorusu: {securityQuestion}
                       </Label>
                       <div className="relative group">
                         <Shield className="w-5 h-5 absolute left-3 top-3 text-slate-400 group-focus-within:text-blue-400 transition-colors" />

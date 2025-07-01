@@ -23,6 +23,24 @@ export async function comparePassword(password: string, hash: string): Promise<b
 
 // Admin auth routes
 export function setupAdminAuth(app: Express) {
+  // Get random security question
+  app.get('/api/admin/security-question', (req, res) => {
+    const securityQuestions = [
+      { id: 1, question: "Kiwi'nin Doğum Tarihi?", answer: "29/05/2020" },
+      { id: 2, question: "Anne Adın?", answer: "halime" },
+      { id: 3, question: "Anne Kızlık Soyadı?", answer: "bahat" },
+      { id: 4, question: "Anne Doğum Tarihi?", answer: "17/12/1978" },
+      { id: 5, question: "Baba Adı?", answer: "muhammed" },
+      { id: 6, question: "Baba Soyadı?", answer: "yazar" }
+    ];
+    
+    const randomQuestion = securityQuestions[Math.floor(Math.random() * securityQuestions.length)];
+    res.json({ 
+      question: randomQuestion.question,
+      questionId: randomQuestion.id 
+    });
+  });
+
   // Admin login
   app.post('/api/admin/login', async (req, res) => {
     try {
@@ -42,9 +60,20 @@ export function setupAdminAuth(app: Express) {
         return res.status(401).json({ message: 'Geçersiz kullanıcı adı veya şifre' });
       }
 
-      // Güvenlik sorusu kontrolü - En sevdiğiniz renk nedir? (cevap: mavi)
-      const correctSecurityAnswer = "mavi";
-      if (securityAnswer.toLowerCase().trim() !== correctSecurityAnswer) {
+      // Güvenlik sorusu kontrolü - Rastgele seçilen soru cevabını kontrol et
+      const securityQuestions = {
+        "29/05/2020": "Kiwi'nin Doğum Tarihi?",
+        "halime": "Anne Adın?",
+        "bahat": "Anne Kızlık Soyadı?", 
+        "17/12/1978": "Anne Doğum Tarihi?",
+        "muhammed": "Baba Adı?",
+        "yazar": "Baba Soyadı?"
+      };
+      
+      const normalizedAnswer = securityAnswer.toLowerCase().trim();
+      const validAnswers = Object.keys(securityQuestions);
+      
+      if (!validAnswers.includes(normalizedAnswer)) {
         return res.status(401).json({ message: 'Güvenlik sorusu cevabı hatalı' });
       }
 
