@@ -29,18 +29,18 @@ export const LandingCursorFollower = () => {
 
   return (
     <div
-      className="fixed pointer-events-none z-50 transition-all duration-200 ease-out"
+      className="fixed pointer-events-none z-50"
       style={{
-        left: mousePosition.x - 20,
-        top: mousePosition.y - 20,
+        left: mousePosition.x - 80,
+        top: mousePosition.y - 80,
       }}
     >
       {/* Outer glow ring */}
-      <div className="absolute w-10 h-10 bg-gradient-to-r from-purple-500/40 to-blue-500/40 rounded-full blur-sm animate-pulse"></div>
+      <div className="absolute w-40 h-40 bg-gradient-to-r from-purple-500/10 to-blue-500/10 rounded-full blur-md animate-pulse"></div>
       {/* Main circle */}
-      <div className="absolute w-8 h-8 bg-gradient-to-br from-purple-400 to-blue-400 rounded-full top-1 left-1 opacity-80"></div>
+      <div className="absolute w-32 h-32 bg-gradient-to-br from-purple-400/15 to-blue-400/15 rounded-full top-4 left-4"></div>
       {/* Inner bright center */}
-      <div className="absolute w-4 h-4 bg-gradient-to-br from-purple-200 to-blue-200 rounded-full top-3 left-3 opacity-60"></div>
+      <div className="absolute w-16 h-16 bg-gradient-to-br from-purple-200/20 to-blue-200/20 rounded-full top-12 left-12"></div>
     </div>
   );
 };
