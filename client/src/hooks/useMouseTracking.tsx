@@ -58,7 +58,7 @@ export const AdminCursorFollower = () => {
         top: mousePosition.y - 80,
       }}
     >
-      <div className="absolute w-40 h-40 bg-gradient-to-r from-blue-500/4 to-cyan-500/4 rounded-full blur-lg"></div>
+      <div className="absolute w-40 h-40 bg-blue-500/8 rounded-full blur-lg"></div>
     </div>
   );
 };

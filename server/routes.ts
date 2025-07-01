@@ -1090,17 +1090,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // List all admin users (without passwords)
   app.get("/api/admin/list", requireAdminAuth, async (req, res) => {
     try {
+      // Get admin users from admin_users table
       const admins = await storage.getAllAdmins();
-      // Remove passwords from response for security
       const safeAdmins = admins.map(admin => ({
         id: admin.id,
         username: admin.username,
         email: admin.email,
         isActive: admin.isActive,
         createdAt: admin.createdAt,
-        lastLoginAt: admin.lastLoginAt
+        lastLoginAt: admin.lastLoginAt,
+        source: 'admin_table'
       }));
-      res.json(safeAdmins);
+      
+      // Get promoted users (normal users with admin role)
+      const promotedAdmins = await db
+        .select({
+          id: users.id,
+          username: users.firstName,
+          email: users.email,
+          isActive: sql<boolean>`true`,
+          createdAt: users.createdAt,
+          lastLoginAt: users.updatedAt
+        })
+        .from(users)
+        .where(eq(users.role, 'admin'));
+      
+      const safePromotedAdmins = promotedAdmins.map(admin => ({
+        id: parseInt(admin.id),
+        username: admin.username,
+        email: admin.email,
+        isActive: admin.isActive,
+        createdAt: admin.createdAt,
+        lastLoginAt: admin.lastLoginAt,
+        source: 'promoted_user'
+      }));
+      
+      // Combine both lists
+      const allAdmins = [...safeAdmins, ...safePromotedAdmins];
+      res.json(allAdmins);
     } catch (error) {
       console.error("Error fetching admins:", error);
       res.status(500).json({ message: "Failed to fetch admins" });
