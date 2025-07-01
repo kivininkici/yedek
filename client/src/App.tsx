@@ -23,6 +23,7 @@ import AdminKeyStats from "@/pages/admin-key-stats";
 import ApiBalances from "@/pages/admin/api-balances";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
+import { CursorFollower, CursorTrail } from "@/hooks/useMouseTracking";
 
 function Router() {
   const { isAuthenticated: isUserAuthenticated } = useAuth();
@@ -95,6 +96,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
+        {/* Global Cursor Effects */}
+        <CursorFollower />
+        <CursorTrail />
         <Router />
       </TooltipProvider>
     </QueryClientProvider>

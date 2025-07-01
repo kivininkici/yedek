@@ -5,116 +5,78 @@ interface MousePosition {
   y: number;
 }
 
-interface MouseTracking {
-  position: MousePosition;
-  isMoving: boolean;
-  velocity: { x: number; y: number };
-  lastMoveTime: number;
-}
-
-export const useMouseTracking = () => {
-  const [mouseData, setMouseData] = useState<MouseTracking>({
-    position: { x: 0, y: 0 },
-    isMoving: false,
-    velocity: { x: 0, y: 0 },
-    lastMoveTime: 0
-  });
+export const useMousePosition = () => {
+  const [mousePosition, setMousePosition] = useState<MousePosition>({ x: 0, y: 0 });
 
   useEffect(() => {
-    let previousPosition = { x: 0, y: 0 };
-    let previousTime = Date.now();
-    let timeoutId: NodeJS.Timeout;
-
     const handleMouseMove = (event: MouseEvent) => {
-      const currentTime = Date.now();
-      const deltaTime = currentTime - previousTime;
-      
-      const velocity = {
-        x: deltaTime > 0 ? (event.clientX - previousPosition.x) / deltaTime : 0,
-        y: deltaTime > 0 ? (event.clientY - previousPosition.y) / deltaTime : 0
-      };
-
-      setMouseData({
-        position: { x: event.clientX, y: event.clientY },
-        isMoving: true,
-        velocity,
-        lastMoveTime: currentTime
-      });
-
-      previousPosition = { x: event.clientX, y: event.clientY };
-      previousTime = currentTime;
-
-      // Clear the previous timeout
-      clearTimeout(timeoutId);
-      
-      // Set mouse as not moving after 100ms of inactivity
-      timeoutId = setTimeout(() => {
-        setMouseData(prev => ({
-          ...prev,
-          isMoving: false,
-          velocity: { x: 0, y: 0 }
-        }));
-      }, 100);
+      setMousePosition({ x: event.clientX, y: event.clientY });
     };
 
     window.addEventListener('mousemove', handleMouseMove);
     
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
-      clearTimeout(timeoutId);
     };
   }, []);
 
-  return mouseData;
+  return mousePosition;
 };
 
-// Mouse follower component for visual effects
-export const MouseFollower = () => {
-  const { position, isMoving } = useMouseTracking();
+// Smooth cursor follower with glowing effect
+export const CursorFollower = () => {
+  const mousePosition = useMousePosition();
 
   return (
     <div
-      className="fixed pointer-events-none z-50 transition-all duration-300 ease-out"
+      className="fixed pointer-events-none z-50 transition-all duration-150 ease-out"
       style={{
-        left: position.x - 10,
-        top: position.y - 10,
-        transform: `scale(${isMoving ? 1 : 0.8})`,
-        opacity: isMoving ? 0.8 : 0.4
+        left: mousePosition.x - 12,
+        top: mousePosition.y - 12,
       }}
     >
-      <div className="w-5 h-5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full blur-sm animate-pulse"></div>
+      {/* Outer glow */}
+      <div className="absolute w-6 h-6 bg-gradient-to-r from-blue-500/30 to-purple-500/30 rounded-full blur-md animate-pulse"></div>
+      {/* Inner dot */}
+      <div className="absolute w-3 h-3 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full top-1.5 left-1.5"></div>
     </div>
   );
 };
 
-// Interactive background dots that react to mouse
-export const InteractiveBackground = () => {
-  const { position } = useMouseTracking();
+// Trail effect that follows the cursor
+export const CursorTrail = () => {
+  const mousePosition = useMousePosition();
+  const [trail, setTrail] = useState<Array<{ x: number; y: number; id: number }>>([]);
 
-  const dots = Array.from({ length: 20 }, (_, i) => {
-    const x = (i % 5) * 300;
-    const y = Math.floor(i / 5) * 200;
-    const distance = Math.sqrt((position.x - x) ** 2 + (position.y - y) ** 2);
-    const scale = Math.max(0.5, Math.min(1.5, 1 - distance / 500));
-    
-    return (
-      <div
-        key={i}
-        className="absolute w-2 h-2 bg-blue-400/20 rounded-full transition-transform duration-300"
-        style={{
-          left: x,
-          top: y,
-          transform: `scale(${scale})`,
-        }}
-      />
-    );
-  });
+  useEffect(() => {
+    const newDot = {
+      x: mousePosition.x,
+      y: mousePosition.y,
+      id: Date.now()
+    };
+
+    setTrail(prev => {
+      const newTrail = [newDot, ...prev].slice(0, 8); // Keep only last 8 dots
+      return newTrail;
+    });
+  }, [mousePosition]);
 
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden">
-      {dots}
+    <div className="fixed pointer-events-none z-40">
+      {trail.map((dot, index) => (
+        <div
+          key={dot.id}
+          className="absolute w-2 h-2 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full transition-all duration-300"
+          style={{
+            left: dot.x - 4,
+            top: dot.y - 4,
+            opacity: (8 - index) * 0.1,
+            transform: `scale(${(8 - index) * 0.1})`,
+          }}
+        />
+      ))}
     </div>
   );
 };
 
-export default useMouseTracking;
+export default useMousePosition;

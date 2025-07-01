@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useToast } from "@/hooks/use-toast";
-import { useMouseTracking, MouseFollower, InteractiveBackground } from "@/hooks/useMouseTracking";
+
 import Sidebar from "@/components/layout/sidebar";
 import Header from "@/components/layout/header";
 import StatsCard from "@/components/admin/stats-card";
@@ -124,9 +124,7 @@ export default function Dashboard() {
           />
         </div>
         
-        {/* Mouse Tracking Components */}
-        <MouseFollower />
-        <InteractiveBackground />
+
         
         <Header 
           title="🚀 Admin Dashboard" 
