@@ -8,6 +8,7 @@ import {
   apiSettings,
   notifications,
   adminUsers,
+  loginAttempts,
   type User,
   type UpsertUser,
   type NormalUser,
@@ -25,7 +26,9 @@ import {
   type Notification,
   type InsertNotification,
   type AdminUser,
-  type InsertAdminUser
+  type InsertAdminUser,
+  type LoginAttempt,
+  type InsertLoginAttempt
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, sql, and, isNull, isNotNull, count } from "drizzle-orm";
@@ -134,6 +137,12 @@ export interface IStorage {
       };
     };
   }>;
+
+  // Login attempt operations
+  createLoginAttempt(attempt: InsertLoginAttempt): Promise<LoginAttempt>;
+  getLoginAttemptsByIP(ipAddress: string): Promise<LoginAttempt[]>;
+  getRecentFailedAttempts(ipAddress: string, minutes: number): Promise<number>;
+  getAllLoginAttempts(): Promise<LoginAttempt[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -830,6 +839,46 @@ export class DatabaseStorage implements IStorage {
         },
       },
     };
+  }
+
+  // Login attempt operations
+  async createLoginAttempt(attempt: InsertLoginAttempt): Promise<LoginAttempt> {
+    const [loginAttempt] = await db
+      .insert(loginAttempts)
+      .values(attempt)
+      .returning();
+    return loginAttempt;
+  }
+
+  async getLoginAttemptsByIP(ipAddress: string): Promise<LoginAttempt[]> {
+    return await db
+      .select()
+      .from(loginAttempts)
+      .where(eq(loginAttempts.ipAddress, ipAddress))
+      .orderBy(desc(loginAttempts.createdAt));
+  }
+
+  async getRecentFailedAttempts(ipAddress: string, minutes: number): Promise<number> {
+    const cutoffTime = new Date(Date.now() - minutes * 60 * 1000);
+    const [result] = await db
+      .select({ count: count() })
+      .from(loginAttempts)
+      .where(
+        and(
+          eq(loginAttempts.ipAddress, ipAddress),
+          sql`${loginAttempts.attemptType} IN ('failed_password', 'failed_security')`,
+          sql`${loginAttempts.createdAt} > ${cutoffTime}`
+        )
+      );
+    return result.count;
+  }
+
+  async getAllLoginAttempts(): Promise<LoginAttempt[]> {
+    return await db
+      .select()
+      .from(loginAttempts)
+      .orderBy(desc(loginAttempts.createdAt))
+      .limit(1000); // Son 1000 attempt
   }
 }
 

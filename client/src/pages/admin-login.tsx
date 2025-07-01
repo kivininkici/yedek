@@ -20,6 +20,7 @@ export default function AdminLogin() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showUsername, setShowUsername] = useState(false);
+  const [showSecurityAnswer, setShowSecurityAnswer] = useState(false);
   const [securityQuestion, setSecurityQuestion] = useState<string>("Güvenlik sorusu yükleniyor...");
 
   const {
@@ -387,11 +388,22 @@ export default function AdminLogin() {
                         <Shield className="w-5 h-5 absolute left-3 top-3 text-slate-400 group-focus-within:text-blue-400 transition-colors" />
                         <Input
                           id="securityAnswer"
-                          type="text"
+                          type={showSecurityAnswer ? "text" : "password"}
                           placeholder="Güvenlik sorusu cevabı"
-                          className="pl-11 h-12 bg-slate-800/50 border-slate-600/50 text-slate-100 placeholder-slate-500 focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-300"
+                          className="pl-11 pr-11 h-12 bg-slate-800/50 border-slate-600/50 text-slate-100 placeholder-slate-500 focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-300"
                           {...register("securityAnswer")}
                         />
+                        <button
+                          type="button"
+                          onClick={() => setShowSecurityAnswer(!showSecurityAnswer)}
+                          className="absolute right-3 top-3 text-slate-400 hover:text-blue-400 transition-colors"
+                        >
+                          {showSecurityAnswer ? (
+                            <Eye className="w-5 h-5" />
+                          ) : (
+                            <EyeOff className="w-5 h-5" />
+                          )}
+                        </button>
                       </div>
                       {errors.securityAnswer && (
                         <motion.p

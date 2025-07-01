@@ -151,6 +151,16 @@ export const notifications = pgTable("notifications", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Login attempts table for admin security
+export const loginAttempts = pgTable("login_attempts", {
+  id: serial("id").primaryKey(),
+  ipAddress: varchar("ip_address", { length: 45 }).notNull(), // IPv6 support
+  username: varchar("username", { length: 50 }),
+  attemptType: varchar("attempt_type", { length: 20 }).notNull(), // 'success', 'failed_password', 'failed_security', 'blocked'
+  userAgent: text("user_agent"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Schema exports
 export const insertKeySchema = createInsertSchema(keys).omit({
   id: true,
@@ -184,6 +194,11 @@ export const insertApiSettingsSchema = createInsertSchema(apiSettings).omit({
 });
 
 export const insertNotificationSchema = createInsertSchema(notifications).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertLoginAttemptSchema = createInsertSchema(loginAttempts).omit({
   id: true,
   createdAt: true,
 });
@@ -227,3 +242,5 @@ export type InsertApiSettings = z.infer<typeof insertApiSettingsSchema>;
 export type ApiSettings = typeof apiSettings.$inferSelect;
 export type InsertNotification = z.infer<typeof insertNotificationSchema>;
 export type Notification = typeof notifications.$inferSelect;
+export type InsertLoginAttempt = z.infer<typeof insertLoginAttemptSchema>;
+export type LoginAttempt = typeof loginAttempts.$inferSelect;

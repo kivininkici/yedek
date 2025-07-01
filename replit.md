@@ -181,6 +181,14 @@ Changelog:
 - Hatalı girişte yeni rastgele soru çekilir - maksimum güvenlik
 - Backend'de tüm doğru cevaplar kontrol edilir, case-insensitive validasyon
 - Dynamic güvenlik sorusu API endpoint'i (/api/admin/security-question) eklendi
+- July 1, 2025: Kapsamlı admin güvenlik sistemi tamamlandı
+- Güvenlik sorusu alanına göz ikonu eklendi - gizli/görünür toggle
+- 3 deneme hakkı sistemi: 15 dakika içinde 3 hatalı deneme sonrası IP engelleme
+- Login attempt logging sistemi: IP, kullanıcı adı, durum, user agent kaydı
+- Admin dashboard'a "Giriş Denemeleri" sayfası eklendi (/admin/login-attempts)
+- Başarılı/başarısız/engellenen giriş istatistikleri ve detayları
+- Database schema'ya loginAttempts tablosu eklendi ve production'a push edildi
+- Backend'de tüm giriş türleri loglanıyor: başarılı, şifre hatası, güvenlik sorusu hatası, engelleme
 - June 30, 2025: Key kategori sistemi tamamlandı ve UI iyileştirmeleri yapıldı
 - Database schema'ya category field eklendi ve API endpoint'leri güncellendi
 - Key oluşturma modal'ına kategori seçimi eklendi (Instagram, YouTube, Twitter, vb.)

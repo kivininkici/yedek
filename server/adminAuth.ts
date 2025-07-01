@@ -45,9 +45,33 @@ export function setupAdminAuth(app: Express) {
   app.post('/api/admin/login', async (req, res) => {
     try {
       const { username, password, securityAnswer }: AdminLogin = adminLoginSchema.parse(req.body);
+      const ipAddress = req.ip || req.connection.remoteAddress || 'unknown';
+      const userAgent = req.get('User-Agent') || '';
+      
+      // Check for recent failed attempts (3 attempts in 15 minutes)
+      const recentFailedAttempts = await storage.getRecentFailedAttempts(ipAddress, 15);
+      if (recentFailedAttempts >= 3) {
+        // Log blocked attempt
+        await storage.createLoginAttempt({
+          ipAddress,
+          username,
+          attemptType: 'blocked',
+          userAgent,
+        });
+        return res.status(429).json({ 
+          message: 'Çok fazla hatalı giriş denemesi. 15 dakika sonra tekrar deneyin.' 
+        });
+      }
       
       const admin = await storage.getAdminByUsername(username);
       if (!admin) {
+        // Log failed attempt
+        await storage.createLoginAttempt({
+          ipAddress,
+          username,
+          attemptType: 'failed_password',
+          userAgent,
+        });
         return res.status(401).json({ message: 'Geçersiz kullanıcı adı veya şifre' });
       }
 
@@ -57,6 +81,13 @@ export function setupAdminAuth(app: Express) {
 
       const isValidPassword = await comparePassword(password, admin.password);
       if (!isValidPassword) {
+        // Log failed password attempt
+        await storage.createLoginAttempt({
+          ipAddress,
+          username,
+          attemptType: 'failed_password',
+          userAgent,
+        });
         return res.status(401).json({ message: 'Geçersiz kullanıcı adı veya şifre' });
       }
 
@@ -74,8 +105,23 @@ export function setupAdminAuth(app: Express) {
       const validAnswers = Object.keys(securityQuestions);
       
       if (!validAnswers.includes(normalizedAnswer)) {
+        // Log failed security question attempt
+        await storage.createLoginAttempt({
+          ipAddress,
+          username,
+          attemptType: 'failed_security',
+          userAgent,
+        });
         return res.status(401).json({ message: 'Güvenlik sorusu cevabı hatalı' });
       }
+
+      // Log successful login
+      await storage.createLoginAttempt({
+        ipAddress,
+        username,
+        attemptType: 'success',
+        userAgent,
+      });
 
       // Update last login
       await storage.updateAdminLastLogin(admin.id);
@@ -123,6 +169,17 @@ export function setupAdminAuth(app: Express) {
       });
     } catch (error) {
       res.status(500).json({ message: 'Admin bilgileri alınamadı' });
+    }
+  });
+
+  // Get all login attempts
+  app.get('/api/admin/login-attempts', requireAdminAuth, async (req, res) => {
+    try {
+      const loginAttempts = await storage.getAllLoginAttempts();
+      res.json(loginAttempts);
+    } catch (error) {
+      console.error('Error fetching login attempts:', error);
+      res.status(500).json({ message: 'Giriş denemeleri alınamadı' });
     }
   });
 

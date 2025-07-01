@@ -17,7 +17,8 @@ import {
   Download,
   Search,
   BarChart3,
-  DollarSign
+  DollarSign,
+  Shield
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -34,6 +35,7 @@ const navigation = [
   { name: "Loglar", href: "/admin/logs", icon: FileText },
   { name: "Sipariş Sorgula", href: "/admin/order-search", icon: Search },
   { name: "Key İstatistikleri", href: "/admin/key-stats", icon: BarChart3 },
+  { name: "Giriş Denemeleri", href: "/admin/login-attempts", icon: Shield },
   { name: "Ayarlar", href: "/admin/settings", icon: Cog },
 ];
 

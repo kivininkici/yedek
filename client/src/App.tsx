@@ -21,6 +21,7 @@ import OrderSearch from "@/pages/order-search-new";
 import ApiManagement from "@/pages/admin/api-management";
 import AdminKeyStats from "@/pages/admin-key-stats";
 import ApiBalances from "@/pages/admin/api-balances";
+import LoginAttempts from "@/pages/admin/login-attempts";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { CursorFollower, CursorTrail } from "@/hooks/useMouseTracking";
@@ -83,6 +84,9 @@ function Router() {
       </Route>
       <Route path="/admin/key-stats">
         {isAdminAuthenticated ? <AdminKeyStats /> : <AdminLogin />}
+      </Route>
+      <Route path="/admin/login-attempts">
+        {isAdminAuthenticated ? <LoginAttempts /> : <AdminLogin />}
       </Route>
       
       {/* 404 fallback */}
