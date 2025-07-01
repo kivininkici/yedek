@@ -433,25 +433,28 @@ export default function Home() {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 1.8 }}
           >
-            <motion.div
-              whileHover={{ 
-                scale: 1.05,
-                y: -5,
-                boxShadow: "0 20px 40px rgba(59, 130, 246, 0.3)"
-              }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
-            >
-              <Button 
-                size="lg" 
-                className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold px-12 py-6 text-xl rounded-2xl shadow-2xl transition-all duration-300 flex items-center space-x-3"
-                onClick={() => window.location.href = '/user'}
+            {/* Only show register/login button for non-authenticated users */}
+            {!user && (
+              <motion.div
+                whileHover={{ 
+                  scale: 1.05,
+                  y: -5,
+                  boxShadow: "0 20px 40px rgba(59, 130, 246, 0.3)"
+                }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
               >
-                <KeyRound className="w-6 h-6" />
-                <span>Kayıt Ol / Giriş Yap</span>
-                <Sparkles className="w-5 h-5" />
-              </Button>
-            </motion.div>
+                <Button 
+                  size="lg" 
+                  className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold px-12 py-6 text-xl rounded-2xl shadow-2xl transition-all duration-300 flex items-center space-x-3"
+                  onClick={() => window.location.href = '/user'}
+                >
+                  <KeyRound className="w-6 h-6" />
+                  <span>Kayıt Ol / Giriş Yap</span>
+                  <Sparkles className="w-5 h-5" />
+                </Button>
+              </motion.div>
+            )}
             
             <motion.div
               whileHover={{ 

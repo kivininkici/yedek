@@ -295,6 +295,8 @@ Changelog:
 - PostgreSQL database kuruldu ve tüm schema başarıyla push edildi
 - API adı uyumsuzluğu sorunu çözüldü - flexible API search implementasyonu
 - KeyPanel uygulaması production seviyesinde port 5000'de çalışıyor
+- "Key Kullan" butonunun yönlendirme hatası düzeltildi (/user sayfasına yönlendiriyor)
+- Giriş yapmış kullanıcılar için "Kayıt Ol / Giriş Yap" butonu gizlendi
 - July 1, 2025: Kapsamlı mobil optimizasyon paketi tamamlandı
 - Admin cursor tracking düz mavi renge çevrildi (gradient yerine solid blue)
 - Admin yapılan kullanıcıların Admin Kullanıcılar listesinde görünme sorunu düzeltildi
