@@ -124,7 +124,7 @@ export default function LoginAttempts() {
       <Sidebar />
       <div className="lg:ml-64">
         <Header title="Giriş Denemeleri" description="Admin panel giriş güvenlik logları" />
-        <main className="p-1 lg:p-2">
+        <main className="pt-0 px-1 pb-1 lg:px-2 lg:pb-2">
           {/* Statistics Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <StatsCard
