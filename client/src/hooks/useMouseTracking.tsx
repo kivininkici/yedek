@@ -35,7 +35,41 @@ export const LandingCursorFollower = () => {
         top: mousePosition.y - 80,
       }}
     >
-      <div className="absolute w-40 h-40 bg-gradient-to-r from-pink-500/4 to-blue-500/4 rounded-full blur-lg"></div>
+      <div className="absolute w-40 h-40 bg-gradient-to-r from-pink-500/4 to-purple-500/4 rounded-full blur-lg"></div>
+    </div>
+  );
+};
+
+// Blue cursor follower for admin dashboard
+export const AdminCursorFollower = () => {
+  const mousePosition = useMousePosition();
+
+  return (
+    <div
+      className="fixed pointer-events-none z-0"
+      style={{
+        left: mousePosition.x - 80,
+        top: mousePosition.y - 80,
+      }}
+    >
+      <div className="absolute w-40 h-40 bg-gradient-to-r from-blue-500/4 to-cyan-500/4 rounded-full blur-lg"></div>
+    </div>
+  );
+};
+
+// User pages cursor follower
+export const UserCursorFollower = () => {
+  const mousePosition = useMousePosition();
+
+  return (
+    <div
+      className="fixed pointer-events-none z-0"
+      style={{
+        left: mousePosition.x - 80,
+        top: mousePosition.y - 80,
+      }}
+    >
+      <div className="absolute w-40 h-40 bg-gradient-to-r from-green-500/4 to-teal-500/4 rounded-full blur-lg"></div>
     </div>
   );
 };
