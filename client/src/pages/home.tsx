@@ -39,6 +39,12 @@ export default function Home() {
 
             {/* User Info & Actions */}
             <div className="flex items-center space-x-4">
+              <Button 
+                onClick={() => window.open('https://www.itemsatis.com/p/KiwiPazari', '_blank')}
+                className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 animate-pulse"
+              >
+                🛒 Satın Al
+              </Button>
               <div className="flex items-center space-x-3 px-4 py-2 bg-white/10 rounded-full backdrop-blur-sm">
                 <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
                   <User className="w-4 h-4 text-white" />
