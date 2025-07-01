@@ -32,10 +32,10 @@ const navigation = [
   { name: "API Bakiyeleri", href: "/admin/api-balances", icon: DollarSign },
   { name: "Siparişler", href: "/admin/orders", icon: ShoppingCart },
   { name: "Kullanıcılar", href: "/admin/users", icon: Users },
+  { name: "Giriş Denemeleri", href: "/admin/login-attempts", icon: Shield },
   { name: "Loglar", href: "/admin/logs", icon: FileText },
   { name: "Sipariş Sorgula", href: "/admin/order-search", icon: Search },
   { name: "Key İstatistikleri", href: "/admin/key-stats", icon: BarChart3 },
-  { name: "Giriş Denemeleri", href: "/admin/login-attempts", icon: Shield },
   { name: "Ayarlar", href: "/admin/settings", icon: Cog },
 ];
 
