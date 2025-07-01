@@ -434,20 +434,20 @@ export default function OrderSearchPage() {
                 </div>
                 <div>
                   <motion.h1 
-                    className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent"
+                    className="text-5xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.8, delay: 0.2 }}
                   >
-                    🔍 Sipariş Sorgulama
+                    Sipariş Takip Merkezi
                   </motion.h1>
                   <motion.p 
-                    className="text-slate-600 dark:text-slate-300 font-medium text-lg mt-1"
+                    className="text-slate-600 dark:text-slate-300 font-semibold text-xl mt-2"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.6, delay: 0.4 }}
                   >
-                    Siparişinizin durumunu gerçek zamanlı takip edin
+                    Profesyonel sipariş takip sistemi ile gerçek zamanlı durum kontrolü
                   </motion.p>
                 </div>
               </motion.div>
@@ -484,21 +484,27 @@ export default function OrderSearchPage() {
               <CardContent className="p-12">
                 <div className="text-center mb-10">
                   <motion.h2 
-                    className="text-3xl font-bold text-gray-900 dark:text-white mb-4"
+                    className="text-4xl font-black text-gray-900 dark:text-white mb-6 flex items-center justify-center"
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.4 }}
                   >
-                    <Zap className="inline w-8 h-8 mr-3 text-yellow-500" />
-                    Hızlı Sipariş Arama
+                    <motion.div
+                      className="mr-4 p-3 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl shadow-lg"
+                      animate={{ rotate: [0, 10, -10, 0] }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    >
+                      <Zap className="w-10 h-10 text-white" />
+                    </motion.div>
+                    Profesyonel Sipariş Takip Sistemi
                   </motion.h2>
                   <motion.p 
-                    className="text-slate-600 dark:text-slate-300 text-lg max-w-2xl mx-auto"
+                    className="text-slate-600 dark:text-slate-300 text-xl max-w-3xl mx-auto font-semibold"
                     initial={{ y: 20, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
                     transition={{ duration: 0.5, delay: 0.5 }}
                   >
-                    Sipariş ID'nizi girerek siparişinizin güncel durumunu öğrenin ve sürecini takip edin
+                    Siparişinizin her aşamasını gerçek zamanlı olarak takip edin ve anlık güncellemeler alın
                   </motion.p>
                 </div>
                 
@@ -513,11 +519,28 @@ export default function OrderSearchPage() {
                     <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
                       <Search className="h-7 w-7 text-slate-400" />
                     </div>
-                    <Input
-                      placeholder="Sipariş ID'nizi buraya girin (örn: ORD-123456)"
-                      className="h-20 pl-20 pr-8 text-xl font-medium border-3 border-slate-200 dark:border-slate-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-slate-400 focus:ring-6 focus:ring-blue-500/20 focus:border-blue-500 rounded-2xl transition-all duration-300 hover:border-slate-300 dark:hover:border-slate-500 shadow-inner"
-                      {...searchForm.register("orderId")}
-                    />
+                    <motion.div
+                      className="relative"
+                      whileFocus={{ scale: 1.02 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <Input
+                        placeholder="Sipariş numaranızı girin (örn: 458485, ORD-123456)"
+                        className="h-24 pl-20 pr-8 text-2xl font-bold text-center border-4 border-slate-300 dark:border-slate-600 bg-gradient-to-r from-white to-blue-50 dark:from-gray-700 dark:to-blue-900 text-gray-900 dark:text-white placeholder-slate-500 focus:ring-8 focus:ring-blue-500/30 focus:border-blue-500 dark:focus:border-blue-400 rounded-3xl transition-all duration-500 hover:border-blue-400 dark:hover:border-blue-500 shadow-2xl"
+                        {...searchForm.register("orderId")}
+                        disabled={isSearching}
+                      />
+                      <motion.div
+                        className="absolute right-8 top-1/2 transform -translate-y-1/2 pointer-events-none"
+                        animate={{ 
+                          x: [0, 10, 0],
+                          opacity: [0.5, 1, 0.5]
+                        }}
+                        transition={{ duration: 2.5, repeat: Infinity }}
+                      >
+                        <Package className="w-8 h-8 text-blue-500" />
+                      </motion.div>
+                    </motion.div>
                     {searchForm.formState.errors.orderId && (
                       <motion.p 
                         className="text-red-500 text-sm mt-3 ml-4"
@@ -548,7 +571,7 @@ export default function OrderSearchPage() {
                       ) : (
                         <>
                           <Search className="w-7 h-7 mr-4" />
-                          🚀 Sorgula
+                          Sipariş Sorgula
                         </>
                       )}
                     </Button>
