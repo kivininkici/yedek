@@ -466,10 +466,30 @@ export default function Home() {
                 size="lg" 
                 variant="outline"
                 className="border-2 border-cyan-400/50 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 hover:text-cyan-300 font-bold px-12 py-6 text-xl rounded-2xl backdrop-blur-sm transition-all duration-300 flex items-center space-x-3"
+                onClick={() => window.location.href = '/user'}
+              >
+                <KeyRound className="w-6 h-6" />
+                <span>Key Kullan</span>
+              </Button>
+            </motion.div>
+            
+            <motion.div
+              whileHover={{ 
+                scale: 1.05,
+                y: -5,
+                boxShadow: "0 20px 40px rgba(34, 197, 94, 0.3)"
+              }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            >
+              <Button 
+                size="lg" 
+                variant="outline"
+                className="border-2 border-emerald-400/50 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 hover:text-emerald-300 font-bold px-12 py-6 text-xl rounded-2xl backdrop-blur-sm transition-all duration-300 flex items-center space-x-3"
                 onClick={() => window.location.href = '/order-search'}
               >
                 <Search className="w-6 h-6" />
-                <span>Key Kullan</span>
+                <span>Sipariş Sorgula</span>
               </Button>
             </motion.div>
           </motion.div>
