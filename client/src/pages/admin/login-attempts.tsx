@@ -140,36 +140,8 @@ export default function LoginAttempts() {
             </div>
           </div>
 
-          {/* Statistics Cards - Moved directly after header */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-            <StatsCard
-              title="Başarılı Giriş"
-              value={successfulAttempts}
-              icon={CheckCircle}
-              iconColor="text-green-500"
-            />
-            <StatsCard
-              title="Başarısız Deneme"
-              value={failedAttempts}
-              icon={XCircle}
-              iconColor="text-red-500"
-            />
-            <StatsCard
-              title="Engellenen IP"
-              value={blockedAttempts}
-              icon={Shield}
-              iconColor="text-orange-500"
-            />
-            <StatsCard
-              title="Farklı IP"
-              value={uniqueIPs}
-              icon={MapPin}
-              iconColor="text-blue-500"
-            />
-          </div>
-
-          {/* Recent Login Attempts */}
-          <Card>
+          {/* Recent Login Attempts - Moved to top */}
+          <Card className="mb-6">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Clock className="w-5 h-5" />
@@ -211,7 +183,7 @@ export default function LoginAttempts() {
                               {attempt.ipAddress}
                             </TableCell>
                             <TableCell>
-                              {attempt.username || '-'}
+                              {attempt.username || 'Bilinmiyor'}
                             </TableCell>
                             <TableCell>
                               <Badge variant={config.variant} className="flex items-center gap-1 w-fit">
@@ -219,13 +191,8 @@ export default function LoginAttempts() {
                                 {config.label}
                               </Badge>
                             </TableCell>
-                            <TableCell className="hidden lg:table-cell max-w-xs">
-                              <div className="flex items-center gap-2">
-                                <Monitor className="w-4 h-4 text-slate-400" />
-                                <span className="text-sm text-slate-600 truncate">
-                                  {truncateUserAgent(attempt.userAgent)}
-                                </span>
-                              </div>
+                            <TableCell className="hidden lg:table-cell text-xs text-slate-500">
+                              {truncateUserAgent(attempt.userAgent)}
                             </TableCell>
                           </TableRow>
                         );
@@ -236,6 +203,34 @@ export default function LoginAttempts() {
               )}
             </CardContent>
           </Card>
+
+          {/* Statistics Cards - Moved below table */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <StatsCard
+              title="Başarılı Giriş"
+              value={successfulAttempts}
+              icon={CheckCircle}
+              iconColor="text-green-500"
+            />
+            <StatsCard
+              title="Başarısız Deneme"
+              value={failedAttempts}
+              icon={XCircle}
+              iconColor="text-red-500"
+            />
+            <StatsCard
+              title="Engellenen IP"
+              value={blockedAttempts}
+              icon={Shield}
+              iconColor="text-orange-500"
+            />
+            <StatsCard
+              title="Farklı IP"
+              value={uniqueIPs}
+              icon={MapPin}
+              iconColor="text-blue-500"
+            />
+          </div>
         </main>
       </div>
     </div>
