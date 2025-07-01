@@ -36,15 +36,6 @@ export default function Header({ title, description }: HeaderProps) {
           <p className="text-slate-400 mt-1 text-lg">{description}</p>
         </div>
         <div className="flex items-center space-x-3 animate-fade-in delay-200">
-          {/* Satın Al Button */}
-          <Button
-            onClick={() => window.open('https://www.itemsatis.com/p/KiwiPazari', '_blank')}
-            className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-300 flex items-center space-x-2 shadow-lg hover:shadow-red-500/25 transform hover:scale-105 hover:-translate-y-0.5"
-          >
-            <ShoppingCart className="w-4 h-4" />
-            <span>Satın Al</span>
-          </Button>
-          
           {/* Theme Toggle */}
           <Button
             variant="ghost"

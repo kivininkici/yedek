@@ -109,8 +109,19 @@ export default function Sidebar() {
         })}
       </nav>
 
+      {/* Satın Al Button */}
+      <div className="p-4 relative z-10">
+        <Button
+          onClick={() => window.open('https://www.itemsatis.com/p/KiwiPazari', '_blank')}
+          className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3 rounded-xl transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg hover:shadow-red-500/25 transform hover:scale-105 hover:-translate-y-0.5"
+        >
+          <ShoppingCart className="w-5 h-5" />
+          <span>Satın Al</span>
+        </Button>
+      </div>
+
       {/* User Profile */}
-      <div className="p-4 border-t border-slate-700/50 relative z-10">
+      <div className="p-4 pt-0 border-t border-slate-700/50 relative z-10">
         <div className="flex items-center space-x-3 p-3 rounded-xl bg-slate-800/30 border border-slate-700/30 backdrop-blur-sm">
           <Avatar className="w-10 h-10 border-2 border-blue-500/30">
             <AvatarFallback className="bg-gradient-to-br from-blue-500 to-cyan-500 text-white font-bold">
