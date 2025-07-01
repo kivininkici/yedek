@@ -468,7 +468,7 @@ export default function Home() {
               <Button 
                 size="lg" 
                 variant="outline"
-                className="border-2 border-cyan-400/50 hover:bg-cyan-500/20 text-cyan-400 hover:text-cyan-300 font-bold px-12 py-6 text-xl rounded-2xl backdrop-blur-sm transition-all duration-300 flex items-center space-x-3"
+                className="border-2 border-cyan-400/50 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 hover:text-cyan-300 font-bold px-12 py-6 text-xl rounded-2xl backdrop-blur-sm transition-all duration-300 flex items-center space-x-3 overflow-hidden"
                 onClick={() => window.location.href = '/user'}
               >
                 <KeyRound className="w-6 h-6" />
@@ -488,7 +488,7 @@ export default function Home() {
               <Button 
                 size="lg" 
                 variant="outline"
-                className="border-2 border-emerald-400/50 hover:bg-emerald-500/20 text-emerald-400 hover:text-emerald-300 font-bold px-12 py-6 text-xl rounded-2xl backdrop-blur-sm transition-all duration-300 flex items-center space-x-3"
+                className="border-2 border-emerald-400/50 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 hover:text-emerald-300 font-bold px-12 py-6 text-xl rounded-2xl backdrop-blur-sm transition-all duration-300 flex items-center space-x-3 overflow-hidden"
                 onClick={() => window.location.href = '/order-search'}
               >
                 <Search className="w-6 h-6" />
