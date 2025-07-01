@@ -35,12 +35,7 @@ export const LandingCursorFollower = () => {
         top: mousePosition.y - 80,
       }}
     >
-      {/* Outer glow ring */}
-      <div className="absolute w-40 h-40 bg-gradient-to-r from-purple-500/3 to-blue-500/3 rounded-full blur-lg animate-pulse"></div>
-      {/* Main circle */}
-      <div className="absolute w-32 h-32 bg-gradient-to-br from-purple-400/5 to-blue-400/5 rounded-full top-4 left-4"></div>
-      {/* Inner bright center */}
-      <div className="absolute w-16 h-16 bg-gradient-to-br from-purple-200/6 to-blue-200/6 rounded-full top-12 left-12"></div>
+      <div className="absolute w-40 h-40 bg-gradient-to-r from-pink-500/4 to-blue-500/4 rounded-full blur-lg"></div>
     </div>
   );
 };
