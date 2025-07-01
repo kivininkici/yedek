@@ -277,17 +277,17 @@ export default function Auth() {
         >
           <motion.div
             whileHover={{ 
-              scale: 1.02,
-              y: -2,
-              boxShadow: "0 10px 25px rgba(59, 130, 246, 0.3)"
+              scale: 1.01,
+              y: -1,
+              boxShadow: "0 8px 20px rgba(59, 130, 246, 0.25)"
             }}
-            whileTap={{ scale: 0.98 }}
-            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            whileTap={{ scale: 0.99 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
           >
             <Button
               variant="ghost"
               onClick={() => (window.location.href = "/")}
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white backdrop-blur-sm rounded-xl px-6 py-4 transition-all duration-300 font-medium shadow-lg border border-blue-400/20"
+              className="w-full bg-blue-500 hover:bg-blue-600 text-white hover:text-white backdrop-blur-sm rounded-xl px-6 py-4 transition-all duration-200 font-medium shadow-lg border border-blue-400/20"
             >
               <motion.div
                 className="flex items-center justify-center"
@@ -392,16 +392,17 @@ export default function Auth() {
                       <AnimatePresence mode="wait">
                         {isLoginSuccess ? (
                           <>
-                            {/* Blue Wave Effect */}
+                            {/* Blue Wave Effect - emanating from card center */}
                             <motion.div
-                              initial={{ scale: 0, opacity: 0.8 }}
-                              animate={{ scale: 50, opacity: 0 }}
-                              transition={{ duration: 1.5, ease: "easeOut" }}
-                              className="fixed inset-0 bg-blue-500 rounded-full z-50 pointer-events-none"
+                              initial={{ scale: 0, opacity: 0.7 }}
+                              animate={{ scale: 15, opacity: 0 }}
+                              transition={{ duration: 1.2, ease: "easeOut" }}
+                              className="absolute bg-blue-500 rounded-full z-40 pointer-events-none"
                               style={{
-                                transformOrigin: "center center",
+                                width: "80px",
+                                height: "80px",
                                 left: "50%",
-                                top: "50%",
+                                top: "40%",
                                 transform: "translate(-50%, -50%)"
                               }}
                             />
@@ -599,16 +600,17 @@ export default function Auth() {
                       <AnimatePresence mode="wait">
                         {isRegisterSuccess ? (
                           <>
-                            {/* Blue Wave Effect */}
+                            {/* Blue Wave Effect - emanating from card center */}
                             <motion.div
-                              initial={{ scale: 0, opacity: 0.8 }}
-                              animate={{ scale: 50, opacity: 0 }}
-                              transition={{ duration: 1.5, ease: "easeOut" }}
-                              className="fixed inset-0 bg-blue-500 rounded-full z-50 pointer-events-none"
+                              initial={{ scale: 0, opacity: 0.7 }}
+                              animate={{ scale: 15, opacity: 0 }}
+                              transition={{ duration: 1.2, ease: "easeOut" }}
+                              className="absolute bg-blue-500 rounded-full z-40 pointer-events-none"
                               style={{
-                                transformOrigin: "center center",
+                                width: "80px",
+                                height: "80px",
                                 left: "50%",
-                                top: "50%",
+                                top: "40%",
                                 transform: "translate(-50%, -50%)"
                               }}
                             />
