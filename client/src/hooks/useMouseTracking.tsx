@@ -99,9 +99,9 @@ export const CursorFollower = () => {
       }}
     >
       {/* Outer glow */}
-      <div className="absolute w-6 h-6 bg-gradient-to-r from-blue-500/30 to-purple-500/30 rounded-full blur-md animate-pulse"></div>
+      <div className="absolute w-6 h-6 bg-gradient-to-r from-pink-500/30 to-rose-500/30 rounded-full blur-md animate-pulse"></div>
       {/* Inner dot */}
-      <div className="absolute w-3 h-3 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full top-1.5 left-1.5"></div>
+      <div className="absolute w-3 h-3 bg-gradient-to-r from-pink-400 to-rose-400 rounded-full top-1.5 left-1.5"></div>
     </div>
   );
 };
