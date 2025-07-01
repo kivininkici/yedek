@@ -113,7 +113,7 @@ export default function Sidebar() {
       <div className="p-4 relative z-10">
         <Button
           onClick={() => window.open('https://www.itemsatis.com/p/KiwiPazari', '_blank')}
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-xl transition-all duration-300 flex items-center justify-center space-x-2 shadow-lg hover:shadow-blue-500/25 transform hover:scale-105 hover:-translate-y-0.5"
+          className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-xl flex items-center justify-center space-x-2"
         >
           <ShoppingCart className="w-5 h-5" />
           <span>Satın Al</span>
