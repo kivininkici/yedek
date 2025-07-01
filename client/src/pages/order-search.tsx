@@ -22,7 +22,16 @@ import {
   Link,
   Sparkles,
   Zap,
-  ArrowLeft
+  ArrowLeft,
+  Package,
+  Shield,
+  Activity,
+  Globe,
+  Hash,
+  AlertTriangle,
+  CheckCircle as CheckIcon,
+  Timer,
+  TrendingUp
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
