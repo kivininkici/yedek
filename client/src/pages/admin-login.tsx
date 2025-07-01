@@ -12,6 +12,7 @@ import { Eye, EyeOff, User, Shield, ArrowLeft, Sparkles, CheckCircle, Loader2 } 
 import { apiRequest } from "@/lib/queryClient";
 import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
+import { AdminCursorFollower } from "@/hooks/useMouseTracking";
 
 export default function AdminLogin() {
   const { toast } = useToast();
@@ -64,6 +65,9 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-cyan-950">
+      {/* Admin Blue Cursor Effect */}
+      <AdminCursorFollower />
+      
       {/* Enhanced Background Effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Large gradual orbs with smooth animations */}

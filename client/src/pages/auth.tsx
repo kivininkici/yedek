@@ -272,11 +272,11 @@ export default function Auth() {
       <AnimatePresence>
         {(isLoginSuccess || isRegisterSuccess) && (
           <motion.div
-            initial={{ scale: 0, opacity: 0.8 }}
+            initial={{ scale: 0, opacity: 0.9 }}
             animate={{ scale: 30, opacity: 0 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1.8, ease: "easeOut" }}
-            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-blue-500 rounded-full z-50 pointer-events-none"
+            transition={{ duration: 2, ease: "easeOut" }}
+            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-blue-500/60 rounded-full z-40 pointer-events-none"
           />
         )}
       </AnimatePresence>
@@ -320,7 +320,7 @@ export default function Auth() {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
-          <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-xl rounded-3xl overflow-hidden min-h-[700px]">
+          <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-xl rounded-3xl overflow-hidden min-h-[700px] relative z-50">
             <CardHeader className="text-center pb-4 pt-8">
               <motion.div 
                 className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-6"
