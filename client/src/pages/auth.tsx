@@ -23,6 +23,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { motion, AnimatePresence } from "framer-motion";
+import { UserCursorFollower } from "@/hooks/useMouseTracking";
 
 const loginSchema = z.object({
   username: z.string().min(3, "Kullanıcı adı en az 3 karakter olmalı"),
@@ -264,6 +265,9 @@ export default function Auth() {
       {/* Floating Particles Background */}
       <FloatingParticles />
       
+      {/* User Cursor Effect */}
+      <UserCursorFollower />
+      
       <div className="relative z-10 w-full max-w-md">
         {/* Ana Sayfaya Dön Button */}
         <motion.div
@@ -322,9 +326,9 @@ export default function Auth() {
                   }}
                   transition={{
                     type: "spring",
-                    stiffness: 300,
-                    damping: 30,
-                    duration: 0.4
+                    stiffness: 280,
+                    damping: 35,
+                    duration: 0.5
                   }}
                 />
                 
@@ -355,15 +359,19 @@ export default function Auth() {
               </div>
 
               {/* Content Area */}
-              <div className="min-h-[400px]">
+              <div className="h-[480px] relative overflow-hidden">
                 <AnimatePresence mode="wait">
                   {activeTab === "login" ? (
                     <motion.div
                       key="login"
-                      initial={{ opacity: 0, x: -20 }}
+                      initial={{ opacity: 0, x: -30 }}
                       animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      exit={{ opacity: 0, x: -30 }}
+                      transition={{ 
+                        duration: 0.4, 
+                        ease: [0.25, 0.46, 0.45, 0.94]
+                      }}
+                      className="absolute inset-0"
                     >
                       <AnimatePresence mode="wait">
                         {isLoginSuccess ? (
@@ -418,8 +426,12 @@ export default function Auth() {
                         ) : (
                           <motion.form
                             key="login-form"
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={{ opacity: 0, y: 15 }}
                             animate={{ opacity: 1, y: 0 }}
+                            transition={{ 
+                              duration: 0.5, 
+                              ease: [0.25, 0.46, 0.45, 0.94]
+                            }}
                             onSubmit={loginForm.handleSubmit(onLoginSubmit)}
                             className="space-y-6 mt-6"
                           >
@@ -503,10 +515,14 @@ export default function Auth() {
                   ) : (
                     <motion.div
                       key="register"
-                      initial={{ opacity: 0, x: 20 }}
+                      initial={{ opacity: 0, x: 30 }}
                       animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 20 }}
-                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                      exit={{ opacity: 0, x: 30 }}
+                      transition={{ 
+                        duration: 0.4, 
+                        ease: [0.25, 0.46, 0.45, 0.94]
+                      }}
+                      className="absolute inset-0"
                     >
                       <AnimatePresence mode="wait">
                         {isRegisterSuccess ? (
@@ -561,8 +577,12 @@ export default function Auth() {
                         ) : (
                           <motion.form
                             key="register-form"
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={{ opacity: 0, y: 15 }}
                             animate={{ opacity: 1, y: 0 }}
+                            transition={{ 
+                              duration: 0.5, 
+                              ease: [0.25, 0.46, 0.45, 0.94]
+                            }}
                             onSubmit={registerForm.handleSubmit(onRegisterSubmit)}
                             className="space-y-5 mt-6"
                           >
