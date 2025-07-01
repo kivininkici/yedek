@@ -392,17 +392,17 @@ export default function Auth() {
                       <AnimatePresence mode="wait">
                         {isLoginSuccess ? (
                           <>
-                            {/* Blue Wave Effect - emanating from viewport center */}
+                            {/* Blue Wave Effect - emanating from card edges */}
                             <motion.div
                               initial={{ scale: 0, opacity: 0.7 }}
-                              animate={{ scale: 25, opacity: 0 }}
+                              animate={{ scale: 20, opacity: 0 }}
                               transition={{ duration: 1.5, ease: "easeOut" }}
-                              className="fixed bg-blue-500 rounded-full z-50 pointer-events-none"
+                              className="absolute bg-blue-500 rounded-full z-50 pointer-events-none"
                               style={{
-                                width: "100px",
-                                height: "100px",
-                                left: "50vw",
-                                top: "50vh",
+                                width: "200px",
+                                height: "200px",
+                                left: "50%",
+                                top: "50%",
                                 transform: "translate(-50%, -50%)"
                               }}
                             />
@@ -600,17 +600,17 @@ export default function Auth() {
                       <AnimatePresence mode="wait">
                         {isRegisterSuccess ? (
                           <>
-                            {/* Blue Wave Effect - emanating from viewport center */}
+                            {/* Blue Wave Effect - emanating from card edges */}
                             <motion.div
                               initial={{ scale: 0, opacity: 0.7 }}
-                              animate={{ scale: 25, opacity: 0 }}
+                              animate={{ scale: 20, opacity: 0 }}
                               transition={{ duration: 1.5, ease: "easeOut" }}
-                              className="fixed bg-blue-500 rounded-full z-50 pointer-events-none"
+                              className="absolute bg-blue-500 rounded-full z-50 pointer-events-none"
                               style={{
-                                width: "100px",
-                                height: "100px",
-                                left: "50vw",
-                                top: "50vh",
+                                width: "200px",
+                                height: "200px",
+                                left: "50%",
+                                top: "50%",
                                 transform: "translate(-50%, -50%)"
                               }}
                             />
