@@ -38,7 +38,7 @@ export const LandingCursorFollower = () => {
       <div 
         className="absolute w-40 h-40 rounded-full blur-lg"
         style={{
-          background: `radial-gradient(circle, #b208d1, #b208d1)`,
+          background: `radial-gradient(circle, #ec4899, #f472b6)`,
           opacity: 0.04
         }}
       ></div>
@@ -78,7 +78,7 @@ export const UserCursorFollower = () => {
       <div 
         className="absolute w-40 h-40 rounded-full blur-lg"
         style={{
-          background: `radial-gradient(circle, #b208d1, #b208d1)`,
+          background: `radial-gradient(circle, #ec4899, #f472b6)`,
           opacity: 0.04
         }}
       ></div>
