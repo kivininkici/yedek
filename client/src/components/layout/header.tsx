@@ -24,7 +24,7 @@ export default function Header({ title, description }: HeaderProps) {
   };
 
   return (
-    <header className="bg-slate-900/80 backdrop-blur-xl border-b border-slate-700/50 p-6 relative">
+    <header className="bg-slate-900/80 backdrop-blur-xl border-b border-slate-700/50 p-3 relative">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-cyan-500/5"></div>
       
