@@ -125,23 +125,8 @@ export default function LoginAttempts() {
       <div className="lg:ml-64">
         <Header title="Giriş Denemeleri" description="Admin panel giriş güvenlik logları" />
         <main className="p-2 lg:p-4">
-          {/* Page Header */}
-          <div className="flex items-center gap-3 mb-3">
-            <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-              <Shield className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-                Giriş Denemeleri
-              </h1>
-              <p className="text-slate-600 dark:text-slate-400">
-                Admin panel giriş güvenlik logları
-              </p>
-            </div>
-          </div>
-
           {/* Statistics Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
             <StatsCard
               title="Başarılı Giriş"
               value={successfulAttempts}
