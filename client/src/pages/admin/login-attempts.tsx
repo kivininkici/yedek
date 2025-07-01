@@ -125,22 +125,7 @@ export default function LoginAttempts() {
       <div className="lg:ml-64">
         <Header title="Giriş Denemeleri" description="Admin panel giriş güvenlik logları" />
         <main className="p-4 lg:p-6">
-          {/* Page Header */}
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-              <Shield className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
-                Giriş Denemeleri
-              </h1>
-              <p className="text-slate-600 dark:text-slate-400">
-                Admin panel giriş güvenlik logları
-              </p>
-            </div>
-          </div>
-
-          {/* Recent Login Attempts - Moved to top */}
+          {/* Recent Login Attempts - Moved to very top */}
           <Card className="mb-6">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -203,6 +188,21 @@ export default function LoginAttempts() {
               )}
             </CardContent>
           </Card>
+
+          {/* Page Header */}
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+              <Shield className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+                Giriş Denemeleri
+              </h1>
+              <p className="text-slate-600 dark:text-slate-400">
+                Admin panel giriş güvenlik logları
+              </p>
+            </div>
+          </div>
 
           {/* Statistics Cards - Moved below table */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
