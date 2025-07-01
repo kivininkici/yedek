@@ -17,7 +17,7 @@ import Logs from "@/pages/admin/logs";
 import Settings from "@/pages/admin/settings";
 import AdminOrders from "@/pages/admin/orders";
 import AdminOrderSearch from "@/pages/admin-order-search";
-import OrderSearch from "@/pages/order-search";
+import OrderSearch from "@/pages/order-search-new";
 import ApiManagement from "@/pages/admin/api-management";
 import AdminKeyStats from "@/pages/admin-key-stats";
 import ApiBalances from "@/pages/admin/api-balances";
