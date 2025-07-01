@@ -125,7 +125,8 @@ export default function Dashboard() {
           />
         </div>
         
-
+        {/* Admin Blue Cursor */}
+        <AdminCursorFollower />
         
         <Header 
           title="🚀 Admin Dashboard" 

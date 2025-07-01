@@ -35,7 +35,13 @@ export const LandingCursorFollower = () => {
         top: mousePosition.y - 80,
       }}
     >
-      <div className="absolute w-40 h-40 bg-gradient-to-r from-pink-500/4 to-purple-500/4 rounded-full blur-lg"></div>
+      <div 
+        className="absolute w-40 h-40 rounded-full blur-lg"
+        style={{
+          background: `radial-gradient(circle, #b208d1, #b208d1)`,
+          opacity: 0.04
+        }}
+      ></div>
     </div>
   );
 };
@@ -69,7 +75,13 @@ export const UserCursorFollower = () => {
         top: mousePosition.y - 80,
       }}
     >
-      <div className="absolute w-40 h-40 bg-gradient-to-r from-green-500/4 to-teal-500/4 rounded-full blur-lg"></div>
+      <div 
+        className="absolute w-40 h-40 rounded-full blur-lg"
+        style={{
+          background: `radial-gradient(circle, #b208d1, #b208d1)`,
+          opacity: 0.04
+        }}
+      ></div>
     </div>
   );
 };

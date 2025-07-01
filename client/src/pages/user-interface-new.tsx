@@ -35,6 +35,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/useAuth";
+import { UserCursorFollower } from "@/hooks/useMouseTracking";
 
 const keyValidationSchema = z.object({
   keyValue: z.string().min(1, "Key değeri gerekli"),
@@ -399,6 +400,9 @@ export default function UserInterface() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+      {/* User Cursor Effect */}
+      <UserCursorFollower />
+      
       {/* Modern Header */}
       <motion.div 
         initial={{ y: -20, opacity: 0 }}

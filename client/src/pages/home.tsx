@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { KeyRound, Shield, Zap, Users, Star, TrendingUp, Activity, LogOut, User, ExternalLink, Search, ShoppingCart } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
+import { UserCursorFollower } from "@/hooks/useMouseTracking";
 
 export default function Home() {
   const { user, isLoading: userLoading } = useAuth();
@@ -23,6 +24,9 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
+      {/* User Cursor Effect */}
+      <UserCursorFollower />
+      
       {/* Header */}
       <header className="border-b border-white/10 backdrop-blur-xl bg-black/20">
         <div className="container mx-auto px-4 py-6">
