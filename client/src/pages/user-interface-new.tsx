@@ -422,6 +422,12 @@ export default function UserInterface() {
               </div>
             </div>
             <div className="flex items-center space-x-3">
+              <Button
+                onClick={() => window.open('https://www.itemsatis.com/p/KiwiPazari', '_blank')}
+                className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 h-10"
+              >
+                🛒 Satın Al
+              </Button>
               {currentStep !== 'key-entry' && activeTab === 'create-order' && (
                 <Button
                   variant="outline"
