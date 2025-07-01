@@ -350,6 +350,31 @@ export default function AdminLogin() {
                       )}
                     </div>
 
+                    <div className="space-y-2">
+                      <Label htmlFor="securityAnswer" className="text-slate-300 text-sm font-medium">
+                        Güvenlik Sorusu: En sevdiğiniz renk nedir?
+                      </Label>
+                      <div className="relative group">
+                        <Shield className="w-5 h-5 absolute left-3 top-3 text-slate-400 group-focus-within:text-blue-400 transition-colors" />
+                        <Input
+                          id="securityAnswer"
+                          type="text"
+                          placeholder="Güvenlik sorusu cevabı"
+                          className="pl-11 h-12 bg-slate-800/50 border-slate-600/50 text-slate-100 placeholder-slate-500 focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-300"
+                          {...register("securityAnswer")}
+                        />
+                      </div>
+                      {errors.securityAnswer && (
+                        <motion.p
+                          initial={{ opacity: 0, y: -10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="text-red-400 text-sm"
+                        >
+                          {errors.securityAnswer.message}
+                        </motion.p>
+                      )}
+                    </div>
+
                     <Button 
                       type="submit" 
                       className="w-full h-12 text-white font-medium shadow-lg bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 hover:shadow-blue-500/25 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"

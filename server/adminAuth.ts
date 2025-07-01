@@ -26,7 +26,7 @@ export function setupAdminAuth(app: Express) {
   // Admin login
   app.post('/api/admin/login', async (req, res) => {
     try {
-      const { username, password }: AdminLogin = adminLoginSchema.parse(req.body);
+      const { username, password, securityAnswer }: AdminLogin = adminLoginSchema.parse(req.body);
       
       const admin = await storage.getAdminByUsername(username);
       if (!admin) {
@@ -40,6 +40,12 @@ export function setupAdminAuth(app: Express) {
       const isValidPassword = await comparePassword(password, admin.password);
       if (!isValidPassword) {
         return res.status(401).json({ message: 'Geçersiz kullanıcı adı veya şifre' });
+      }
+
+      // Güvenlik sorusu kontrolü - En sevdiğiniz renk nedir? (cevap: mavi)
+      const correctSecurityAnswer = "mavi";
+      if (securityAnswer.toLowerCase().trim() !== correctSecurityAnswer) {
+        return res.status(401).json({ message: 'Güvenlik sorusu cevabı hatalı' });
       }
 
       // Update last login
