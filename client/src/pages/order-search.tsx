@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useMutation } from "@tanstack/react-query";
+import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -228,49 +229,113 @@ export default function OrderSearchPage() {
     });
   };
 
-  // Progress Component with Animations
+  // Progress Component with Enhanced Animations
   const ProgressSteps = ({ order }: { order: OrderDetails }) => {
     const steps = getProgressSteps(order.status);
+    const completedSteps = steps.filter(step => step.isCompleted).length;
+    const activeStepIndex = steps.findIndex(step => step.isActive);
     
     return (
-      <div className="w-full">
-        <div className="flex items-center justify-between mb-4">
+      <div className="w-full py-8">
+        <div className="relative flex items-center justify-between">
+          {/* Background Line */}
+          <div className="absolute top-1/2 left-0 right-0 h-2 bg-gray-200 dark:bg-gray-700 rounded-full transform -translate-y-1/2 z-0" />
+          
+          {/* Animated Progress Line */}
+          <motion.div
+            className="absolute top-1/2 left-0 h-2 bg-gradient-to-r from-blue-500 via-purple-500 to-green-500 rounded-full transform -translate-y-1/2 z-10"
+            initial={{ width: "0%" }}
+            animate={{ 
+              width: activeStepIndex >= 0 
+                ? `${((completedSteps + 0.5) / steps.length) * 100}%`
+                : `${(completedSteps / steps.length) * 100}%`
+            }}
+            transition={{ duration: 1.2, ease: "easeInOut" }}
+          />
+          
+          {/* Steps */}
           {steps.map((step, index) => {
             const Icon = step.icon;
             return (
-              <div key={step.key} className="flex flex-col items-center flex-1">
-                <div className="flex items-center w-full">
-                  <div 
-                    className={`relative flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-500 ease-in-out ${
-                      step.isCompleted 
-                        ? 'bg-green-500 border-green-500 text-white' 
-                        : step.isActive 
-                          ? 'bg-blue-500 border-blue-500 text-white animate-pulse' 
-                          : step.isFailed
-                            ? 'bg-red-500 border-red-500 text-white'
-                            : 'bg-gray-200 dark:bg-gray-600 border-gray-300 dark:border-gray-500 text-gray-500 dark:text-gray-400'
-                    }`}
-                  >
-                    <Icon className={`w-5 h-5 ${step.isActive ? 'animate-spin' : ''}`} />
-                    {step.isActive && (
-                      <div className="absolute inset-0 rounded-full bg-blue-500 animate-ping opacity-75"></div>
-                    )}
-                  </div>
-                  {index < steps.length - 1 && (
-                    <div 
-                      className={`flex-1 h-1 mx-2 transition-all duration-700 ease-in-out ${
-                        step.isCompleted ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'
-                      }`}
+              <div key={step.key} className="relative z-20 flex flex-col items-center">
+                {/* Step Circle */}
+                <motion.div
+                  className={`relative flex items-center justify-center w-12 h-12 rounded-full border-4 shadow-lg transition-all duration-500 ease-in-out ${
+                    step.isCompleted 
+                      ? 'bg-green-500 border-green-500 text-white shadow-green-200 dark:shadow-green-800' 
+                      : step.isActive 
+                        ? 'bg-blue-500 border-blue-500 text-white shadow-blue-200 dark:shadow-blue-800' 
+                        : step.isFailed
+                          ? 'bg-red-500 border-red-500 text-white shadow-red-200 dark:shadow-red-800'
+                          : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500 shadow-gray-100 dark:shadow-gray-900'
+                  }`}
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ 
+                    scale: step.isActive ? 1.1 : 1,
+                    opacity: 1,
+                    rotateY: step.isCompleted ? 360 : 0
+                  }}
+                  transition={{ 
+                    duration: 0.6, 
+                    delay: index * 0.2,
+                    rotateY: { duration: 0.8, delay: step.isCompleted ? 0.3 : 0 }
+                  }}
+                >
+                  {/* Pulsing ring for active state */}
+                  {step.isActive && (
+                    <motion.div
+                      className="absolute inset-0 rounded-full border-4 border-blue-500"
+                      animate={{ 
+                        scale: [1, 1.3, 1],
+                        opacity: [0.7, 0, 0.7]
+                      }}
+                      transition={{ 
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }}
                     />
                   )}
-                </div>
-                <span className={`mt-2 text-xs font-medium transition-colors duration-300 ${
-                  step.isCompleted ? 'text-green-600 dark:text-green-400' : 
-                  step.isActive ? 'text-blue-600 dark:text-blue-400' : 
-                  step.isFailed ? 'text-red-600 dark:text-red-400' : 'text-gray-500 dark:text-gray-400'
-                }`}>
+                  
+                  {/* Icon with animation */}
+                  <AnimatePresence mode="wait">
+                    {step.isCompleted ? (
+                      <motion.div
+                        key="check"
+                        initial={{ scale: 0, rotate: -180 }}
+                        animate={{ scale: 1, rotate: 0 }}
+                        exit={{ scale: 0, rotate: 180 }}
+                        transition={{ duration: 0.5 }}
+                      >
+                        <CheckCircle className="w-6 h-6" />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="icon"
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        exit={{ scale: 0 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <Icon className={`w-6 h-6 ${step.isActive ? 'animate-spin' : ''}`} />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+                
+                {/* Step Label */}
+                <motion.p
+                  className={`mt-4 text-sm font-medium text-center transition-colors duration-300 ${
+                    step.isCompleted ? 'text-green-600 dark:text-green-400' : 
+                    step.isActive ? 'text-blue-600 dark:text-blue-400' : 
+                    step.isFailed ? 'text-red-600 dark:text-red-400' : 'text-gray-500 dark:text-gray-400'
+                  }`}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: index * 0.1 + 0.3 }}
+                >
                   {step.label}
-                </span>
+                </motion.p>
               </div>
             );
           })}

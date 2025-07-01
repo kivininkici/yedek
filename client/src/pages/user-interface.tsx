@@ -3,6 +3,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -87,6 +88,8 @@ export default function UserInterface() {
   const [validatedKey, setValidatedKey] = useState<ValidatedKey | null>(null);
   const [orderId, setOrderId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'create-order' | 'order-history'>('create-order');
+  const [orderProgress, setOrderProgress] = useState(0);
+  const [isCreatingOrder, setIsCreatingOrder] = useState(false);
 
   // Form configurations
   const keyForm = useForm<KeyValidationData>({
@@ -214,6 +217,19 @@ export default function UserInterface() {
     refetchInterval: 10000, // Poll every 10 seconds
   });
 
+  const simulateOrderProgress = (duration: number = 3000) => {
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += Math.random() * 12 + 3; // Random progress between 3-15%
+      if (progress >= 100) {
+        progress = 100;
+        clearInterval(interval);
+      }
+      setOrderProgress(progress);
+    }, duration / 15);
+    return interval;
+  };
+
   const onKeySubmit = (data: KeyValidationData) => {
     validateKeyMutation.mutate(data);
   };
@@ -258,7 +274,20 @@ export default function UserInterface() {
     };
     
     console.log("Final order data:", orderData);
+    
+    setIsCreatingOrder(true);
+    setOrderProgress(0);
+    
+    // Start progress animation
+    const progressInterval = simulateOrderProgress(2500);
+    
     createOrderMutation.mutate(orderData);
+    
+    // Clear interval on completion
+    setTimeout(() => {
+      clearInterval(progressInterval);
+      setIsCreatingOrder(false);
+    }, 3000);
   };
 
   const resetForm = () => {
@@ -445,50 +474,105 @@ export default function UserInterface() {
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <form onSubmit={orderForm.handleSubmit(onOrderSubmit)} className="space-y-4">
-                      <div>
-                        <label className="block text-sm font-medium text-slate-300 mb-2">
-                          Miktar *
-                        </label>
-                        <Input
-                          type="number"
-                          min="1"
-                          max={validatedKey.remainingQuantity}
-                          placeholder="Sipariş miktarını giriniz"
-                          className="bg-slate-700 border-slate-600 text-slate-50"
-                          {...orderForm.register("quantity", { valueAsNumber: true })}
-                        />
-                        {orderForm.formState.errors.quantity && (
-                          <p className="text-red-400 text-sm mt-1">
-                            {orderForm.formState.errors.quantity.message}
-                          </p>
-                        )}
-                      </div>
+                    <AnimatePresence mode="wait">
+                      {isCreatingOrder ? (
+                        <motion.div
+                          key="order-loading"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -20 }}
+                          className="text-center py-8 space-y-6"
+                        >
+                          {/* Animated Shopping Cart */}
+                          <motion.div
+                            className="w-16 h-16 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto"
+                            animate={{ 
+                              scale: [1, 1.1, 1],
+                              rotate: [0, 10, -10, 0]
+                            }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                          >
+                            <ShoppingCart className="w-8 h-8 text-white" />
+                          </motion.div>
+                          
+                          {/* Progress Bar */}
+                          <div className="space-y-3">
+                            <h3 className="text-lg font-semibold text-green-400">
+                              Sipariş Oluşturuluyor...
+                            </h3>
+                            
+                            <div className="w-full bg-slate-700 rounded-full h-3 overflow-hidden">
+                              <motion.div
+                                className="h-full bg-gradient-to-r from-green-500 via-blue-500 to-purple-500 rounded-full"
+                                initial={{ width: "0%" }}
+                                animate={{ width: `${orderProgress}%` }}
+                                transition={{ duration: 0.3, ease: "easeOut" }}
+                              />
+                            </div>
+                            
+                            <motion.p 
+                              className="text-slate-400 text-sm"
+                              animate={{ opacity: [0.5, 1, 0.5] }}
+                              transition={{ duration: 1.8, repeat: Infinity }}
+                            >
+                              Sipariş sisteme gönderiliyor...
+                            </motion.p>
+                          </div>
+                        </motion.div>
+                      ) : (
+                        <motion.form
+                          key="order-form"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          onSubmit={orderForm.handleSubmit(onOrderSubmit)} 
+                          className="space-y-4"
+                        >
+                          <div>
+                            <label className="block text-sm font-medium text-slate-300 mb-2">
+                              Miktar *
+                            </label>
+                            <Input
+                              type="number"
+                              min="1"
+                              max={validatedKey.remainingQuantity}
+                              placeholder="Sipariş miktarını giriniz"
+                              className="bg-slate-700 border-slate-600 text-slate-50"
+                              {...orderForm.register("quantity", { valueAsNumber: true })}
+                            />
+                            {orderForm.formState.errors.quantity && (
+                              <p className="text-red-400 text-sm mt-1">
+                                {orderForm.formState.errors.quantity.message}
+                              </p>
+                            )}
+                          </div>
 
-                      <div>
-                        <label className="block text-sm font-medium text-slate-300 mb-2">
-                          Hedef URL
-                        </label>
-                        <Input
-                          placeholder="https://instagram.com/username/post/..."
-                          className="bg-slate-700 border-slate-600 text-slate-50"
-                          {...orderForm.register("targetUrl")}
-                        />
-                        {orderForm.formState.errors.targetUrl && (
-                          <p className="text-red-400 text-sm mt-1">
-                            {orderForm.formState.errors.targetUrl.message}
-                          </p>
-                        )}
-                      </div>
+                          <div>
+                            <label className="block text-sm font-medium text-slate-300 mb-2">
+                              Hedef URL
+                            </label>
+                            <Input
+                              placeholder="https://instagram.com/username/post/..."
+                              className="bg-slate-700 border-slate-600 text-slate-50"
+                              {...orderForm.register("targetUrl")}
+                            />
+                            {orderForm.formState.errors.targetUrl && (
+                              <p className="text-red-400 text-sm mt-1">
+                                {orderForm.formState.errors.targetUrl.message}
+                              </p>
+                            )}
+                          </div>
 
-                      <Button
-                        type="submit"
-                        disabled={createOrderMutation.isPending}
-                        className="w-full bg-green-600 hover:bg-green-700 h-12"
-                      >
-                        {createOrderMutation.isPending ? "Sipariş Oluşturuluyor..." : "Sipariş Oluştur"}
-                      </Button>
-                    </form>
+                          <Button
+                            type="submit"
+                            disabled={createOrderMutation.isPending}
+                            className="w-full bg-green-600 hover:bg-green-700 h-12"
+                          >
+                            {createOrderMutation.isPending ? "Sipariş Oluşturuluyor..." : "Sipariş Oluştur"}
+                          </Button>
+                        </motion.form>
+                      )}
+                    </AnimatePresence>
                   </CardContent>
                 </Card>
               )}

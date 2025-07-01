@@ -47,6 +47,8 @@ export default function Auth() {
   const [isRegisterLoading, setIsRegisterLoading] = useState(false);
   const [isLoginSuccess, setIsLoginSuccess] = useState(false);
   const [isRegisterSuccess, setIsRegisterSuccess] = useState(false);
+  const [loginProgress, setLoginProgress] = useState(0);
+  const [registerProgress, setRegisterProgress] = useState(0);
   const [activeTab, setActiveTab] = useState("login");
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [showRegisterPassword, setShowRegisterPassword] = useState(false);
@@ -150,14 +152,45 @@ export default function Auth() {
     },
   });
 
+  const simulateProgress = (setProgress: (val: number) => void, duration: number = 2000) => {
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += Math.random() * 15 + 5; // Random progress between 5-20%
+      if (progress >= 100) {
+        progress = 100;
+        clearInterval(interval);
+      }
+      setProgress(progress);
+    }, duration / 10);
+    return interval;
+  };
+
   const onLoginSubmit = (data: LoginData) => {
     setIsLoginLoading(true);
+    setIsLoginSuccess(false);
+    setLoginProgress(0);
+    
+    // Start progress animation
+    const progressInterval = simulateProgress(setLoginProgress, 1500);
+    
     loginMutation.mutate(data);
+    
+    // Clear interval on completion
+    setTimeout(() => clearInterval(progressInterval), 2000);
   };
 
   const onRegisterSubmit = (data: RegisterData) => {
     setIsRegisterLoading(true);
+    setIsRegisterSuccess(false);
+    setRegisterProgress(0);
+    
+    // Start progress animation
+    const progressInterval = simulateProgress(setRegisterProgress, 1800);
+    
     registerMutation.mutate(data);
+    
+    // Clear interval on completion
+    setTimeout(() => clearInterval(progressInterval), 2500);
   };
 
   return (
@@ -278,6 +311,47 @@ export default function Auth() {
                           </h3>
                           <p className="text-slate-400">Yönlendiriliyor...</p>
                         </motion.div>
+                      ) : isLoginLoading ? (
+                        <motion.div
+                          key="login-loading"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -20 }}
+                          className="text-center py-8 space-y-6"
+                        >
+                          {/* Animated Logo */}
+                          <motion.div
+                            className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto"
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                          >
+                            <KeyRound className="w-8 h-8 text-white" />
+                          </motion.div>
+                          
+                          {/* Progress Bar */}
+                          <div className="space-y-3">
+                            <h3 className="text-lg font-semibold text-blue-400">
+                              Giriş Yapılıyor...
+                            </h3>
+                            
+                            <div className="w-full bg-slate-700 rounded-full h-3 overflow-hidden">
+                              <motion.div
+                                className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-green-500 rounded-full"
+                                initial={{ width: "0%" }}
+                                animate={{ width: `${loginProgress}%` }}
+                                transition={{ duration: 0.3, ease: "easeOut" }}
+                              />
+                            </div>
+                            
+                            <motion.p 
+                              className="text-slate-400 text-sm"
+                              animate={{ opacity: [0.5, 1, 0.5] }}
+                              transition={{ duration: 2, repeat: Infinity }}
+                            >
+                              Kimlik doğrulanıyor...
+                            </motion.p>
+                          </div>
+                        </motion.div>
                       ) : (
                         <motion.form
                           key="login-form"
@@ -390,7 +464,48 @@ export default function Auth() {
                         </h3>
                         <p className="text-slate-400">Giriş sekmesine yönlendiriliyorsunuz...</p>
                       </motion.div>
-                    ) : (
+                    ) : isRegisterLoading ? (
+                        <motion.div
+                          key="register-loading"
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -20 }}
+                          className="text-center py-8 space-y-6"
+                        >
+                          {/* Animated Logo */}
+                          <motion.div
+                            className="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center mx-auto"
+                            animate={{ rotate: -360 }}
+                            transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
+                          >
+                            <UserPlus className="w-8 h-8 text-white" />
+                          </motion.div>
+                          
+                          {/* Progress Bar */}
+                          <div className="space-y-3">
+                            <h3 className="text-lg font-semibold text-purple-400">
+                              Hesap Oluşturuluyor...
+                            </h3>
+                            
+                            <div className="w-full bg-slate-700 rounded-full h-3 overflow-hidden">
+                              <motion.div
+                                className="h-full bg-gradient-to-r from-purple-500 via-blue-500 to-green-500 rounded-full"
+                                initial={{ width: "0%" }}
+                                animate={{ width: `${registerProgress}%` }}
+                                transition={{ duration: 0.3, ease: "easeOut" }}
+                              />
+                            </div>
+                            
+                            <motion.p 
+                              className="text-slate-400 text-sm"
+                              animate={{ opacity: [0.5, 1, 0.5] }}
+                              transition={{ duration: 2.2, repeat: Infinity }}
+                            >
+                              Bilgiler doğrulanıyor...
+                            </motion.p>
+                          </div>
+                        </motion.div>
+                      ) : (
                       <motion.form
                         key="register-form"
                         initial={{ opacity: 0, y: 20 }}

@@ -263,6 +263,14 @@ Changelog:
 - Kırmızı tema ile tutarlı tasarım - hover efektleri ve gölge animasyonları
 - Alışveriş sepeti ikonu ile görsel ipucu eklendi
 - Yeni sekmede açılarak kullanıcı deneyimini kesintisiz tutuyor
+- July 1, 2025: Advanced Progress Bar Animasyonları eklendi
+- Sipariş sorgulama sayfasına modern step-by-step progress bar eklendi
+- Framer Motion ile smooth animasyonlar ve gradient progress çubukları
+- Auth sayfalarına loading progress bar'ları eklendi (giriş ve kayıt)
+- User interface sipariş oluşturma progress animasyonu eklendi
+- Tüm progress bar'lar görüntülerdeki örneklere uygun smooth geçişler içeriyor
+- 360° dönen ikonlar, pulse animasyonlar ve gradient renkli progress çubukları
+- Loading state'lerde kullanıcı deneyimi optimize edildi
 
 ## User Preferences
 
