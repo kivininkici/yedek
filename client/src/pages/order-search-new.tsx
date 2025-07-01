@@ -175,15 +175,15 @@ export default function OrderSearchPage() {
           transition={{ duration: 0.4 }}
           className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800"
         >
-          <div className="max-w-4xl mx-auto px-6 py-4">
-            <div className="flex items-center justify-between">
+          <div className="max-w-4xl mx-auto px-4 md:px-6 py-4">
+            <div className="flex items-center justify-between flex-wrap gap-4">
               <div className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-gray-900 dark:bg-gray-100 rounded-lg flex items-center justify-center">
                   <Package className="w-4 h-4 text-white dark:text-gray-900" />
                 </div>
                 <span className="text-lg font-semibold text-gray-900 dark:text-gray-100">Sipariş Takip</span>
               </div>
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2 md:space-x-3">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -200,7 +200,7 @@ export default function OrderSearchPage() {
         </motion.div>
 
         {/* Main Content */}
-        <div className="max-w-4xl mx-auto px-6 py-12">
+        <div className="max-w-4xl mx-auto px-4 md:px-6 py-8 md:py-12">
           {/* Search Section */}
           <motion.div
             initial={{ y: 20, opacity: 0 }}

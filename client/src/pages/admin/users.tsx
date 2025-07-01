@@ -235,15 +235,15 @@ export default function UsersPage() {
   return (
     <div className="flex h-screen bg-gray-100">
       <Sidebar />
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
         <Header 
           title="Kullanıcı Yönetimi" 
           description="Sistem kullanıcılarını ve adminleri yönetin"
         />
         
-        <main className="flex-1 overflow-x-hidden overflow-y-auto p-6 bg-[#020617]">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-6 bg-[#020617]">
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6 mb-6">
             <StatsCard
               title="Toplam Kullanıcı"
               value={userStats.total}

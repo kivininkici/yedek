@@ -27,8 +27,8 @@ export default function Landing() {
       <div className="relative z-10">
         {/* Header */}
         <header className="border-b border-white/10 backdrop-blur-xl bg-black/20">
-          <div className="container mx-auto px-4 py-6">
-            <div className="flex items-center justify-between">
+          <div className="container mx-auto px-4 py-4 md:py-6">
+            <div className="flex items-center justify-between flex-wrap gap-4">
               <div className="flex items-center space-x-3">
                 <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center shadow-lg">
                   <KeyRound className="w-7 h-7 text-white" />
@@ -40,13 +40,14 @@ export default function Landing() {
                   <p className="text-sm text-gray-400">Premium Key Yönetimi</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2 md:space-x-4">
                 <Button 
                   onClick={() => window.open('https://www.itemsatis.com/p/KiwiPazari', '_blank')}
-                  className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 flex items-center space-x-2"
+                  className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold px-4 md:px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 flex items-center space-x-2 text-sm md:text-base"
                 >
                   <ShoppingCart className="w-4 h-4" />
-                  <span>Satın Al</span>
+                  <span className="hidden sm:inline">Satın Al</span>
+                  <span className="sm:hidden">Al</span>
                 </Button>
                 <Button 
                   variant="outline" 

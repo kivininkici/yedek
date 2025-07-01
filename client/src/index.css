@@ -33,6 +33,74 @@
     grid-template-columns: 1fr !important;
     gap: 1rem !important;
   }
+  
+  /* Mobile table optimizations */
+  .table-mobile {
+    font-size: 0.75rem;
+  }
+  
+  .table-mobile th,
+  .table-mobile td {
+    padding: 0.5rem !important;
+  }
+  
+  /* Mobile card optimizations */
+  .card-mobile {
+    margin: 0.5rem !important;
+    padding: 1rem !important;
+  }
+  
+  /* Mobile sidebar adjustments */
+  .sidebar-mobile {
+    width: 85vw !important;
+    max-width: 320px !important;
+  }
+  
+  /* Hide non-essential columns on mobile */
+  .mobile-hidden {
+    display: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Extra small screens */
+  .text-responsive {
+    font-size: 0.875rem !important;
+  }
+  
+  .button-mobile {
+    padding: 0.5rem 1rem !important;
+    font-size: 0.875rem !important;
+  }
+  
+  .card-title-mobile {
+    font-size: 1.125rem !important;
+  }
+  
+  /* Form elements mobile optimization */
+  .form-mobile input,
+  .form-mobile textarea,
+  .form-mobile select {
+    font-size: 16px !important; /* Prevent zoom on iOS */
+  }
+  
+  /* Progress steps mobile */
+  .progress-mobile {
+    flex-direction: column !important;
+    space-y: 1rem !important;
+  }
+}
+
+/* Touch improvements for mobile */
+@media (hover: none) and (pointer: coarse) {
+  .touch-target {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+  
+  button, a, [role="button"] {
+    min-height: 44px;
+  }
 }
 
 /* Animation improvements */

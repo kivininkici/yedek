@@ -63,7 +63,7 @@ export default function Sidebar() {
       )}
 
       {/* Sidebar */}
-      <aside className={`w-64 bg-slate-900/95 backdrop-blur-xl border-r border-slate-700/50 flex flex-col relative z-40 fixed md:relative inset-y-0 left-0 transform transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+      <aside className={`w-80 max-w-[85vw] bg-slate-900/95 backdrop-blur-xl border-r border-slate-700/50 flex flex-col relative z-40 fixed md:relative inset-y-0 left-0 transform transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 to-cyan-500/5"></div>
       

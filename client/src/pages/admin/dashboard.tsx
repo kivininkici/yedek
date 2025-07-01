@@ -96,7 +96,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-slate-950 via-blue-950/20 to-purple-950/20">
       <Sidebar />
-      <main className="flex-1 overflow-hidden relative md:ml-0 ml-0">
+      <main className="flex-1 overflow-hidden relative md:ml-0 ml-0 min-w-0">
         {/* Enhanced Background Effects */}
         <div className="absolute inset-0 overflow-hidden">
           <motion.div 
@@ -196,7 +196,7 @@ export default function Dashboard() {
 
             {/* Enhanced Statistics Cards */}
             <motion.div 
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+              className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.6 }}
@@ -302,7 +302,7 @@ export default function Dashboard() {
 
             {/* Enhanced Recent Activity */}
             <motion.div 
-              className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+              className="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 1 }}
@@ -340,9 +340,9 @@ export default function Dashboard() {
                       <Table>
                         <TableHeader className="bg-slate-900/50">
                           <TableRow className="border-slate-700/50 hover:bg-slate-800/30">
-                            <TableHead className="text-slate-300 font-semibold">Key</TableHead>
-                            <TableHead className="text-slate-300 font-semibold">Durum</TableHead>
-                            <TableHead className="text-slate-300 font-semibold">Tarih</TableHead>
+                            <TableHead className="text-slate-300 font-semibold text-xs md:text-sm">Key</TableHead>
+                            <TableHead className="text-slate-300 font-semibold text-xs md:text-sm">Durum</TableHead>
+                            <TableHead className="text-slate-300 font-semibold text-xs md:text-sm hidden sm:table-cell">Tarih</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -371,22 +371,22 @@ export default function Dashboard() {
                                 className="border-slate-700/50 hover:bg-slate-800/30 transition-all duration-200"
                               >
                                 <TableCell>
-                                  <code className="px-3 py-1.5 bg-slate-900/70 text-blue-400 text-sm rounded-lg font-mono border border-blue-500/20">
-                                    {key.value.substring(0, 8)}...
+                                  <code className="px-2 py-1 bg-slate-900/70 text-blue-400 text-xs md:text-sm rounded-lg font-mono border border-blue-500/20">
+                                    {key.value.substring(0, 6)}...
                                   </code>
                                 </TableCell>
                                 <TableCell>
                                   <Badge 
                                     variant={key.isUsed ? "default" : "secondary"}
-                                    className={key.isUsed 
+                                    className={`text-xs ${key.isUsed 
                                       ? "bg-red-500/20 text-red-400 border-red-500/30" 
                                       : "bg-green-500/20 text-green-400 border-green-500/30"
-                                    }
+                                    }`}
                                   >
-                                    {key.isUsed ? "Kullanılmış" : "Aktif"}
+                                    {key.isUsed ? "Kullanıldı" : "Aktif"}
                                   </Badge>
                                 </TableCell>
-                                <TableCell className="text-slate-400">
+                                <TableCell className="text-slate-400 text-xs md:text-sm hidden sm:table-cell">
                                   {key.createdAt ? new Date(key.createdAt).toLocaleDateString('tr-TR') : 'N/A'}
                                 </TableCell>
                               </motion.tr>

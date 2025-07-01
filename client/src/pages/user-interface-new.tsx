@@ -410,28 +410,29 @@ export default function UserInterface() {
         transition={{ duration: 0.5 }}
         className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50 backdrop-blur-xl bg-white/95 dark:bg-gray-900/95"
       >
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+        <div className="container mx-auto px-4 md:px-6 py-4">
+          <div className="flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-center space-x-3 md:space-x-4">
               <motion.div 
-                className="w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg"
+                className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg"
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.2 }}
               >
-                <Key className="w-6 h-6 text-white" />
+                <Key className="w-5 h-5 md:w-6 md:h-6 text-white" />
               </motion.div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">KeyPanel</h1>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Sosyal Medya Servis Platformu</p>
+                <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100">KeyPanel</h1>
+                <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400 hidden sm:block">Sosyal Medya Servis Platformu</p>
               </div>
             </div>
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2 md:space-x-3">
               <Button
                 onClick={() => window.open('https://www.itemsatis.com/p/KiwiPazari', '_blank')}
-                className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 h-10 flex items-center space-x-2"
+                className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold px-3 md:px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 h-9 md:h-10 flex items-center space-x-2 text-sm md:text-base"
               >
                 <ShoppingCart className="w-4 h-4" />
-                <span>Satın Al</span>
+                <span className="hidden sm:inline">Satın Al</span>
+                <span className="sm:hidden">Al</span>
               </Button>
               {currentStep !== 'key-entry' && activeTab === 'create-order' && (
                 <Button
@@ -456,7 +457,7 @@ export default function UserInterface() {
         </div>
       </motion.div>
 
-      <div className="container mx-auto px-6 py-8">
+      <div className="container mx-auto px-4 md:px-6 py-6 md:py-8">
         <div className="max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -489,14 +490,14 @@ export default function UserInterface() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
                 >
-                  <div className="flex items-center justify-center space-x-8">
+                  <div className="flex items-center justify-center space-x-4 md:space-x-8">
                     <motion.div 
-                      className={`flex items-center space-x-3 ${currentStep === 'key-entry' ? 'text-blue-600' : 'text-green-600'}`}
+                      className={`flex items-center space-x-2 md:space-x-3 ${currentStep === 'key-entry' ? 'text-blue-600' : 'text-green-600'}`}
                       animate={{ scale: currentStep === 'key-entry' ? 1.05 : 1 }}
                       transition={{ duration: 0.3 }}
                     >
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-bold shadow-lg ${currentStep === 'key-entry' ? 'bg-blue-600' : 'bg-green-600'}`}>
-                        {currentStep === 'key-entry' ? <Key className="w-6 h-6" /> : <CheckCircle className="w-6 h-6" />}
+                      <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center text-white font-bold shadow-lg ${currentStep === 'key-entry' ? 'bg-blue-600' : 'bg-green-600'}`}>
+                        {currentStep === 'key-entry' ? <Key className="w-5 h-5 md:w-6 md:h-6" /> : <CheckCircle className="w-5 h-5 md:w-6 md:h-6" />}
                       </div>
                       <span className="font-semibold">Key Girişi</span>
                     </motion.div>
