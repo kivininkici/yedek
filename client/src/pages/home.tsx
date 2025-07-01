@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { KeyRound, Shield, Zap, Users, Star, TrendingUp, Activity, LogOut, User, ExternalLink, Search } from "lucide-react";
+import { KeyRound, Shield, Zap, Users, Star, TrendingUp, Activity, LogOut, User, ExternalLink, Search, ShoppingCart } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 
@@ -41,9 +41,10 @@ export default function Home() {
             <div className="flex items-center space-x-4">
               <Button 
                 onClick={() => window.open('https://www.itemsatis.com/p/KiwiPazari', '_blank')}
-                className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5"
+                className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 flex items-center space-x-2"
               >
-                🛒 Satın Al
+                <ShoppingCart className="w-4 h-4" />
+                <span>Satın Al</span>
               </Button>
               <div className="flex items-center space-x-3 px-4 py-2 bg-white/10 rounded-full backdrop-blur-sm">
                 <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
