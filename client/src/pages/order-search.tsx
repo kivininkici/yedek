@@ -19,7 +19,10 @@ import {
   CheckCircle2,
   Tag,
   Calendar,
-  Link
+  Link,
+  Sparkles,
+  Zap,
+  ArrowLeft
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -155,40 +158,50 @@ export default function OrderSearchPage() {
     switch (status) {
       case 'completed':
         return (
-          <Badge className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 text-sm font-medium">
-            Tamamlandı
+          <Badge className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 text-sm font-medium shadow-lg">
+            ✅ Tamamlandı
           </Badge>
         );
       case 'failed':
+        return (
+          <Badge className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 text-sm font-medium shadow-lg">
+            ❌ Başarısız
+          </Badge>
+        );
       case 'cancelled':
         return (
-          <Badge className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 text-sm font-medium">
-            İptal
+          <Badge className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 text-sm font-medium shadow-lg">
+            🚫 İptal Edildi
           </Badge>
         );
       case 'processing':
+        return (
+          <Badge className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 text-sm font-medium shadow-lg animate-pulse">
+            ⚡ İşleniyor
+          </Badge>
+        );
       case 'in_progress':
         return (
-          <Badge className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 text-sm font-medium">
-            İşleniyor
+          <Badge className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 text-sm font-medium shadow-lg animate-pulse">
+            🔄 Devam Ediyor
           </Badge>
         );
       case 'pending':
         return (
-          <Badge className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 text-sm font-medium">
-            Sipariş Alındı
+          <Badge className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 text-sm font-medium shadow-lg">
+            🕐 Sipariş Alındı
           </Badge>
         );
       case 'partial':
         return (
-          <Badge className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 text-sm font-medium">
-            Kısmi
+          <Badge className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 text-sm font-medium shadow-lg">
+            ⚡ Kısmi
           </Badge>
         );
       default:
         return (
-          <Badge className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 text-sm font-medium">
-            Bilinmiyor
+          <Badge className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 text-sm font-medium shadow-lg">
+            ❓ Bilinmiyor
           </Badge>
         );
     }
@@ -346,189 +359,399 @@ export default function OrderSearchPage() {
 
   return (
     <ThemeProvider>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-8 transition-colors duration-300">
-        <div className="max-w-4xl mx-auto px-4">
-          {/* Header with Theme Toggle */}
-          <div className="flex justify-between items-center mb-8">
-            <div className="text-center flex-1">
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4 transition-colors duration-300">
-                Sipariş Sorgulama
-              </h1>
-              <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">
-                Sipariş durumunuzu takip edin
-              </p>
-            </div>
-            <div className="ml-4">
-              <ThemeToggle />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-100 dark:from-slate-900 dark:via-blue-900 dark:to-purple-900 transition-all duration-500 relative overflow-hidden">
+        {/* Animated Background Elements */}
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          <motion.div 
+            className="absolute -top-40 -right-40 w-80 h-80 bg-purple-300 dark:bg-purple-600 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-xl opacity-30"
+            animate={{ 
+              scale: [1, 1.2, 1],
+              rotate: [0, 180, 360],
+              x: [0, 50, 0],
+              y: [0, -50, 0]
+            }}
+            transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div 
+            className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-300 dark:bg-blue-600 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-xl opacity-30"
+            animate={{ 
+              scale: [1.2, 1, 1.2],
+              rotate: [360, 180, 0],
+              x: [0, -50, 0],
+              y: [0, 50, 0]
+            }}
+            transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div 
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-pink-300 dark:bg-pink-600 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-xl opacity-30"
+            animate={{ 
+              scale: [1, 1.3, 1],
+              rotate: [0, -180, -360]
+            }}
+            transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </div>
+
+        {/* Header */}
+        <motion.div 
+          initial={{ y: -50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.6 }}
+          className="relative z-10 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl shadow-xl border-b border-gray-200/50 dark:border-gray-700/50"
+        >
+          <div className="max-w-7xl mx-auto px-6 py-8">
+            <div className="flex items-center justify-between">
+              <motion.div 
+                className="flex items-center space-x-6"
+                initial={{ x: -30, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+              >
+                <div className="relative">
+                  <motion.div 
+                    className="w-16 h-16 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-3xl flex items-center justify-center shadow-2xl"
+                    whileHover={{ scale: 1.1, rotate: 5 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Search className="w-8 h-8 text-white" />
+                  </motion.div>
+                  <motion.div 
+                    className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full flex items-center justify-center"
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    <Sparkles className="w-3 h-3 text-white" />
+                  </motion.div>
+                </div>
+                <div>
+                  <motion.h1 
+                    className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.8, delay: 0.2 }}
+                  >
+                    🔍 Sipariş Sorgulama
+                  </motion.h1>
+                  <motion.p 
+                    className="text-slate-600 dark:text-slate-300 font-medium text-lg mt-1"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.6, delay: 0.4 }}
+                  >
+                    Siparişinizin durumunu gerçek zamanlı takip edin
+                  </motion.p>
+                </div>
+              </motion.div>
+              <motion.div
+                className="flex items-center space-x-4"
+                initial={{ x: 30, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              >
+                <Button
+                  variant="outline"
+                  onClick={() => window.location.href = '/'}
+                  className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border-gray-300 dark:border-gray-600 hover:bg-white/80 dark:hover:bg-gray-800/80"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Ana Sayfa
+                </Button>
+                <ThemeToggle />
+              </motion.div>
             </div>
           </div>
+        </motion.div>
 
-          {/* Main Content */}
-          <div className="space-y-6">
-            {/* Search Form */}
-            <Card className="border-0 shadow-lg bg-white dark:bg-gray-800 transition-colors duration-300">
-              <CardContent className="p-8">
-                <div className="mb-6">
-                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-300">Sipariş ID</h2>
+        {/* Main Content */}
+        <div className="relative z-10 max-w-6xl mx-auto px-6 py-12 space-y-12">
+          {/* Search Form */}
+          <motion.div
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          >
+            <Card className="border-0 shadow-2xl bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl hover:shadow-3xl transition-all duration-500 rounded-3xl overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 h-2"></div>
+              <CardContent className="p-12">
+                <div className="text-center mb-10">
+                  <motion.h2 
+                    className="text-3xl font-bold text-gray-900 dark:text-white mb-4"
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.4 }}
+                  >
+                    <Zap className="inline w-8 h-8 mr-3 text-yellow-500" />
+                    Hızlı Sipariş Arama
+                  </motion.h2>
+                  <motion.p 
+                    className="text-slate-600 dark:text-slate-300 text-lg max-w-2xl mx-auto"
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.5 }}
+                  >
+                    Sipariş ID'nizi girerek siparişinizin güncel durumunu öğrenin ve sürecini takip edin
+                  </motion.p>
                 </div>
                 
-                <form onSubmit={searchForm.handleSubmit(onSearch)} className="space-y-4">
-                  <div>
+                <motion.form 
+                  onSubmit={searchForm.handleSubmit(onSearch)} 
+                  className="space-y-8"
+                  initial={{ y: 30, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.6 }}
+                >
+                  <div className="relative max-w-2xl mx-auto">
+                    <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
+                      <Search className="h-7 w-7 text-slate-400" />
+                    </div>
                     <Input
-                      placeholder="87963433"
-                      className="h-14 text-lg border-2 border-gray-200 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-400 bg-white dark:bg-gray-700 text-gray-900 dark:text-white transition-colors duration-300"
+                      placeholder="Sipariş ID'nizi buraya girin (örn: ORD-123456)"
+                      className="h-20 pl-20 pr-8 text-xl font-medium border-3 border-slate-200 dark:border-slate-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-slate-400 focus:ring-6 focus:ring-blue-500/20 focus:border-blue-500 rounded-2xl transition-all duration-300 hover:border-slate-300 dark:hover:border-slate-500 shadow-inner"
                       {...searchForm.register("orderId")}
                     />
                     {searchForm.formState.errors.orderId && (
-                      <p className="text-red-500 text-sm mt-2">
+                      <motion.p 
+                        className="text-red-500 text-sm mt-3 ml-4"
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                      >
                         {searchForm.formState.errors.orderId.message}
-                      </p>
+                      </motion.p>
                     )}
                   </div>
                   
-                  <Button 
-                    type="submit" 
-                    disabled={isSearching}
-                    className="w-full h-14 text-lg bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-medium transition-colors duration-300"
-                  >
-                    <Search className="w-5 h-5 mr-2" />
-                    {isSearching ? "Sorgulanıyor..." : "Sorgula"}
-                  </Button>
-                </form>
-
-                {/* Success Message */}
-                {searchedOrder && (
-                  <div className="mt-6 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg transition-colors duration-300">
-                    <div className="flex items-center text-green-800 dark:text-green-200">
-                      <CheckCircle className="w-5 h-5 mr-2" />
-                      <span className="font-medium">Sipariş bilgileri güncellendi</span>
-                    </div>
-                  </div>
-                )}
+                  <motion.div className="flex justify-center">
+                    <Button 
+                      type="submit" 
+                      disabled={isSearching}
+                      className="h-20 px-16 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 text-white font-bold text-xl shadow-2xl hover:shadow-3xl rounded-2xl transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 transform-gpu"
+                    >
+                      {isSearching ? (
+                        <>
+                          <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                          >
+                            <RefreshCw className="w-7 h-7 mr-4" />
+                          </motion.div>
+                          Aranıyor...
+                        </>
+                      ) : (
+                        <>
+                          <Search className="w-7 h-7 mr-4" />
+                          🚀 Sorgula
+                        </>
+                      )}
+                    </Button>
+                  </motion.div>
+                </motion.form>
               </CardContent>
             </Card>
+          </motion.div>
 
-            {/* Order Details */}
+          {/* Order Details */}
+          <AnimatePresence>
             {searchedOrder && (
-              <Card className="border-0 shadow-lg bg-white dark:bg-gray-800 transition-colors duration-300">
-                <CardContent className="p-8">
-                  <div className="space-y-6">
-                    {/* Order Header */}
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <h3 className="text-xl font-semibold text-gray-900 dark:text-white transition-colors duration-300">Sipariş ID:</h3>
-                        <p className="text-2xl font-mono text-blue-600 dark:text-blue-400 mt-1 transition-colors duration-300">
-                          {searchedOrder.orderId}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-2 transition-colors duration-300">Durum:</p>
-                        {getStatusBadge(searchedOrder.status)}
-                      </div>
-                    </div>
-
-                    {/* Progress Steps */}
-                    <div className="my-8">
-                      <ProgressSteps order={searchedOrder} />
-                    </div>
-
-                    {/* Status Text */}
-                    <div className="text-center space-y-2">
-                      <p className="text-lg text-gray-700 dark:text-gray-300 transition-colors duration-300">
-                        Oluşturulma: <span className="font-semibold">
-                          {searchedOrder.createdAt 
-                            ? new Date(searchedOrder.createdAt).toLocaleString('tr-TR', {
-                                year: 'numeric',
-                                month: '2-digit',
-                                day: '2-digit',
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })
-                            : 'Bilinmiyor'
-                          }
-                        </span>
-                      </p>
-                      {lastUpdated && (
-                        <p className="text-sm text-gray-500 dark:text-gray-400 transition-colors duration-300">
-                          Son güncelleme: {lastUpdated.toLocaleString('tr-TR', {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            second: '2-digit'
-                          })}
-                        </p>
-                      )}
-                      {isAutoRefreshing && (
-                        <div className="flex items-center justify-center text-blue-600 dark:text-blue-400 transition-colors duration-300">
-                          <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                          <span className="text-sm">Canlı takip aktif</span>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Order Details Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-                      <div className="space-y-4">
-                        <div className="flex items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg transition-colors duration-300">
-                          <Tag className="w-5 h-5 text-gray-600 dark:text-gray-300 mr-3" />
-                          <div>
-                            <p className="text-sm text-gray-600 dark:text-gray-300">Kategori:</p>
-                            <p className="font-semibold text-gray-900 dark:text-white">{searchedOrder.key.category}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg transition-colors duration-300">
-                          <Calendar className="w-5 h-5 text-gray-600 dark:text-gray-300 mr-3" />
-                          <div>
-                            <p className="text-sm text-gray-600 dark:text-gray-300">Miktar:</p>
-                            <p className="font-semibold text-gray-900 dark:text-white">{searchedOrder.quantity}</p>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="space-y-4">
-                        <div className="flex items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg transition-colors duration-300">
-                          <Link className="w-5 h-5 text-gray-600 dark:text-gray-300 mr-3" />
-                          <div>
-                            <p className="text-sm text-gray-600 dark:text-gray-300">Hedef URL:</p>
-                            <p className="font-semibold text-gray-900 dark:text-white text-sm break-all">{searchedOrder.targetUrl}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg transition-colors duration-300">
-                          <CheckCircle2 className="w-5 h-5 text-gray-600 dark:text-gray-300 mr-3" />
-                          <div>
-                            <p className="text-sm text-gray-600 dark:text-gray-300">Anahtar:</p>
-                            <p className="font-semibold text-gray-900 dark:text-white font-mono text-sm">{searchedOrder.key.value}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Manual Refresh Button */}
-                    <div className="text-center mt-6">
-                      <Button 
-                        onClick={() => searchOrderMutation.mutate({ orderId: searchedOrder.orderId })}
-                        disabled={searchOrderMutation.isPending}
-                        variant="outline"
-                        className="border-blue-200 dark:border-blue-600 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-300"
+              <motion.div
+                initial={{ opacity: 0, y: 50, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -50, scale: 0.95 }}
+                transition={{ duration: 0.6 }}
+              >
+                <Card className="border-0 shadow-2xl bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl hover:shadow-3xl transition-all duration-500 rounded-3xl overflow-hidden">
+                  <div className="bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-500 h-2"></div>
+                  <CardContent className="p-12">
+                    <div className="space-y-10">
+                      {/* Order Header */}
+                      <motion.div 
+                        className="flex flex-col lg:flex-row lg:justify-between lg:items-start space-y-6 lg:space-y-0"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5, delay: 0.2 }}
                       >
-                        <RefreshCw className={`w-4 h-4 mr-2 ${searchOrderMutation.isPending ? 'animate-spin' : ''}`} />
-                        Manuel Yenile
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+                        <div className="space-y-3">
+                          <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
+                            📦 Sipariş Detayları
+                          </h3>
+                          <p className="text-4xl font-mono font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                            #{searchedOrder.orderId}
+                          </p>
+                        </div>
+                        <div className="text-center lg:text-right space-y-3">
+                          <p className="text-sm text-gray-600 dark:text-gray-300 font-medium">Durum:</p>
+                          <motion.div
+                            whileHover={{ scale: 1.05 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            {getStatusBadge(searchedOrder.status)}
+                          </motion.div>
+                        </div>
+                      </motion.div>
 
-            {/* Order Not Found */}
-            {orderNotFound && (
-              <Card className="border-0 shadow-lg bg-white dark:bg-gray-800 transition-colors duration-300">
-                <CardContent className="p-8 text-center">
-                  <XCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-300">Sipariş Bulunamadı</h3>
-                  <p className="text-gray-600 dark:text-gray-300 transition-colors duration-300">Girdiğiniz sipariş ID'si bulunamadı. Lütfen kontrol edip tekrar deneyin.</p>
-                </CardContent>
-              </Card>
+                      {/* Progress Steps */}
+                      <motion.div 
+                        className="my-12"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.4 }}
+                      >
+                        <ProgressSteps order={searchedOrder} />
+                      </motion.div>
+
+                      {/* Auto-refresh indicator */}
+                      {isAutoRefreshing && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="flex items-center justify-center space-x-3 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4"
+                        >
+                          <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                          >
+                            <RefreshCw className="w-5 h-5" />
+                          </motion.div>
+                          <span className="font-medium">Otomatik güncelleme aktif</span>
+                          {lastUpdated && (
+                            <span className="text-sm text-gray-500 dark:text-gray-400">
+                              Son güncelleme: {lastUpdated.toLocaleTimeString('tr-TR')}
+                            </span>
+                          )}
+                        </motion.div>
+                      )}
+
+                      {/* Order Details Grid */}
+                      <motion.div 
+                        className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.6, delay: 0.6 }}
+                      >
+                        <div className="space-y-6">
+                          <motion.div 
+                            className="flex items-center p-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-2xl shadow-lg"
+                            whileHover={{ scale: 1.02 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <Tag className="w-6 h-6 text-blue-600 dark:text-blue-400 mr-4" />
+                            <div>
+                              <p className="text-sm text-gray-600 dark:text-gray-300 font-medium">Kategori:</p>
+                              <p className="font-bold text-gray-900 dark:text-white text-lg">{searchedOrder.key.category}</p>
+                            </div>
+                          </motion.div>
+                          <motion.div 
+                            className="flex items-center p-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl shadow-lg"
+                            whileHover={{ scale: 1.02 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <Calendar className="w-6 h-6 text-green-600 dark:text-green-400 mr-4" />
+                            <div>
+                              <p className="text-sm text-gray-600 dark:text-gray-300 font-medium">Miktar:</p>
+                              <p className="font-bold text-gray-900 dark:text-white text-lg">{searchedOrder.quantity}</p>
+                            </div>
+                          </motion.div>
+                        </div>
+                        <div className="space-y-6">
+                          <motion.div 
+                            className="flex items-center p-6 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl shadow-lg"
+                            whileHover={{ scale: 1.02 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <Link className="w-6 h-6 text-purple-600 dark:text-purple-400 mr-4" />
+                            <div className="flex-1">
+                              <p className="text-sm text-gray-600 dark:text-gray-300 font-medium">Hedef URL:</p>
+                              <p className="font-bold text-gray-900 dark:text-white text-sm break-all">{searchedOrder.targetUrl}</p>
+                            </div>
+                          </motion.div>
+                          <motion.div 
+                            className="flex items-center p-6 bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 rounded-2xl shadow-lg"
+                            whileHover={{ scale: 1.02 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <CheckCircle2 className="w-6 h-6 text-orange-600 dark:text-orange-400 mr-4" />
+                            <div>
+                              <p className="text-sm text-gray-600 dark:text-gray-300 font-medium">Anahtar:</p>
+                              <p className="font-bold text-gray-900 dark:text-white font-mono text-sm">{searchedOrder.key.value}</p>
+                            </div>
+                          </motion.div>
+                        </div>
+                      </motion.div>
+
+                      {/* Timestamp */}
+                      <motion.div 
+                        className="text-center pt-6 border-t border-gray-200 dark:border-gray-700"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5, delay: 0.8 }}
+                      >
+                        <p className="text-lg text-gray-700 dark:text-gray-300">
+                          📅 Oluşturulma: <span className="font-bold text-blue-600 dark:text-blue-400">
+                            {searchedOrder.createdAt 
+                              ? new Date(searchedOrder.createdAt).toLocaleString('tr-TR', {
+                                  year: 'numeric',
+                                  month: 'long',
+                                  day: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })
+                              : 'Bilinmiyor'
+                            }
+                          </span>
+                        </p>
+                      </motion.div>
+
+                      {/* Manual Refresh Button */}
+                      <motion.div 
+                        className="text-center"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.5, delay: 1 }}
+                      >
+                        <Button 
+                          onClick={() => searchOrderMutation.mutate({ orderId: searchedOrder.orderId })}
+                          disabled={searchOrderMutation.isPending}
+                          variant="outline"
+                          className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border-blue-200 dark:border-blue-600 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-300 rounded-xl px-8 py-3"
+                        >
+                          <RefreshCw className={`w-5 h-5 mr-3 ${searchOrderMutation.isPending ? 'animate-spin' : ''}`} />
+                          Manuel Yenile
+                        </Button>
+                      </motion.div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
             )}
-          </div>
+          </AnimatePresence>
+
+          {/* Order Not Found */}
+          <AnimatePresence>
+            {orderNotFound && (
+              <motion.div
+                initial={{ opacity: 0, y: 50, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -50, scale: 0.95 }}
+                transition={{ duration: 0.6 }}
+              >
+                <Card className="border-0 shadow-2xl bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-3xl overflow-hidden">
+                  <div className="bg-gradient-to-r from-red-500 to-pink-500 h-2"></div>
+                  <CardContent className="p-12 text-center">
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ duration: 0.5, type: "spring" }}
+                    >
+                      <XCircle className="w-24 h-24 text-red-500 mx-auto mb-6" />
+                    </motion.div>
+                    <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">❌ Sipariş Bulunamadı</h3>
+                    <p className="text-gray-600 dark:text-gray-300 text-lg max-w-md mx-auto">
+                      Girdiğiniz sipariş ID'si bulunamadı. Lütfen kontrol edip tekrar deneyin.
+                    </p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </ThemeProvider>
