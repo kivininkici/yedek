@@ -83,8 +83,11 @@ const FloatingOrbs = () => {
 const AnimatedBackground = () => {
   return (
     <div className="fixed inset-0 -z-10">
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100" />
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900" />
       <FloatingOrbs />
+      {/* Additional background elements */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
     </div>
   );
 };
@@ -317,10 +320,10 @@ export default function Auth() {
           <Link href="/">
             <Button
               variant="outline"
-              size="sm"
-              className="mb-4 bg-white/90 hover:bg-white border-blue-200 text-blue-700 hover:text-blue-800 shadow-sm"
+              size="lg"
+              className="mb-4 bg-white/10 hover:bg-white/20 border-white/30 text-white hover:text-white shadow-lg backdrop-blur-sm rounded-2xl px-8 py-3 font-semibold transition-all duration-300 hover:scale-105"
             >
-              <Home className="h-4 w-4 mr-2" />
+              <Home className="h-5 w-5 mr-3" />
               Ana Sayfaya Dön
             </Button>
           </Link>
@@ -332,49 +335,61 @@ export default function Auth() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="relative"
         >
-          {/* Glow effect */}
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-300/20 via-blue-400/20 to-purple-300/20 rounded-3xl blur-xl"></div>
+          {/* Enhanced Glow effect */}
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-400/30 via-purple-400/30 to-blue-400/30 rounded-3xl blur-2xl"></div>
           
-          <Card className="relative backdrop-blur-xl bg-white/90 shadow-2xl border-0 rounded-3xl overflow-hidden">
-            {/* Header section */}
-            <CardHeader className="text-center pb-6 pt-10 bg-gradient-to-br from-blue-50/50 to-purple-50/30">
+          <Card className="relative backdrop-blur-xl bg-gradient-to-br from-slate-800/95 via-blue-900/90 to-slate-800/95 border border-blue-400/30 shadow-2xl rounded-3xl overflow-hidden">
+            {/* Animated header section */}
+            <CardHeader className="text-center pb-8 pt-12 relative">
+              {/* Background pattern */}
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5"></div>
+              <div className="absolute top-0 left-0 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl"></div>
+              <div className="absolute bottom-0 right-0 w-24 h-24 bg-purple-500/10 rounded-full blur-xl"></div>
+              
               <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.3, duration: 0.5, type: "spring" }}
-                className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg"
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ delay: 0.3, duration: 0.8, type: "spring" }}
+                className="relative w-24 h-24 bg-gradient-to-r from-blue-500 via-cyan-500 to-purple-500 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-2xl"
               >
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" className="text-white">
+                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" className="text-white">
                   <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM12 17c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM15.1 8H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" fill="currentColor"/>
                 </svg>
               </motion.div>
               
-              <CardTitle className="text-4xl font-black text-transparent bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text mb-3">
-                OtoKiwi
-              </CardTitle>
-              <CardDescription className="text-lg text-gray-600 font-medium">
-                Hesabınıza giriş yapın veya yeni hesap oluşturun
-              </CardDescription>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 0.6 }}
+                className="relative z-10"
+              >
+                <CardTitle className="text-5xl font-black text-transparent bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text mb-4">
+                  OtoKiwi
+                </CardTitle>
+                <CardDescription className="text-xl text-gray-300 font-medium">
+                  Premium sosyal medya deneyimine hoş geldin! 🚀
+                </CardDescription>
+              </motion.div>
             </CardHeader>
             
-            <CardContent className="px-8 pb-8">
+            <CardContent className="px-10 pb-10 relative z-10">
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-2 mb-8 bg-gray-100/80 rounded-2xl p-1 h-14">
+                <TabsList className="grid w-full grid-cols-2 mb-10 bg-white/10 backdrop-blur-sm rounded-2xl p-2 h-16 border border-white/20">
                   <TabsTrigger 
                     value="login" 
-                    className="data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-md rounded-xl font-semibold text-base transition-all duration-300"
+                    className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl font-bold text-lg transition-all duration-300 text-gray-300 hover:text-white"
                   >
                     Giriş Yap
                   </TabsTrigger>
                   <TabsTrigger 
                     value="register" 
-                    className="data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-md rounded-xl font-semibold text-base transition-all duration-300"
+                    className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl font-bold text-lg transition-all duration-300 text-gray-300 hover:text-white"
                   >
                     Kayıt Ol
                   </TabsTrigger>
                 </TabsList>
 
-                <div className="min-h-[420px]">
+                <div className="min-h-[450px]">
                   <TabsContent value="login" className="space-y-4 mt-0">
                     <AnimatePresence mode="wait">
                       <motion.div
@@ -390,16 +405,17 @@ export default function Auth() {
                               control={loginForm.control}
                               name="username"
                               render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className="text-blue-900">Kullanıcı Adı</FormLabel>
+                                <FormItem className="space-y-3">
+                                  <FormLabel className="text-white font-semibold text-lg">Kullanıcı Adı</FormLabel>
                                   <FormControl>
                                     <Input
                                       {...field}
                                       disabled={isLoginLoading}
-                                      className="border-blue-200 focus:border-blue-400 focus:ring-blue-200"
+                                      className="h-14 text-lg bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-blue-400 focus:ring-blue-400/20 rounded-2xl backdrop-blur-sm transition-all duration-300 hover:bg-white/15"
+                                      placeholder="Kullanıcı adınızı girin"
                                     />
                                   </FormControl>
-                                  <FormMessage />
+                                  <FormMessage className="text-red-400" />
                                 </FormItem>
                               )}
                             />
@@ -408,28 +424,29 @@ export default function Auth() {
                               control={loginForm.control}
                               name="password"
                               render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className="text-blue-900">Şifre</FormLabel>
+                                <FormItem className="space-y-3">
+                                  <FormLabel className="text-white font-semibold text-lg">Şifre</FormLabel>
                                   <FormControl>
                                     <div className="relative">
                                       <Input
                                         {...field}
                                         type={showLoginPassword ? "text" : "password"}
                                         disabled={isLoginLoading}
-                                        className="border-blue-200 focus:border-blue-400 focus:ring-blue-200 pr-10"
+                                        className="h-14 text-lg bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-blue-400 focus:ring-blue-400/20 rounded-2xl backdrop-blur-sm transition-all duration-300 hover:bg-white/15 pr-14"
+                                        placeholder="Şifrenizi girin"
                                       />
                                       <Button
                                         type="button"
                                         variant="ghost"
                                         size="sm"
-                                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-blue-600 hover:text-blue-800"
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-xl hover:bg-white/10 text-gray-400 hover:text-white transition-all duration-300"
                                         onClick={() => setShowLoginPassword(!showLoginPassword)}
                                         disabled={isLoginLoading}
                                       >
                                         {showLoginPassword ? (
-                                          <EyeOff className="h-4 w-4" />
+                                          <EyeOff className="h-5 w-5" />
                                         ) : (
-                                          <Eye className="h-4 w-4" />
+                                          <Eye className="h-5 w-5" />
                                         )}
                                       </Button>
                                     </div>
@@ -440,21 +457,35 @@ export default function Auth() {
                             />
 
                             {isLoginLoading && (
-                              <div className="space-y-2">
-                                <div className="flex items-center justify-between text-sm text-blue-600">
-                                  <span>Giriş yapılıyor...</span>
-                                  <span>{loginProgress}%</span>
+                              <motion.div 
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: "auto" }}
+                                className="space-y-4 p-4 bg-blue-500/10 border border-blue-400/30 rounded-2xl backdrop-blur-sm"
+                              >
+                                <div className="flex items-center justify-between text-blue-300 font-semibold">
+                                  <span className="flex items-center space-x-2">
+                                    <div className="w-4 h-4 bg-blue-400 rounded-full animate-pulse"></div>
+                                    <span>Giriş yapılıyor...</span>
+                                  </span>
+                                  <span className="text-blue-400">{loginProgress}%</span>
                                 </div>
-                                <Progress value={loginProgress} className="w-full h-2" />
-                              </div>
+                                <Progress value={loginProgress} className="w-full h-3 bg-white/10" />
+                              </motion.div>
                             )}
 
                             <Button
                               type="submit"
-                              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                              className="w-full h-16 text-xl font-bold bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600 hover:from-blue-600 hover:via-cyan-600 hover:to-blue-700 text-white rounded-2xl shadow-2xl hover:shadow-blue-500/30 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none"
                               disabled={isLoginLoading}
                             >
-                              {isLoginLoading ? "Giriş Yapılıyor..." : "Giriş Yap"}
+                              {isLoginLoading ? (
+                                <div className="flex items-center space-x-3">
+                                  <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                  <span>Giriş Yapılıyor...</span>
+                                </div>
+                              ) : (
+                                "🚀 Giriş Yap"
+                              )}
                             </Button>
                           </form>
                         </Form>
@@ -477,16 +508,17 @@ export default function Auth() {
                               control={registerForm.control}
                               name="username"
                               render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className="text-blue-900">Kullanıcı Adı</FormLabel>
+                                <FormItem className="space-y-3">
+                                  <FormLabel className="text-white font-semibold text-lg">Kullanıcı Adı</FormLabel>
                                   <FormControl>
                                     <Input
                                       {...field}
                                       disabled={isRegisterLoading}
-                                      className="border-blue-200 focus:border-blue-400 focus:ring-blue-200"
+                                      className="h-14 text-lg bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400/20 rounded-2xl backdrop-blur-sm transition-all duration-300 hover:bg-white/15"
+                                      placeholder="Kullanıcı adınızı belirleyin"
                                     />
                                   </FormControl>
-                                  <FormMessage />
+                                  <FormMessage className="text-red-400" />
                                 </FormItem>
                               )}
                             />
@@ -495,17 +527,18 @@ export default function Auth() {
                               control={registerForm.control}
                               name="email"
                               render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className="text-blue-900">E-posta</FormLabel>
+                                <FormItem className="space-y-3">
+                                  <FormLabel className="text-white font-semibold text-lg">E-posta</FormLabel>
                                   <FormControl>
                                     <Input
                                       {...field}
                                       type="email"
                                       disabled={isRegisterLoading}
-                                      className="border-blue-200 focus:border-blue-400 focus:ring-blue-200"
+                                      className="h-14 text-lg bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400/20 rounded-2xl backdrop-blur-sm transition-all duration-300 hover:bg-white/15"
+                                      placeholder="E-posta adresinizi girin"
                                     />
                                   </FormControl>
-                                  <FormMessage />
+                                  <FormMessage className="text-red-400" />
                                 </FormItem>
                               )}
                             />
@@ -514,33 +547,34 @@ export default function Auth() {
                               control={registerForm.control}
                               name="password"
                               render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className="text-blue-900">Şifre</FormLabel>
+                                <FormItem className="space-y-3">
+                                  <FormLabel className="text-white font-semibold text-lg">Şifre</FormLabel>
                                   <FormControl>
                                     <div className="relative">
                                       <Input
                                         {...field}
                                         type={showRegisterPassword ? "text" : "password"}
                                         disabled={isRegisterLoading}
-                                        className="border-blue-200 focus:border-blue-400 focus:ring-blue-200 pr-10"
+                                        className="h-14 text-lg bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400/20 rounded-2xl backdrop-blur-sm transition-all duration-300 hover:bg-white/15 pr-14"
+                                        placeholder="Güçlü bir şifre oluşturun"
                                       />
                                       <Button
                                         type="button"
                                         variant="ghost"
                                         size="sm"
-                                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-blue-600 hover:text-blue-800"
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-xl hover:bg-white/10 text-gray-400 hover:text-white transition-all duration-300"
                                         onClick={() => setShowRegisterPassword(!showRegisterPassword)}
                                         disabled={isRegisterLoading}
                                       >
                                         {showRegisterPassword ? (
-                                          <EyeOff className="h-4 w-4" />
+                                          <EyeOff className="h-5 w-5" />
                                         ) : (
-                                          <Eye className="h-4 w-4" />
+                                          <Eye className="h-5 w-5" />
                                         )}
                                       </Button>
                                     </div>
                                   </FormControl>
-                                  <FormMessage />
+                                  <FormMessage className="text-red-400" />
                                 </FormItem>
                               )}
                             />
@@ -549,53 +583,68 @@ export default function Auth() {
                               control={registerForm.control}
                               name="confirmPassword"
                               render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className="text-blue-900">Şifre Tekrarı</FormLabel>
+                                <FormItem className="space-y-3">
+                                  <FormLabel className="text-white font-semibold text-lg">Şifre Tekrarı</FormLabel>
                                   <FormControl>
                                     <div className="relative">
                                       <Input
                                         {...field}
                                         type={showConfirmPassword ? "text" : "password"}
                                         disabled={isRegisterLoading}
-                                        className="border-blue-200 focus:border-blue-400 focus:ring-blue-200 pr-10"
+                                        className="h-14 text-lg bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400/20 rounded-2xl backdrop-blur-sm transition-all duration-300 hover:bg-white/15 pr-14"
+                                        placeholder="Şifrenizi tekrar girin"
                                       />
                                       <Button
                                         type="button"
                                         variant="ghost"
                                         size="sm"
-                                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-blue-600 hover:text-blue-800"
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 h-10 w-10 rounded-xl hover:bg-white/10 text-gray-400 hover:text-white transition-all duration-300"
                                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                                         disabled={isRegisterLoading}
                                       >
                                         {showConfirmPassword ? (
-                                          <EyeOff className="h-4 w-4" />
+                                          <EyeOff className="h-5 w-5" />
                                         ) : (
-                                          <Eye className="h-4 w-4" />
+                                          <Eye className="h-5 w-5" />
                                         )}
                                       </Button>
                                     </div>
                                   </FormControl>
-                                  <FormMessage />
+                                  <FormMessage className="text-red-400" />
                                 </FormItem>
                               )}
                             />
 
                             {isRegisterLoading && (
-                              <div className="space-y-2">
-                                <div className="flex items-center justify-between text-sm text-blue-600">
-                                  <span>Kayıt oluşturuluyor...</span>
-                                  <span>{registerProgress}%</span>
+                              <motion.div 
+                                initial={{ opacity: 0, height: 0 }}
+                                animate={{ opacity: 1, height: "auto" }}
+                                className="space-y-4 p-4 bg-purple-500/10 border border-purple-400/30 rounded-2xl backdrop-blur-sm"
+                              >
+                                <div className="flex items-center justify-between text-purple-300 font-semibold">
+                                  <span className="flex items-center space-x-2">
+                                    <div className="w-4 h-4 bg-purple-400 rounded-full animate-pulse"></div>
+                                    <span>Hesap oluşturuluyor...</span>
+                                  </span>
+                                  <span className="text-purple-400">{registerProgress}%</span>
                                 </div>
-                                <Progress value={registerProgress} className="w-full h-2" />
-                              </div>
+                                <Progress value={registerProgress} className="w-full h-3 bg-white/10" />
+                              </motion.div>
                             )}
 
                             <Button
                               type="submit"
-                              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                              className="w-full h-16 text-xl font-bold bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600 hover:from-purple-600 hover:via-pink-600 hover:to-purple-700 text-white rounded-2xl shadow-2xl hover:shadow-purple-500/30 transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-none"
                               disabled={isRegisterLoading}
                             >
-                              {isRegisterLoading ? "Kayıt Oluşturuluyor..." : "Kayıt Ol"}
+                              {isRegisterLoading ? (
+                                <div className="flex items-center space-x-3">
+                                  <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                  <span>Hesap Oluşturuluyor...</span>
+                                </div>
+                              ) : (
+                                "✨ Kayıt Ol"
+                              )}
                             </Button>
                           </form>
                         </Form>
