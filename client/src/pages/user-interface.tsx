@@ -357,33 +357,103 @@ export default function UserInterface() {
   // Login required check
   if (!isLoading && !isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 flex items-center justify-center">
-        <Card className="w-full max-w-md bg-blue-900/30 border-blue-700/50 backdrop-blur-sm">
-          <CardHeader className="text-center">
-            <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-              <AlertCircle className="w-8 h-8 text-white" />
-            </div>
-            <CardTitle className="text-2xl text-white">Giriş Gerekli</CardTitle>
-          </CardHeader>
-          <CardContent className="text-center space-y-4">
-            <p className="text-slate-300">
-              Key kullanmak için önce hesabınıza giriş yapmalısınız.
-            </p>
-            <Button 
-              onClick={() => window.location.href = '/auth'}
-              className="w-full bg-blue-600 hover:bg-blue-700"
-            >
-              Giriş Yap
-            </Button>
-            <Button 
-              variant="outline"
-              onClick={() => window.location.href = '/'}
-              className="w-full border-blue-600/50 text-blue-200 hover:bg-blue-800/50"
-            >
-              Ana Sayfaya Dön
-            </Button>
-          </CardContent>
-        </Card>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center p-4 relative">
+        {/* Animated Background */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+          <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-cyan-500/10 rounded-full blur-2xl animate-bounce"></div>
+        </div>
+        
+        <motion.div
+          initial={{ opacity: 0, y: 30, scale: 0.9 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="relative z-10"
+        >
+          {/* Enhanced Card Design */}
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-red-400/30 via-pink-400/30 to-red-400/30 rounded-3xl blur-2xl"></div>
+            
+            <Card className="relative w-full max-w-lg bg-gradient-to-br from-slate-800/95 via-red-900/90 to-slate-800/95 border border-red-400/30 shadow-2xl rounded-3xl overflow-hidden backdrop-blur-xl">
+              {/* Background pattern */}
+              <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-pink-500/5"></div>
+              <div className="absolute top-0 left-0 w-32 h-32 bg-red-500/10 rounded-full blur-2xl"></div>
+              <div className="absolute bottom-0 right-0 w-24 h-24 bg-pink-500/10 rounded-full blur-xl"></div>
+              
+              <CardHeader className="text-center pb-8 pt-12 relative z-10">
+                <motion.div
+                  initial={{ scale: 0, rotate: -180 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ delay: 0.3, duration: 0.8, type: "spring" }}
+                  className="w-24 h-24 bg-gradient-to-r from-red-500 via-pink-500 to-red-600 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-2xl"
+                >
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" className="text-white">
+                    <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1M12 7C13.11 7 14 7.9 14 9C14 10.11 13.11 11 12 11C10.9 11 10 10.11 10 9C10 7.9 10.9 7 12 7M12 14C13.5 14 15.91 14.5 16.5 16V17H7.5V16C8.09 14.5 10.5 14 12 14Z" fill="currentColor"/>
+                  </svg>
+                </motion.div>
+                
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5, duration: 0.6 }}
+                >
+                  <CardTitle className="text-4xl font-black text-transparent bg-gradient-to-r from-red-400 to-pink-400 bg-clip-text mb-4">
+                    Giriş Gerekli
+                  </CardTitle>
+                  <p className="text-xl text-gray-300 font-medium leading-relaxed">
+                    Key kullanabilmek için hesabınıza giriş yapın
+                  </p>
+                </motion.div>
+              </CardHeader>
+              
+              <CardContent className="text-center space-y-6 px-10 pb-10 relative z-10">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7, duration: 0.6 }}
+                  className="space-y-4"
+                >
+                  <Button 
+                    onClick={() => window.location.href = '/auth'}
+                    className="w-full h-16 text-xl font-bold bg-gradient-to-r from-red-500 via-pink-500 to-red-600 hover:from-red-600 hover:via-pink-600 hover:to-red-700 text-white rounded-2xl shadow-2xl hover:shadow-red-500/30 transition-all duration-300 transform hover:scale-105"
+                  >
+                    🚀 Giriş Yap / Kayıt Ol
+                  </Button>
+                  
+                  <Button 
+                    variant="outline"
+                    onClick={() => window.location.href = '/'}
+                    className="w-full h-14 text-lg font-semibold border-2 border-white/30 bg-white/10 hover:bg-white/20 text-white hover:text-white rounded-2xl backdrop-blur-sm transition-all duration-300 hover:scale-105"
+                  >
+                    🏠 Ana Sayfaya Dön
+                  </Button>
+                </motion.div>
+                
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1, duration: 0.6 }}
+                  className="mt-8 p-5 bg-gradient-to-r from-blue-500/15 to-cyan-500/15 border border-blue-400/30 rounded-2xl backdrop-blur-sm"
+                >
+                  <div className="flex items-start space-x-4">
+                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-white">
+                        <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 7.5V9C15 10.66 13.66 12 12 12S9 10.66 9 12V9L3 7.5V9C3 12.31 5.69 15 9 15V19L10.5 20.5L12 19L13.5 20.5L15 19V15C18.31 15 21 12.31 21 9Z" fill="currentColor"/>
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-blue-400 font-bold text-sm mb-1">Güvenli Key Sistemi</p>
+                      <p className="text-gray-300 text-sm leading-relaxed">
+                        Hızlı kayıt olun ve premium key deneyimi yaşayın
+                      </p>
+                    </div>
+                  </div>
+                </motion.div>
+              </CardContent>
+            </Card>
+          </div>
+        </motion.div>
       </div>
     );
   }
