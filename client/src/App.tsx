@@ -27,6 +27,7 @@ import AdminFeedback from "@/pages/admin/feedback";
 import AdminComplaints from "@/pages/admin/complaints";
 import Complaints from "@/pages/complaints";
 import PasswordManagement from "@/pages/admin/password-management";
+import MasterPasswordManagement from "@/pages/admin/MasterPasswordManagement";
 import HostingPreview from "@/pages/HostingPreview";
 import HostingDemo from "@/pages/HostingDemo";
 import { useAuth } from "@/hooks/useAuth";
@@ -134,6 +135,9 @@ function Router() {
       </Route>
       <Route path="/admin/password-management">
         {isAdminAuthenticated ? <PasswordManagement /> : <AdminLogin />}
+      </Route>
+      <Route path="/admin/master-password-management">
+        {isAdminAuthenticated ? <MasterPasswordManagement /> : <AdminLogin />}
       </Route>
       
       {/* 404 fallback */}

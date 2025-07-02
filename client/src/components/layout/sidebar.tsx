@@ -38,6 +38,7 @@ const navigation = [
   { name: "Şikayetler", href: "/admin/complaints", icon: MessageCircle },
   { name: "Giriş Denemeleri", href: "/admin/login-attempts", icon: Shield },
   { name: "Şifre Yönetimi", href: "/admin/password-management", icon: Lock },
+  { name: "Master Şifre", href: "/admin/master-password-management", icon: Shield },
   { name: "Loglar", href: "/admin/logs", icon: FileText },
   { name: "Sipariş Sorgula", href: "/admin/order-search", icon: Search },
   { name: "Key İstatistikleri", href: "/admin/key-stats", icon: BarChart3 },

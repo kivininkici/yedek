@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Eye, EyeOff, User, Shield, ArrowLeft, Sparkles, CheckCircle, Loader2 } from "lucide-react";
+import { Eye, EyeOff, User, Shield, ArrowLeft, Sparkles, CheckCircle, Loader2, Lock, Unlock } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { Link } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
@@ -22,6 +22,12 @@ export default function AdminLogin() {
   const [showUsername, setShowUsername] = useState(false);
   const [showSecurityAnswer, setShowSecurityAnswer] = useState(false);
   const [securityQuestion, setSecurityQuestion] = useState<string>("Güvenlik sorusu yükleniyor...");
+  
+  // Master password state
+  const [masterPasswordStep, setMasterPasswordStep] = useState(true);
+  const [masterPassword, setMasterPassword] = useState("");
+  const [showMasterPassword, setShowMasterPassword] = useState(false);
+  const [masterPasswordLoading, setMasterPasswordLoading] = useState(false);
 
   const {
     register,
@@ -46,6 +52,30 @@ export default function AdminLogin() {
     
     fetchSecurityQuestion();
   }, []);
+
+  // Master password verification mutation
+  const masterPasswordMutation = useMutation({
+    mutationFn: async (password: string) => {
+      const res = await apiRequest("POST", "/api/admin/verify-master-password", { password });
+      return await res.json();
+    },
+    onSuccess: () => {
+      setMasterPasswordLoading(false);
+      setMasterPasswordStep(false);
+      toast({
+        title: "Master Şifre Doğrulandı",
+        description: "Şimdi admin giriş bilgilerinizi girebilirsiniz",
+      });
+    },
+    onError: (error: Error) => {
+      setMasterPasswordLoading(false);
+      toast({
+        title: "Hatalı Master Şifre",
+        description: error.message || "Master şifre yanlış",
+        variant: "destructive",
+      });
+    },
+  });
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: AdminLogin) => {
@@ -86,6 +116,14 @@ export default function AdminLogin() {
       fetchNewQuestion();
     },
   });
+
+  const handleMasterPasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!masterPassword.trim()) return;
+    
+    setMasterPasswordLoading(true);
+    masterPasswordMutation.mutate(masterPassword);
+  };
 
   const onSubmit = (data: AdminLogin) => {
     setIsLoading(true);
@@ -299,6 +337,69 @@ export default function AdminLogin() {
                       Admin paneline yönlendiriliyor...
                     </motion.p>
                   </motion.div>
+                ) : masterPasswordStep ? (
+                  <motion.form
+                    key="master-password-form"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
+                    onSubmit={handleMasterPasswordSubmit}
+                    className="space-y-6"
+                  >
+                    <div className="text-center mb-6">
+                      <div className="mx-auto w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-red-500/25">
+                        <Lock className="w-6 h-6 text-white" />
+                      </div>
+                      <h3 className="text-xl font-semibold text-white mb-2">Satıcı seçin</h3>
+                      <p className="text-slate-400 text-sm">
+                        Lütfen ürün teslimati için satın alım yaptığınız satıcının adını yazın ve seçin.
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="masterPassword" className="text-slate-300 text-sm font-medium">
+                        Satıcı adı girin
+                      </Label>
+                      <div className="relative">
+                        <Input
+                          id="masterPassword"
+                          type={showMasterPassword ? "text" : "password"}
+                          value={masterPassword}
+                          onChange={(e) => setMasterPassword(e.target.value)}
+                          className="pl-10 pr-10 bg-slate-800/50 border-slate-600/50 text-white placeholder-slate-400 focus:border-blue-500/50 focus:ring-blue-500/25 transition-all"
+                          disabled={masterPasswordLoading}
+                          required
+                        />
+                        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+                        <button
+                          type="button"
+                          onClick={() => setShowMasterPassword(!showMasterPassword)}
+                          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-blue-400 transition-colors"
+                        >
+                          {showMasterPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
+                    </div>
+
+                    <Button
+                      type="submit"
+                      disabled={masterPasswordLoading || !masterPassword.trim()}
+                      className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-medium py-3 rounded-lg transition-all duration-300 shadow-lg shadow-red-600/25"
+                    >
+                      {masterPasswordLoading ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Doğrulanıyor...
+                        </>
+                      ) : (
+                        <>
+                          <Unlock className="w-4 h-4 mr-2" />
+                          Teslimat sayfasına git 📝
+                        </>
+                      )}
+                    </Button>
+                  </motion.form>
                 ) : (
                   <motion.form
                     key="admin-form"

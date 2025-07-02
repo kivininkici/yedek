@@ -9,6 +9,7 @@ import {
   notifications,
   adminUsers,
   loginAttempts,
+  adminMasterPassword,
   type User,
   type UpsertUser,
   type NormalUser,
@@ -166,6 +167,11 @@ export interface IStorage {
   markComplaintAsRead(id: number): Promise<void>;
   updateComplaintStatus(id: number, status: string, adminNotes?: string): Promise<void>;
   respondToComplaint(id: number, response: string): Promise<Complaint>;
+
+  // Master password operations
+  getMasterPassword(): Promise<{ id: number; password: string; isActive: boolean } | undefined>;
+  createMasterPassword(hashedPassword: string): Promise<{ id: number; password: string; isActive: boolean }>;
+  updateMasterPassword(newHashedPassword: string, currentHashedPassword?: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1031,6 +1037,56 @@ export class DatabaseStorage implements IStorage {
       .where(eq(complaints.id, id))
       .returning();
     return updated;
+  }
+
+  // Master password operations
+  async getMasterPassword(): Promise<{ id: number; password: string; isActive: boolean } | undefined> {
+    const [masterPassword] = await db
+      .select({
+        id: adminMasterPassword.id,
+        password: adminMasterPassword.password,
+        isActive: adminMasterPassword.isActive
+      })
+      .from(adminMasterPassword)
+      .where(eq(adminMasterPassword.isActive, true))
+      .limit(1);
+    return masterPassword;
+  }
+
+  async createMasterPassword(hashedPassword: string): Promise<{ id: number; password: string; isActive: boolean }> {
+    const [newMasterPassword] = await db
+      .insert(adminMasterPassword)
+      .values({
+        password: hashedPassword,
+        isActive: true
+      })
+      .returning();
+    return newMasterPassword;
+  }
+
+  async updateMasterPassword(newHashedPassword: string, currentHashedPassword?: string): Promise<void> {
+    // If current password provided, verify it first
+    if (currentHashedPassword) {
+      const current = await this.getMasterPassword();
+      if (!current) {
+        throw new Error('Master şifre bulunamadı');
+      }
+      // Here you could add additional verification if needed
+    }
+
+    // Deactivate old master passwords
+    await db
+      .update(adminMasterPassword)
+      .set({ isActive: false })
+      .where(eq(adminMasterPassword.isActive, true));
+
+    // Create new master password
+    await db
+      .insert(adminMasterPassword)
+      .values({
+        password: newHashedPassword,
+        isActive: true
+      });
   }
 }
 

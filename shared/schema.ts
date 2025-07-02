@@ -161,6 +161,15 @@ export const loginAttempts = pgTable("login_attempts", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Master password for admin panel access
+export const adminMasterPassword = pgTable("admin_master_password", {
+  id: serial("id").primaryKey(),
+  password: varchar("password", { length: 255 }).notNull(), // hashed master password
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // User feedback table
 export const userFeedback = pgTable("user_feedback", {
   id: serial("id").primaryKey(),

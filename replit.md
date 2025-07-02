@@ -398,6 +398,15 @@ Changelog:
 - Şikayet sayfasına erişim sipariş ID kontrolü ile güvenli hale getirildi
 - Admin panelinde şikayet yönetimi aktif ve e-posta bildirim sistemi çalışıyor
 - KeyPanel production seviyesinde güvenilir çalışıyor
+- July 2, 2025: Master Şifre Koruması sistemi tamamen eklendi
+- Admin giriş sayfasına önce master şifre doğrulama ekranı eklendi
+- Master şifre: m;rf_oj78cMGbO+0)Ai8e@JAAq=C2Wl)6xoQ_K42mQivX1DjvJ) olarak ayarlandı
+- Admin panelinde Master Şifre Yönetimi sayfası eklendi (/admin/master-password-management)
+- Master şifre görüntüleme, kopyalama ve değiştirme özellikleri eklendi
+- Güvenlik: Master şifre değiştirmek için mevcut şifre doğrulaması gerekli
+- API endpoint'leri: /api/admin/verify-master-password, /api/admin/master-password-info, /api/admin/update-master-password
+- Sidebar menüsüne "Master Şifre" seçeneği eklendi
+- Sistem artık çift katmanlı güvenlik ile çalışıyor: Master şifre + Admin giriş bilgileri
 
 ## User Preferences
 

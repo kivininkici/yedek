@@ -2419,16 +2419,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Global variable to store current admin password
-  let currentAdminPassword = "m;rf_oj78cMGbO+0)Ai8e@JAAq=C2Wl)6xoQ_K42mQivX1DjvJ";
+  // Global variable to store current master password
+  let currentMasterPassword = "m;rf_oj78cMGbO+0)Ai8e@JAAq=C2Wl)6xoQ_K42mQivX1DjvJ)";
 
-  // Admin password management routes
-  app.get("/api/admin/password-info", requireAdminAuth, async (req, res) => {
+  // Master password management routes
+  app.get("/api/admin/master-password-info", requireAdminAuth, async (req, res) => {
     try {
-      res.json({ currentPassword: currentAdminPassword });
+      res.json({ currentPassword: currentMasterPassword });
     } catch (error) {
-      console.error("Error fetching password info:", error);
-      res.status(500).json({ message: "Şifre bilgisi alınamadı" });
+      console.error("Error fetching master password info:", error);
+      res.status(500).json({ message: "Master şifre bilgisi alınamadı" });
+    }
+  });
+
+  app.post("/api/admin/update-master-password", requireAdminAuth, async (req, res) => {
+    try {
+      const { currentPassword, newPassword } = req.body;
+
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({ message: "Mevcut ve yeni şifre gerekli" });
+      }
+
+      // Verify current master password
+      if (currentPassword !== currentMasterPassword) {
+        return res.status(401).json({ message: "Mevcut master şifre hatalı" });
+      }
+
+      // Update master password
+      currentMasterPassword = newPassword;
+
+      res.json({ message: "Master şifre başarıyla güncellendi" });
+    } catch (error) {
+      console.error("Error updating master password:", error);
+      res.status(500).json({ message: "Master şifre güncellenemedi" });
     }
   });
 
@@ -2445,18 +2468,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Verify current password
-      if (currentPassword !== currentAdminPassword) {
+      if (currentPassword !== currentMasterPassword) {
         return res.status(400).json({ message: "Mevcut şifre hatalı" });
       }
-
-      // Hash new password
-      const hashedPassword = await hashPassword(newPassword);
-      
-      // Update admin password in database
-      await storage.updateAdminPassword('admin', hashedPassword);
       
       // Update the global password variable
-      currentAdminPassword = newPassword;
+      currentMasterPassword = newPassword;
       
       res.json({ 
         message: "Şifre başarıyla değiştirildi",

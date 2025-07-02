@@ -194,6 +194,25 @@ export function setupAdminAuth(app: Express) {
     }
   });
 
+  // Master password verification - simple approach
+  app.post('/api/admin/verify-master-password', async (req, res) => {
+    try {
+      const { password } = req.body;
+      
+      // Get current master password from global variable
+      const { currentMasterPassword } = require('./routes');
+      
+      if (password !== currentMasterPassword) {
+        return res.status(401).json({ message: 'Hatalı master şifre' });
+      }
+
+      res.json({ message: 'Master şifre doğrulandı' });
+    } catch (error) {
+      console.error('Master password verification error:', error);
+      res.status(500).json({ message: 'Master şifre doğrulanamadı' });
+    }
+  });
+
   // Create first admin (only if no admin exists)
   app.post('/api/admin/setup', async (req, res) => {
     try {
