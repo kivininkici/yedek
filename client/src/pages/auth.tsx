@@ -1,42 +1,31 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { useMutation } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  KeyRound,
-  User,
-  Eye,
-  EyeOff,
-  ArrowLeft,
-  LogIn,
-  CheckCircle,
-  Loader2,
-  UserPlus,
-  Mail,
-  Sparkles,
-} from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Progress } from "@/components/ui/progress";
+import { Eye, EyeOff, Home } from "lucide-react";
+import { Link } from "wouter";
+import { z } from "zod";
 import { apiRequest } from "@/lib/queryClient";
 import { motion, AnimatePresence } from "framer-motion";
-import { UserCursorFollower } from "@/hooks/useMouseTracking";
 
+// Schema definitions without math validation
 const loginSchema = z.object({
-  username: z.string().min(3, "Kullanıcı adı en az 3 karakter olmalı"),
-  password: z.string().min(6, "Şifre en az 6 karakter olmalı"),
-  mathAnswer: z.string().min(1, "Matematik sorusunu cevaplayın"),
+  username: z.string().min(1, "Kullanıcı adı gerekli"),
+  password: z.string().min(1, "Şifre gerekli"),
 });
 
 const registerSchema = z.object({
   username: z.string().min(3, "Kullanıcı adı en az 3 karakter olmalı"),
-  email: z.string().email("Geçerli bir e-posta adresi giriniz"),
+  email: z.string().email("Geçerli bir e-posta adresi girin"),
   password: z.string().min(6, "Şifre en az 6 karakter olmalı"),
-  confirmPassword: z.string().min(6, "Şifre tekrarı gereklidir"),
-  mathAnswer: z.string().min(1, "Matematik sorusunu cevaplayın"),
+  confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Şifreler eşleşmiyor",
   path: ["confirmPassword"],
@@ -45,142 +34,89 @@ const registerSchema = z.object({
 type LoginData = z.infer<typeof loginSchema>;
 type RegisterData = z.infer<typeof registerSchema>;
 
-// Floating Particles Component 
-const FloatingParticles = () => {
+// Background effects components
+const FloatingOrbs = () => {
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {/* Large gradual orbs */}
-      <motion.div 
-        className="absolute w-72 h-72 bg-blue-500/8 rounded-full blur-3xl"
-        animate={{ 
-          x: [0, 30, 0],
-          y: [0, -20, 0],
-          scale: [1, 1.1, 1]
-        }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        style={{ top: '15%', left: '10%' }}
-      />
-      <motion.div 
-        className="absolute w-96 h-96 bg-purple-500/6 rounded-full blur-3xl"
-        animate={{ 
-          x: [0, -25, 0],
-          y: [0, 15, 0],
-          scale: [1, 0.9, 1]
-        }}
-        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        style={{ top: '40%', right: '10%' }}
-      />
-      
-      {/* Small floating dots */}
-      <motion.div 
-        className="absolute w-3 h-3 bg-blue-400/60 rounded-full"
-        animate={{ 
-          y: [0, -30, 0],
-          opacity: [0.6, 1, 0.6]
-        }}
-        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        style={{ top: '20%', left: '15%' }}
-      />
-      
-      <motion.div 
-        className="absolute w-2 h-2 bg-purple-400/70 rounded-full"
-        animate={{ 
-          y: [0, -20, 0],
-          x: [0, 10, 0],
-          opacity: [0.7, 1, 0.7]
-        }}
-        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        style={{ top: '60%', left: '85%' }}
-      />
-      
-      <motion.div 
-        className="absolute w-4 h-4 bg-cyan-400/50 rounded-full"
-        animate={{ 
-          y: [0, -25, 0],
-          opacity: [0.5, 1, 0.5]
-        }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-        style={{ top: '70%', left: '20%' }}
-      />
-      
-      <motion.div 
-        className="absolute w-3 h-3 bg-pink-400/60 rounded-full"
-        animate={{ 
-          y: [0, -35, 0],
-          x: [0, -15, 0],
-          opacity: [0.6, 1, 0.6]
-        }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
-        style={{ top: '25%', right: '25%' }}
-      />
-      
-      <motion.div 
-        className="absolute w-2 h-2 bg-emerald-400/80 rounded-full"
-        animate={{ 
-          y: [0, -15, 0],
-          opacity: [0.8, 1, 0.8]
-        }}
-        transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
-        style={{ top: '80%', right: '40%' }}
-      />
+    <div className="fixed inset-0 overflow-hidden pointer-events-none">
+      <div className="absolute -top-10 -left-10 w-20 h-20 bg-blue-400/20 rounded-full blur-xl animate-pulse" />
+      <div className="absolute top-1/4 right-1/4 w-32 h-32 bg-blue-300/15 rounded-full blur-2xl animate-bounce" style={{ animationDuration: '3s' }} />
+      <div className="absolute bottom-1/3 left-1/3 w-24 h-24 bg-blue-500/25 rounded-full blur-xl animate-pulse" style={{ animationDelay: '1s' }} />
+      <div className="absolute top-1/2 right-10 w-16 h-16 bg-blue-200/30 rounded-full blur-lg animate-bounce" style={{ animationDelay: '2s' }} />
+      <div className="absolute bottom-20 right-1/3 w-28 h-28 bg-blue-400/20 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '0.5s' }} />
+      <div className="absolute top-20 left-1/2 w-12 h-12 bg-blue-300/25 rounded-full blur-md animate-bounce" style={{ animationDelay: '1.5s' }} />
     </div>
   );
 };
 
-// Math verification helper functions - improved with more variety
-const generateMathQuestion = () => {
-  // Generate different types of questions with more variety
-  const questionTypes = [
-    // Simple addition
-    () => {
-      const num1 = Math.floor(Math.random() * 15) + 1;
-      const num2 = Math.floor(Math.random() * 15) + 1;
-      return { question: `${num1} + ${num2}`, answer: num1 + num2 };
-    },
-    // Simple subtraction
-    () => {
-      const num1 = Math.floor(Math.random() * 25) + 10;
-      const num2 = Math.floor(Math.random() * 10) + 1;
-      return { question: `${num1} - ${num2}`, answer: num1 - num2 };
-    },
-    // Double digit addition
-    () => {
-      const num1 = Math.floor(Math.random() * 50) + 10;
-      const num2 = Math.floor(Math.random() * 30) + 5;
-      return { question: `${num1} + ${num2}`, answer: num1 + num2 };
-    },
-    // Larger subtraction
-    () => {
-      const num1 = Math.floor(Math.random() * 40) + 30;
-      const num2 = Math.floor(Math.random() * 20) + 5;
-      return { question: `${num1} - ${num2}`, answer: num1 - num2 };
-    },
-    // Zero addition
-    () => {
-      const num1 = Math.floor(Math.random() * 25) + 1;
-      const num2 = 0;
-      return { question: `${num1} + ${num2}`, answer: num1 + num2 };
-    },
-    // Sequential numbers
-    () => {
-      const num1 = Math.floor(Math.random() * 20) + 5;
-      const num2 = num1 + 1;
-      return { question: `${num2} - ${num1}`, answer: 1 };
-    }
-  ];
-  
-  // Add timestamp and random factor to ensure uniqueness
-  const timestamp = Date.now();
-  const randomFactor = Math.floor(Math.random() * 1000);
-  const questionIndex = (timestamp + randomFactor) % questionTypes.length;
-  const questionType = questionTypes[questionIndex];
-  
-  const result = questionType();
-  
-  return {
-    ...result,
-    id: `${timestamp}_${randomFactor}`
-  };
+const AnimatedBackground = () => {
+  return (
+    <div className="fixed inset-0 -z-10">
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200" />
+      <FloatingOrbs />
+    </div>
+  );
+};
+
+// Success animation component
+const SuccessAnimation = ({ isVisible }: { isVisible: boolean }) => {
+  return (
+    <AnimatePresence>
+      {isVisible && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0 }}
+          className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none"
+        >
+          <motion.div
+            initial={{ scale: 0, rotate: -180 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="relative"
+          >
+            {/* Success checkmark */}
+            <motion.svg
+              width="100"
+              height="100"
+              viewBox="0 0 100 100"
+              className="text-blue-600"
+            >
+              <motion.circle
+                cx="50"
+                cy="50"
+                r="45"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="4"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+              />
+              <motion.path
+                d="M25 50 L40 65 L75 30"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 0.4, delay: 0.6 }}
+              />
+            </motion.svg>
+            
+            {/* Ripple effect */}
+            <motion.div
+              initial={{ scale: 0, opacity: 0.8 }}
+              animate={{ scale: 3, opacity: 0 }}
+              transition={{ duration: 1, ease: "easeOut" }}
+              className="absolute inset-0 rounded-full bg-blue-200"
+            />
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
 };
 
 export default function Auth() {
@@ -194,8 +130,6 @@ export default function Auth() {
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [showRegisterPassword, setShowRegisterPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [loginMathQuestion, setLoginMathQuestion] = useState(generateMathQuestion());
-  const [registerMathQuestion, setRegisterMathQuestion] = useState(generateMathQuestion());
   const { toast } = useToast();
 
   const loginForm = useForm<LoginData>({
@@ -203,7 +137,6 @@ export default function Auth() {
     defaultValues: {
       username: "",
       password: "",
-      mathAnswer: "",
     },
   });
 
@@ -214,38 +147,40 @@ export default function Auth() {
       email: "",
       password: "",
       confirmPassword: "",
-      mathAnswer: "",
     },
   });
 
   const loginMutation = useMutation({
     mutationFn: async (data: LoginData) => {
-      const response = await apiRequest("POST", "/api/auth/login", data);
-      const responseText = await response.text();
-      try {
-        return JSON.parse(responseText);
-      } catch (error) {
-        console.error("JSON parse error:", error, "Response text:", responseText);
-        throw new Error("Server response format error");
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+        credentials: "include",
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Giriş başarısız");
       }
+      return response.json();
     },
-    onSuccess: (data: any) => {
-      setIsLoginLoading(false);
+    onSuccess: (data) => {
       setIsLoginSuccess(true);
+      toast({
+        title: "Giriş Başarılı",
+        description: `Hoş geldin, ${data.username}!`,
+      });
+      
       setTimeout(() => {
-        if (data.user?.isAdmin) {
-          window.location.href = "/admin";
-        } else {
-          window.location.href = "/";
-        }
+        window.location.href = "/user";
       }, 2000);
     },
-    onError: (error: any) => {
-      setIsLoginLoading(false);
-      setLoginProgress(0);
+    onError: (error: Error) => {
       toast({
-        title: "Giriş hatası",
-        description: error?.message || "Giriş yapılırken bir hata oluştu",
+        title: "Giriş Hatası",
+        description: error.message,
         variant: "destructive",
       });
     },
@@ -253,765 +188,363 @@ export default function Auth() {
 
   const registerMutation = useMutation({
     mutationFn: async (data: RegisterData) => {
-      const response = await apiRequest("POST", "/api/auth/register", data);
-      const responseText = await response.text();
-      try {
-        return JSON.parse(responseText);
-      } catch (error) {
-        console.error("JSON parse error:", error, "Response text:", responseText);
-        throw new Error("Server response format error");
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+        credentials: "include",
+      });
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Kayıt başarısız");
       }
+      return response.json();
     },
-    onSuccess: (data: any) => {
-      setIsRegisterLoading(false);
+    onSuccess: (data) => {
       setIsRegisterSuccess(true);
+      toast({
+        title: "Kayıt Başarılı",
+        description: `Hoş geldin, ${data.username}! Otomatik giriş yapılıyor...`,
+      });
+      
       setTimeout(() => {
-        window.location.href = "/";
+        window.location.href = "/user";
       }, 2000);
     },
-    onError: (error: any) => {
-      setIsRegisterLoading(false);
-      setRegisterProgress(0);
+    onError: (error: Error) => {
       toast({
-        title: "Kayıt hatası",
-        description: error?.message || "Kayıt olurken bir hata oluştu",
+        title: "Kayıt Hatası",
+        description: error.message,
         variant: "destructive",
       });
     },
   });
 
   const onLoginSubmit = async (data: LoginData) => {
-    // Verify math answer first
-    if (parseInt(data.mathAnswer) !== loginMathQuestion.answer) {
-      toast({
-        title: "Matematik Doğrulama Hatası",
-        description: "Matematik sorusuna verilen cevap yanlış.",
-        variant: "destructive",
-      });
-      
-      // Generate new math question with forced uniqueness and log failed attempt
-      let newQuestion;
-      do {
-        newQuestion = generateMathQuestion();
-      } while (newQuestion.question === loginMathQuestion.question);
-      
-      setLoginMathQuestion(newQuestion);
-      loginForm.setValue("mathAnswer", "");
-      loginForm.clearErrors("mathAnswer");
-      
-      // Log failed math verification attempt
-      try {
-        await fetch("/api/admin/login-attempts", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ipAddress: "unknown",
-            username: data.username,
-            attemptType: "failed_math",
-            userAgent: navigator.userAgent || "",
-          }),
-        });
-      } catch (error) {
-        console.error("Failed to log math verification attempt:", error);
-      }
-      
-      return;
-    }
-
     setIsLoginLoading(true);
+    setLoginProgress(0);
     
-    // Progress animation
+    // Smooth progress animation
     const progressInterval = setInterval(() => {
-      setLoginProgress((prev) => {
-        if (prev >= 95) {
+      setLoginProgress(prev => {
+        if (prev >= 90) {
           clearInterval(progressInterval);
-          return 95;
+          return 90;
         }
-        return prev + Math.random() * 15;
+        return prev + 10;
       });
-    }, 300);
+    }, 100);
 
-    setTimeout(() => {
-      loginMutation.mutate(data);
+    try {
+      await loginMutation.mutateAsync(data);
       setLoginProgress(100);
+    } catch (error) {
+      setLoginProgress(0);
+    } finally {
       clearInterval(progressInterval);
-    }, 1500);
+      setIsLoginLoading(false);
+    }
   };
 
   const onRegisterSubmit = async (data: RegisterData) => {
-    // Verify math answer first
-    if (parseInt(data.mathAnswer) !== registerMathQuestion.answer) {
-      toast({
-        title: "Matematik Doğrulama Hatası",
-        description: "Matematik sorusuna verilen cevap yanlış.",
-        variant: "destructive",
-      });
-      
-      // Generate new math question with forced uniqueness and log failed attempt
-      let newQuestion;
-      do {
-        newQuestion = generateMathQuestion();
-      } while (newQuestion.question === registerMathQuestion.question);
-      
-      setRegisterMathQuestion(newQuestion);
-      registerForm.setValue("mathAnswer", "");
-      registerForm.clearErrors("mathAnswer");
-      
-      // Log failed math verification attempt
-      try {
-        await fetch("/api/admin/login-attempts", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ipAddress: "unknown",
-            username: data.username,
-            attemptType: "failed_math_register",
-            userAgent: navigator.userAgent || "",
-          }),
-        });
-      } catch (error) {
-        console.error("Failed to log math verification attempt:", error);
-      }
-      
-      return;
-    }
-
     setIsRegisterLoading(true);
+    setRegisterProgress(0);
     
-    // Progress animation  
+    // Smooth progress animation
     const progressInterval = setInterval(() => {
-      setRegisterProgress((prev) => {
-        if (prev >= 95) {
+      setRegisterProgress(prev => {
+        if (prev >= 90) {
           clearInterval(progressInterval);
-          return 95;
+          return 90;
         }
-        return prev + Math.random() * 12;
+        return prev + 10;
       });
-    }, 400);
+    }, 100);
 
-    setTimeout(() => {
-      registerMutation.mutate(data);
+    try {
+      await registerMutation.mutateAsync(data);
       setRegisterProgress(100);
+    } catch (error) {
+      setRegisterProgress(0);
+    } finally {
       clearInterval(progressInterval);
-    }, 2000);
+      setIsRegisterLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Floating Particles Background */}
-      <FloatingParticles />
+    <div className="min-h-screen flex items-center justify-center p-4 relative">
+      <AnimatedBackground />
+      <SuccessAnimation isVisible={isLoginSuccess || isRegisterSuccess} />
       
-      {/* User Cursor Effect */}
-      <UserCursorFollower />
-      
-      {/* Success Wave Animation - Outside Card */}
-      <AnimatePresence>
-        {(isLoginSuccess || isRegisterSuccess) && (
-          <motion.div
-            initial={{ scale: 0, opacity: 0.9 }}
-            animate={{ scale: 30, opacity: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 2, ease: "easeOut" }}
-            className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-blue-500/60 rounded-full z-40 pointer-events-none"
-          />
-        )}
-      </AnimatePresence>
-      
-      <div className="relative z-10 w-full max-w-md">
-        {/* Ana Sayfaya Dön Button */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-6 w-full"
-        >
-          <motion.div
-            whileHover={{ 
-              scale: 1.01,
-              y: -1,
-              boxShadow: "0 8px 20px rgba(59, 130, 246, 0.25)"
-            }}
-            whileTap={{ scale: 0.99 }}
-            transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          >
+      <div className="w-full max-w-2xl relative">
+        {/* Header with home button */}
+        <div className="mb-8 text-center">
+          <Link href="/">
             <Button
-              variant="ghost"
-              onClick={() => (window.location.href = "/")}
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white hover:text-white backdrop-blur-sm rounded-xl px-6 py-4 transition-all duration-200 font-medium shadow-lg border border-blue-400/20"
+              variant="outline"
+              size="sm"
+              className="mb-4 bg-white/90 hover:bg-white border-blue-200 text-blue-700 hover:text-blue-800 shadow-sm"
             >
-              <motion.div
-                className="flex items-center justify-center"
-                whileHover={{ x: -3 }}
-                transition={{ type: "spring", stiffness: 400, damping: 10 }}
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                ANA SAYFAYA DÖN
-              </motion.div>
+              <Home className="h-4 w-4 mr-2" />
+              Ana Sayfaya Dön
             </Button>
-          </motion.div>
-        </motion.div>
+          </Link>
+        </div>
 
-        {/* Auth Card */}
         <motion.div
-          initial={{ opacity: 0, y: 20, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
         >
-          <Card className="bg-slate-800/40 border-slate-700/50 backdrop-blur-xl rounded-3xl overflow-hidden min-h-[700px] relative z-50">
-            <CardHeader className="text-center pb-4 pt-8">
-              <motion.div 
-                className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-6"
-                animate={{ 
-                  boxShadow: [
-                    "0 0 30px rgba(59, 130, 246, 0.3)",
-                    "0 0 40px rgba(147, 51, 234, 0.4)",
-                    "0 0 30px rgba(59, 130, 246, 0.3)"
-                  ]
-                }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              >
-                <KeyRound className="w-8 h-8 text-white" />
-              </motion.div>
-              
-              <CardTitle className="text-3xl font-bold text-white mb-2">
-                OtoKiwi
-              </CardTitle>
-              <p className="text-slate-400 text-sm">
-                Hesabınıza giriş yapın veya yeni hesap oluşturun
-              </p>
+          <Card className="backdrop-blur-sm bg-white/95 shadow-2xl border-blue-100">
+            <CardHeader className="text-center pb-2">
+              <CardTitle className="text-2xl font-bold text-blue-900">OtoKiwi</CardTitle>
+              <CardDescription className="text-blue-600">Hesabınıza giriş yapın veya yeni hesap oluşturun</CardDescription>
             </CardHeader>
-
-            <CardContent className="space-y-4 px-8 pb-8">
-              {/* Tab Switcher */}
-              <div className="relative bg-slate-700/30 rounded-2xl p-0 backdrop-blur-sm">
-                <motion.div
-                  className="absolute top-0 bottom-0 bg-blue-500 rounded-2xl shadow-lg"
-                  animate={{
-                    left: activeTab === "login" ? "0%" : "50%",
-                    width: "50%"
-                  }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 280,
-                    damping: 35,
-                    duration: 0.5
-                  }}
-                />
-                
-                <div className="grid grid-cols-2 relative z-10">
-                  <button
-                    onClick={() => setActiveTab("login")}
-                    className={`py-4 px-4 rounded-2xl text-sm font-medium transition-all duration-300 flex items-center justify-center ${
-                      activeTab === "login" 
-                        ? "text-white" 
-                        : "text-slate-400 hover:text-slate-200"
-                    }`}
-                  >
-                    <LogIn className="w-4 h-4 mr-2" />
+            <CardContent>
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <TabsList className="grid w-full grid-cols-2 mb-6 bg-blue-50">
+                  <TabsTrigger value="login" className="data-[state=active]:bg-white data-[state=active]:text-blue-700">
                     Giriş Yap
-                  </button>
-                  <button
-                    onClick={() => setActiveTab("register")}
-                    className={`py-4 px-4 rounded-2xl text-sm font-medium transition-all duration-300 flex items-center justify-center ${
-                      activeTab === "register" 
-                        ? "text-white" 
-                        : "text-slate-400 hover:text-slate-200"
-                    }`}
-                  >
-                    <UserPlus className="w-4 h-4 mr-2" />
+                  </TabsTrigger>
+                  <TabsTrigger value="register" className="data-[state=active]:bg-white data-[state=active]:text-blue-700">
                     Kayıt Ol
-                  </button>
+                  </TabsTrigger>
+                </TabsList>
+
+                <div className="min-h-[480px]">
+                  <TabsContent value="login" className="space-y-4 mt-0">
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key="login"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 20 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      >
+                        <Form {...loginForm}>
+                          <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
+                            <FormField
+                              control={loginForm.control}
+                              name="username"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-blue-900">Kullanıcı Adı</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      {...field}
+                                      disabled={isLoginLoading}
+                                      className="border-blue-200 focus:border-blue-400 focus:ring-blue-200"
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            
+                            <FormField
+                              control={loginForm.control}
+                              name="password"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-blue-900">Şifre</FormLabel>
+                                  <FormControl>
+                                    <div className="relative">
+                                      <Input
+                                        {...field}
+                                        type={showLoginPassword ? "text" : "password"}
+                                        disabled={isLoginLoading}
+                                        className="border-blue-200 focus:border-blue-400 focus:ring-blue-200 pr-10"
+                                      />
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-blue-600 hover:text-blue-800"
+                                        onClick={() => setShowLoginPassword(!showLoginPassword)}
+                                        disabled={isLoginLoading}
+                                      >
+                                        {showLoginPassword ? (
+                                          <EyeOff className="h-4 w-4" />
+                                        ) : (
+                                          <Eye className="h-4 w-4" />
+                                        )}
+                                      </Button>
+                                    </div>
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+
+                            {isLoginLoading && (
+                              <div className="space-y-2">
+                                <div className="flex items-center justify-between text-sm text-blue-600">
+                                  <span>Giriş yapılıyor...</span>
+                                  <span>{loginProgress}%</span>
+                                </div>
+                                <Progress value={loginProgress} className="w-full h-2" />
+                              </div>
+                            )}
+
+                            <Button
+                              type="submit"
+                              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                              disabled={isLoginLoading}
+                            >
+                              {isLoginLoading ? "Giriş Yapılıyor..." : "Giriş Yap"}
+                            </Button>
+                          </form>
+                        </Form>
+                      </motion.div>
+                    </AnimatePresence>
+                  </TabsContent>
+
+                  <TabsContent value="register" className="space-y-4 mt-0">
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key="register"
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                      >
+                        <Form {...registerForm}>
+                          <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
+                            <FormField
+                              control={registerForm.control}
+                              name="username"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-blue-900">Kullanıcı Adı</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      {...field}
+                                      disabled={isRegisterLoading}
+                                      className="border-blue-200 focus:border-blue-400 focus:ring-blue-200"
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            
+                            <FormField
+                              control={registerForm.control}
+                              name="email"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-blue-900">E-posta</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      {...field}
+                                      type="email"
+                                      disabled={isRegisterLoading}
+                                      className="border-blue-200 focus:border-blue-400 focus:ring-blue-200"
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            
+                            <FormField
+                              control={registerForm.control}
+                              name="password"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-blue-900">Şifre</FormLabel>
+                                  <FormControl>
+                                    <div className="relative">
+                                      <Input
+                                        {...field}
+                                        type={showRegisterPassword ? "text" : "password"}
+                                        disabled={isRegisterLoading}
+                                        className="border-blue-200 focus:border-blue-400 focus:ring-blue-200 pr-10"
+                                      />
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-blue-600 hover:text-blue-800"
+                                        onClick={() => setShowRegisterPassword(!showRegisterPassword)}
+                                        disabled={isRegisterLoading}
+                                      >
+                                        {showRegisterPassword ? (
+                                          <EyeOff className="h-4 w-4" />
+                                        ) : (
+                                          <Eye className="h-4 w-4" />
+                                        )}
+                                      </Button>
+                                    </div>
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            
+                            <FormField
+                              control={registerForm.control}
+                              name="confirmPassword"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel className="text-blue-900">Şifre Tekrarı</FormLabel>
+                                  <FormControl>
+                                    <div className="relative">
+                                      <Input
+                                        {...field}
+                                        type={showConfirmPassword ? "text" : "password"}
+                                        disabled={isRegisterLoading}
+                                        className="border-blue-200 focus:border-blue-400 focus:ring-blue-200 pr-10"
+                                      />
+                                      <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="sm"
+                                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent text-blue-600 hover:text-blue-800"
+                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                        disabled={isRegisterLoading}
+                                      >
+                                        {showConfirmPassword ? (
+                                          <EyeOff className="h-4 w-4" />
+                                        ) : (
+                                          <Eye className="h-4 w-4" />
+                                        )}
+                                      </Button>
+                                    </div>
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+
+                            {isRegisterLoading && (
+                              <div className="space-y-2">
+                                <div className="flex items-center justify-between text-sm text-blue-600">
+                                  <span>Kayıt oluşturuluyor...</span>
+                                  <span>{registerProgress}%</span>
+                                </div>
+                                <Progress value={registerProgress} className="w-full h-2" />
+                              </div>
+                            )}
+
+                            <Button
+                              type="submit"
+                              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                              disabled={isRegisterLoading}
+                            >
+                              {isRegisterLoading ? "Kayıt Oluşturuluyor..." : "Kayıt Ol"}
+                            </Button>
+                          </form>
+                        </Form>
+                      </motion.div>
+                    </AnimatePresence>
+                  </TabsContent>
                 </div>
-              </div>
-
-              {/* Content Area */}
-              <div className="min-h-[500px] relative pb-4">
-                <AnimatePresence mode="wait">
-                  {activeTab === "login" ? (
-                    <motion.div
-                      key="login"
-                      initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                      transition={{ 
-                        duration: 0.5, 
-                        ease: [0.16, 1, 0.3, 1]
-                      }}
-                      className="absolute inset-0"
-                    >
-                      <AnimatePresence mode="wait">
-                        {isLoginSuccess ? (
-                          <>
-                            
-                            <motion.div
-                              key="login-success"
-                              initial={{ opacity: 0, scale: 0.8 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              className="text-center py-12 space-y-6 relative z-10"
-                            >
-                              {/* Animated Check Mark */}
-                              <motion.div
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                transition={{ 
-                                  delay: 0.2,
-                                  type: "spring", 
-                                  stiffness: 200, 
-                                  damping: 15 
-                                }}
-                                className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mx-auto shadow-2xl"
-                              >
-                                <motion.div
-                                  initial={{ pathLength: 0 }}
-                                  animate={{ pathLength: 1 }}
-                                  transition={{ delay: 0.5, duration: 0.8, ease: "easeInOut" }}
-                                >
-                                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <motion.path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth={3}
-                                      d="M5 13l4 4L19 7"
-                                      initial={{ pathLength: 0 }}
-                                      animate={{ pathLength: 1 }}
-                                      transition={{ delay: 0.5, duration: 0.8, ease: "easeInOut" }}
-                                    />
-                                  </svg>
-                                </motion.div>
-                              </motion.div>
-                              
-                              <motion.h3 
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.8, duration: 0.5 }}
-                                className="text-xl font-semibold text-blue-400"
-                              >
-                                Giriş Başarılı!
-                              </motion.h3>
-                              <motion.p 
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 1, duration: 0.5 }}
-                                className="text-slate-300"
-                              >
-                                Yönlendiriliyor...
-                              </motion.p>
-                            </motion.div>
-                          </>
-                        ) : isLoginLoading ? (
-                          <motion.div
-                            key="login-loading"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="text-center py-12 space-y-6"
-                          >
-                            <motion.div
-                              className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto"
-                              animate={{ rotate: 360 }}
-                              transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-                            >
-                              <KeyRound className="w-8 h-8 text-white" />
-                            </motion.div>
-                            
-                            <div className="space-y-4">
-                              <h3 className="text-lg font-semibold text-blue-400">
-                                Giriş Yapılıyor...
-                              </h3>
-                              
-                              <div className="w-full bg-slate-700/50 rounded-full h-3 overflow-hidden">
-                                <motion.div
-                                  className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-emerald-500 rounded-full"
-                                  initial={{ width: "0%" }}
-                                  animate={{ width: `${loginProgress}%` }}
-                                  transition={{ duration: 0.3, ease: "easeOut" }}
-                                />
-                              </div>
-                              
-                              <p className="text-slate-400 text-sm">
-                                Kimlik doğrulanıyor...
-                              </p>
-                            </div>
-                          </motion.div>
-                        ) : (
-                          <motion.form
-                            key="login-form"
-                            initial={{ opacity: 0, y: 15 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ 
-                              duration: 0.5, 
-                              ease: [0.25, 0.46, 0.45, 0.94]
-                            }}
-                            onSubmit={loginForm.handleSubmit(onLoginSubmit)}
-                            className="space-y-6 mt-6"
-                          >
-                            <div className="space-y-3">
-                              <Label htmlFor="login-username" className="text-slate-300 text-sm">
-                                Kullanıcı Adı
-                              </Label>
-                              <div className="relative">
-                                <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <Input
-                                  id="login-username"
-                                  placeholder="Kullanıcı adınız"
-                                  className="pl-12 bg-slate-700/50 border-slate-600 text-slate-50 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent h-12 rounded-xl transition-all duration-300"
-                                  {...loginForm.register("username")}
-                                />
-                              </div>
-                              {loginForm.formState.errors.username && (
-                                <p className="text-red-400 text-sm ml-1">
-                                  {loginForm.formState.errors.username.message}
-                                </p>
-                              )}
-                            </div>
-
-                            <div className="space-y-3">
-                              <Label htmlFor="login-password" className="text-slate-300 text-sm">
-                                Şifre
-                              </Label>
-                              <div className="relative">
-                                <Input
-                                  id="login-password"
-                                  type={showLoginPassword ? "text" : "password"}
-                                  placeholder="Şifreniz"
-                                  className="pr-12 bg-slate-700/50 border-slate-600 text-slate-50 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent h-12 rounded-xl transition-all duration-300"
-                                  {...loginForm.register("password")}
-                                />
-                                <button
-                                  type="button"
-                                  onClick={() => setShowLoginPassword(!showLoginPassword)}
-                                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-blue-400 transition-colors"
-                                >
-                                  {showLoginPassword ? (
-                                    <Eye className="w-4 h-4" />
-                                  ) : (
-                                    <EyeOff className="w-4 h-4" />
-                                  )}
-                                </button>
-                              </div>
-                              {loginForm.formState.errors.password && (
-                                <p className="text-red-400 text-sm ml-1">
-                                  {loginForm.formState.errors.password.message}
-                                </p>
-                              )}
-                            </div>
-
-                            {/* Math Verification Field */}
-                            <div className="space-y-3">
-                              <Label htmlFor="login-math" className="text-slate-300 text-sm">
-                                Matematik Doğrulama: {loginMathQuestion.question} = ?
-                              </Label>
-                              <div className="relative">
-                                <Input
-                                  id="login-math"
-                                  type="number"
-                                  placeholder="Sonucu yazın"
-                                  className="bg-slate-700/50 border-slate-600 text-slate-50 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent h-12 rounded-xl transition-all duration-300"
-                                  {...loginForm.register("mathAnswer")}
-                                />
-                              </div>
-                              {loginForm.formState.errors.mathAnswer && (
-                                <p className="text-red-400 text-sm ml-1">
-                                  {loginForm.formState.errors.mathAnswer.message}
-                                </p>
-                              )}
-                            </div>
-
-                            <motion.div
-                              whileHover={{ scale: 1.02 }}
-                              whileTap={{ scale: 0.98 }}
-                            >
-                              <Button
-                                type="submit"
-                                disabled={isLoginLoading || loginMutation.isPending}
-                                className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white h-14 font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 mt-8"
-                              >
-                                {isLoginLoading || loginMutation.isPending ? (
-                                  <>
-                                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                                    Giriş Yapılıyor...
-                                  </>
-                                ) : (
-                                  <>
-                                    <LogIn className="w-5 h-5 mr-2" />
-                                    Giriş Yap
-                                  </>
-                                )}
-                              </Button>
-                            </motion.div>
-                          </motion.form>
-                        )}
-                      </AnimatePresence>
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="register"
-                      initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: -20, scale: 0.95 }}
-                      transition={{ 
-                        duration: 0.5, 
-                        ease: [0.16, 1, 0.3, 1]
-                      }}
-                      className="absolute inset-0"
-                    >
-                      <AnimatePresence mode="wait">
-                        {isRegisterSuccess ? (
-                          <>
-                            
-                            <motion.div
-                              key="register-success"
-                              initial={{ opacity: 0, scale: 0.8 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              className="text-center py-12 space-y-6 relative z-10"
-                            >
-                              {/* Animated Check Mark */}
-                              <motion.div
-                                initial={{ scale: 0 }}
-                                animate={{ scale: 1 }}
-                                transition={{ 
-                                  delay: 0.2,
-                                  type: "spring", 
-                                  stiffness: 200, 
-                                  damping: 15 
-                                }}
-                                className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center mx-auto shadow-2xl"
-                              >
-                                <motion.div
-                                  initial={{ pathLength: 0 }}
-                                  animate={{ pathLength: 1 }}
-                                  transition={{ delay: 0.5, duration: 0.8, ease: "easeInOut" }}
-                                >
-                                  <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <motion.path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth={3}
-                                      d="M5 13l4 4L19 7"
-                                      initial={{ pathLength: 0 }}
-                                      animate={{ pathLength: 1 }}
-                                      transition={{ delay: 0.5, duration: 0.8, ease: "easeInOut" }}
-                                    />
-                                  </svg>
-                                </motion.div>
-                              </motion.div>
-                              
-                              <motion.h3 
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.8, duration: 0.5 }}
-                                className="text-xl font-semibold text-blue-400"
-                              >
-                                Kayıt Başarılı!
-                              </motion.h3>
-                              <motion.p 
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 1, duration: 0.5 }}
-                                className="text-slate-300"
-                              >
-                                Otomatik giriş yapılıyor...
-                              </motion.p>
-                            </motion.div>
-                          </>
-                        ) : isRegisterLoading ? (
-                          <motion.div
-                            key="register-loading"
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="text-center py-12 space-y-6"
-                          >
-                            <motion.div
-                              className="w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center mx-auto"
-                              animate={{ rotate: -360 }}
-                              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                            >
-                              <UserPlus className="w-8 h-8 text-white" />
-                            </motion.div>
-                            
-                            <div className="space-y-4">
-                              <h3 className="text-lg font-semibold text-purple-400">
-                                Hesap Oluşturuluyor...
-                              </h3>
-                              
-                              <div className="w-full bg-slate-700/50 rounded-full h-3 overflow-hidden">
-                                <motion.div
-                                  className="h-full bg-gradient-to-r from-purple-500 via-blue-500 to-emerald-500 rounded-full"
-                                  initial={{ width: "0%" }}
-                                  animate={{ width: `${registerProgress}%` }}
-                                  transition={{ duration: 0.3, ease: "easeOut" }}
-                                />
-                              </div>
-                              
-                              <p className="text-slate-400 text-sm">
-                                Bilgiler doğrulanıyor...
-                              </p>
-                            </div>
-                          </motion.div>
-                        ) : (
-                          <motion.form
-                            key="register-form"
-                            initial={{ opacity: 0, y: 15 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ 
-                              duration: 0.5, 
-                              ease: [0.25, 0.46, 0.45, 0.94]
-                            }}
-                            onSubmit={registerForm.handleSubmit(onRegisterSubmit)}
-                            className="space-y-3 mt-4"
-                          >
-                            <div className="space-y-2">
-                              <Label htmlFor="register-username" className="text-slate-300 text-sm">
-                                Kullanıcı Adı
-                              </Label>
-                              <div className="relative">
-                                <User className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <Input
-                                  id="register-username"
-                                  placeholder="Kullanıcı adınız"
-                                  className="pl-12 bg-slate-700/50 border-slate-600 text-slate-50 placeholder-slate-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent h-12 rounded-xl transition-all duration-300"
-                                  {...registerForm.register("username")}
-                                />
-                              </div>
-                              {registerForm.formState.errors.username && (
-                                <p className="text-red-400 text-sm ml-1">
-                                  {registerForm.formState.errors.username.message}
-                                </p>
-                              )}
-                            </div>
-
-                            <div className="space-y-2">
-                              <Label htmlFor="register-email" className="text-slate-300 text-sm">
-                                E-posta
-                              </Label>
-                              <div className="relative">
-                                <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
-                                <Input
-                                  id="register-email"
-                                  type="email"
-                                  placeholder="E-posta adresiniz"
-                                  className="pl-12 bg-slate-700/50 border-slate-600 text-slate-50 placeholder-slate-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent h-12 rounded-xl transition-all duration-300"
-                                  {...registerForm.register("email")}
-                                />
-                              </div>
-                              {registerForm.formState.errors.email && (
-                                <p className="text-red-400 text-sm ml-1">
-                                  {registerForm.formState.errors.email.message}
-                                </p>
-                              )}
-                            </div>
-
-                            <div className="space-y-2">
-                              <Label htmlFor="register-password" className="text-slate-300 text-sm">
-                                Şifre
-                              </Label>
-                              <div className="relative">
-                                <Input
-                                  id="register-password"
-                                  type={showRegisterPassword ? "text" : "password"}
-                                  placeholder="Şifreniz"
-                                  className="pr-12 bg-slate-700/50 border-slate-600 text-slate-50 placeholder-slate-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent h-12 rounded-xl transition-all duration-300"
-                                  {...registerForm.register("password")}
-                                />
-                                <button
-                                  type="button"
-                                  onClick={() => setShowRegisterPassword(!showRegisterPassword)}
-                                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-purple-400 transition-colors"
-                                >
-                                  {showRegisterPassword ? (
-                                    <Eye className="w-4 h-4" />
-                                  ) : (
-                                    <EyeOff className="w-4 h-4" />
-                                  )}
-                                </button>
-                              </div>
-                              {registerForm.formState.errors.password && (
-                                <p className="text-red-400 text-sm ml-1">
-                                  {registerForm.formState.errors.password.message}
-                                </p>
-                              )}
-                            </div>
-
-                            <div className="space-y-2">
-                              <Label htmlFor="confirm-password" className="text-slate-300 text-sm">
-                                Şifre Tekrarı
-                              </Label>
-                              <div className="relative">
-                                <Input
-                                  id="confirm-password"
-                                  type={showConfirmPassword ? "text" : "password"}
-                                  placeholder="Şifrenizi tekrar giriniz"
-                                  className="pr-12 bg-slate-700/50 border-slate-600 text-slate-50 placeholder-slate-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent h-12 rounded-xl transition-all duration-300"
-                                  {...registerForm.register("confirmPassword")}
-                                />
-                                <button
-                                  type="button"
-                                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-slate-400 hover:text-purple-400 transition-colors"
-                                >
-                                  {showConfirmPassword ? (
-                                    <Eye className="w-4 h-4" />
-                                  ) : (
-                                    <EyeOff className="w-4 h-4" />
-                                  )}
-                                </button>
-                              </div>
-                              {registerForm.formState.errors.confirmPassword && (
-                                <p className="text-red-400 text-sm ml-1">
-                                  {registerForm.formState.errors.confirmPassword.message}
-                                </p>
-                              )}
-                            </div>
-
-                            {/* Math Verification Field */}
-                            <div className="space-y-2">
-                              <Label htmlFor="register-math" className="text-slate-300 text-sm">
-                                Matematik Doğrulama: {registerMathQuestion.question} = ?
-                              </Label>
-                              <div className="relative">
-                                <Input
-                                  id="register-math"
-                                  type="number"
-                                  placeholder="Sonucu yazın"
-                                  className="bg-slate-700/50 border-slate-600 text-slate-50 placeholder-slate-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent h-12 rounded-xl transition-all duration-300"
-                                  {...registerForm.register("mathAnswer")}
-                                />
-                              </div>
-                              {registerForm.formState.errors.mathAnswer && (
-                                <p className="text-red-400 text-sm ml-1">
-                                  {registerForm.formState.errors.mathAnswer.message}
-                                </p>
-                              )}
-                            </div>
-
-                            <motion.div
-                              whileHover={{ scale: 1.02 }}
-                              whileTap={{ scale: 0.98 }}
-                            >
-                              <Button
-                                type="submit"
-                                disabled={isRegisterLoading || registerMutation.isPending}
-                                className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white h-14 font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 mt-4"
-                              >
-                                {isRegisterLoading || registerMutation.isPending ? (
-                                  <>
-                                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                                    Hesap Oluşturuluyor...
-                                  </>
-                                ) : (
-                                  <>
-                                    <UserPlus className="w-5 h-5 mr-2" />
-                                    <span>Kayıt Ol</span>
-                                    <Sparkles className="w-4 h-4 ml-2" />
-                                  </>
-                                )}
-                              </Button>
-                            </motion.div>
-                          </motion.form>
-                        )}
-                      </AnimatePresence>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+              </Tabs>
             </CardContent>
           </Card>
         </motion.div>

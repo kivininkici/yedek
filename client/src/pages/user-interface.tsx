@@ -455,7 +455,7 @@ export default function UserInterface() {
         </div>
 
         <div className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
+          <div className="max-w-4xl mx-auto">
           <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'create-order' | 'order-history')}>
             <TabsList className="grid w-full grid-cols-2 bg-slate-800/50 border-slate-700">
               <TabsTrigger value="create-order" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
@@ -797,6 +797,7 @@ export default function UserInterface() {
               </Card>
             </TabsContent>
           </Tabs>
+          </div>
         </div>
       </div>
     </div>
