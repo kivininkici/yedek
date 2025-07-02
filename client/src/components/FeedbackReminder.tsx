@@ -57,6 +57,7 @@ export function FeedbackReminder({ onClose, userEmail, userName, orderId }: Feed
 
       if (response.ok) {
         console.log("Success! Setting submitted to true");
+        alert("Başarıyla Gönderildi! Admin panele yönlendiriliyorsunuz...");
         setSubmitted(true);
         setTimeout(() => {
           // Redirect to admin feedback page
