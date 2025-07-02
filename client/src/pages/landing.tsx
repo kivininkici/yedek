@@ -58,6 +58,15 @@ export default function Landing() {
                   Kullanıcı Paneli
                 </Button>
                 <Button 
+                  variant="outline" 
+                  className="border-orange-400/30 bg-orange-500/10 hover:bg-orange-500/20 text-orange-300 backdrop-blur-sm"
+                  onClick={() => window.location.href = '/hosting-preview'}
+                >
+                  <Zap className="w-4 h-4 mr-2" />
+                  <span className="hidden sm:inline">Hosting Preview</span>
+                  <span className="sm:hidden">Hosting</span>
+                </Button>
+                <Button 
                   onClick={() => setShowAuthModal(true)}
                   className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
                 >

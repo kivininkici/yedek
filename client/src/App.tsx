@@ -22,6 +22,7 @@ import ApiManagement from "@/pages/admin/api-management";
 import AdminKeyStats from "@/pages/admin-key-stats";
 import ApiBalances from "@/pages/admin/api-balances";
 import LoginAttempts from "@/pages/admin/login-attempts";
+import HostingPreview from "@/pages/HostingPreview";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { CursorFollower, CursorTrail } from "@/hooks/useMouseTracking";
@@ -53,6 +54,7 @@ function Router() {
       <Route path="/auth" component={Auth} />
       <Route path="/user" component={UserInterface} />
       <Route path="/order-search" component={OrderSearch} />
+      <Route path="/hosting-preview" component={HostingPreview} />
       
       {/* Admin login routes */}
       <Route path="/admin/login" component={AdminLogin} />

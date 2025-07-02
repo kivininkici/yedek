@@ -2,11 +2,11 @@
 // KeyPanel Database Configuration - cPanel Hosting Uyumlu
 // Türkçe: Veritabanı bağlantı ayarları
 
-// Database configuration - Bu değerleri hosting sağlayıcınızdan alın
+// Database configuration - Test için placeholder değerler
 define('DB_HOST', 'localhost'); // Genellikle localhost olur
-define('DB_NAME', 'keypanel_db'); // Veritabanı adı - cPanel'den oluşturun
-define('DB_USER', 'keypanel_user'); // Veritabanı kullanıcısı
-define('DB_PASS', 'your_password'); // Veritabanı şifresi
+define('DB_NAME', 'keypanel_test'); // Test için
+define('DB_USER', 'test_user'); // Test için
+define('DB_PASS', 'test_password'); // Test için
 define('DB_CHARSET', 'utf8mb4');
 
 // PDO connection class

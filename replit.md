@@ -348,6 +348,11 @@ Changelog:
 - .htaccess, SSL, güvenlik konfigürasyonları eklendi
 - Kapsamlı kurulum talimatları ve dokümantasyon hazırlandı
 - cPanel hosting ortamında %100 uyumlu production sistemi tamamlandı
+- July 2, 2025: Hosting Preview sayfası eklendi
+- Hosting klasöründeki PHP sisteminin özelliklerini gösteren detaylı preview sayfası
+- Landing page'de "Hosting Preview" butonu eklendi
+- Teknoloji stack, kurulum adımları ve dosya yapısı rehberi
+- cPanel hosting için hazır olan sistemin tüm özelliklerini showcase eden sayfa
 
 ## User Preferences
 
