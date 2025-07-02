@@ -8,6 +8,45 @@ import { FeedbackReminder } from "@/components/FeedbackReminder";
 export default function Landing() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
+
+  const handleFeedbackSubmit = async () => {
+    if (!feedbackMessage.trim()) {
+      alert("Lütfen geri bildirim mesajınızı yazın!");
+      return;
+    }
+
+    setIsSubmittingFeedback(true);
+    try {
+      const response = await fetch("/api/feedback", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userEmail: "",
+          userName: "Ziyaretçi",
+          message: feedbackMessage.trim(),
+          satisfactionLevel: "satisfied"
+        }),
+      });
+
+      if (response.ok) {
+        alert("Başarıyla Gönderildi! Admin panele yönlendiriliyorsunuz...");
+        setFeedbackMessage("");
+        setTimeout(() => {
+          window.location.href = '/admin/feedback';
+        }, 2000);
+      } else {
+        alert("Geri bildirim gönderilirken hata oluştu!");
+      }
+    } catch (error) {
+      console.error("Feedback error:", error);
+      alert("Geri bildirim gönderilirken hata oluştu!");
+    }
+    setIsSubmittingFeedback(false);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white relative overflow-hidden">
@@ -321,12 +360,19 @@ export default function Landing() {
                   <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
                     <input 
                       type="text" 
+                      value={feedbackMessage}
+                      onChange={(e) => setFeedbackMessage(e.target.value)}
                       placeholder="Geri bildiriminizi yazın..."
                       className="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-emerald-400/50 backdrop-blur-sm"
+                      disabled={isSubmittingFeedback}
                     />
-                    <Button className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:scale-105">
+                    <Button 
+                      onClick={handleFeedbackSubmit}
+                      disabled={!feedbackMessage.trim() || isSubmittingFeedback}
+                      className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
                       <Send className="w-4 h-4 mr-2" />
-                      Gönder
+                      {isSubmittingFeedback ? "Gönderiliyor..." : "Gönder"}
                     </Button>
                   </div>
                 </div>
