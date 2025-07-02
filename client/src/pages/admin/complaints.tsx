@@ -198,7 +198,7 @@ export default function AdminComplaints() {
   const unreadCount = complaints.filter((c: Complaint) => !c.isRead).length;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#091b29]">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="space-y-6">
           {/* Header */}
