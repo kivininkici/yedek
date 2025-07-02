@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Giriş - KeyPanel</title>
+    <meta name="description" content="KeyPanel admin panel girişi. Güvenli yönetim sistemi.">
+    
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome 6.4 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- SweetAlert2 -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="../assets/css/style.css" rel="stylesheet">
+</head>
+<body class="admin-bg">
+    <!-- Background Animation -->
+    <div class="floating-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+        <div class="shape shape-4"></div>
+        <div class="shape shape-5"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center p-4">
+        <div class="row w-100 justify-content-center">
+            <div class="col-lg-4 col-md-6 col-sm-8">
+                <!-- Master Password Step -->
+                <div class="card shadow-lg border-0 auth-card" id="masterPasswordCard">
+                    <div class="card-header text-center bg-primary text-white py-4">
+                        <div class="auth-icon mb-3">
+                            <i class="fas fa-shield-alt fa-3x"></i>
+                        </div>
+                        <h4 class="mb-0 fw-bold">KeyPanel Admin</h4>
+                        <p class="mb-0 small opacity-75">Güvenlik Şifresini Girin</p>
+                    </div>
+                    <div class="card-body p-4">
+                        <form id="masterPasswordForm">
+                            <div class="mb-4">
+                                <label for="masterPassword" class="form-label fw-semibold">
+                                    <i class="fas fa-key text-primary me-2"></i>Güvenlik Şifresi
+                                </label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control form-control-lg" 
+                                           id="masterPassword" name="masterPassword" required>
+                                    <button class="btn btn-outline-secondary" type="button" 
+                                            onclick="togglePasswordVisibility('masterPassword', this)">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-unlock me-2"></i>Şifreyi Doğrula
+                                </button>
+                                <a href="../" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i>Ana Sayfaya Dön
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Admin Login Step -->
+                <div class="card shadow-lg border-0 auth-card d-none" id="adminLoginCard">
+                    <div class="card-header text-center bg-success text-white py-4">
+                        <div class="auth-icon mb-3">
+                            <i class="fas fa-user-shield fa-3x"></i>
+                        </div>
+                        <h4 class="mb-0 fw-bold">Admin Girişi</h4>
+                        <p class="mb-0 small opacity-75">Yönetici Bilgilerinizi Girin</p>
+                    </div>
+                    <div class="card-body p-4">
+                        <form id="adminLoginForm">
+                            <div class="mb-3">
+                                <label for="adminUsername" class="form-label fw-semibold">
+                                    <i class="fas fa-user text-primary me-2"></i>Kullanıcı Adı
+                                </label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control form-control-lg" 
+                                           id="adminUsername" name="username" required>
+                                    <button class="btn btn-outline-secondary" type="button" 
+                                            onclick="togglePasswordVisibility('adminUsername', this)">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="adminPassword" class="form-label fw-semibold">
+                                    <i class="fas fa-lock text-primary me-2"></i>Şifre
+                                </label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control form-control-lg" 
+                                           id="adminPassword" name="password" required>
+                                    <button class="btn btn-outline-secondary" type="button" 
+                                            onclick="togglePasswordVisibility('adminPassword', this)">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label for="securityAnswer" class="form-label fw-semibold">
+                                    <i class="fas fa-question-circle text-primary me-2"></i>
+                                    <span id="securityQuestion">Güvenlik Sorusu</span>
+                                </label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control form-control-lg" 
+                                           id="securityAnswer" name="securityAnswer" required>
+                                    <button class="btn btn-outline-secondary" type="button" 
+                                            onclick="togglePasswordVisibility('securityAnswer', this)">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Math Verification -->
+                            <div class="mb-4">
+                                <label for="mathAnswer" class="form-label fw-semibold">
+                                    <i class="fas fa-calculator text-primary me-2"></i>
+                                    <span id="mathQuestion">0 + 0 = ?</span>
+                                </label>
+                                <input type="number" class="form-control form-control-lg" 
+                                       id="mathAnswer" name="mathAnswer" required>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Giriş Yap
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" onclick="backToMasterPassword()">
+                                    <i class="fas fa-arrow-left me-2"></i>Geri
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Success Animation -->
+                <div class="position-fixed top-0 start-0 w-100 h-100 d-none" id="successOverlay" 
+                     style="background: rgba(0,0,0,0.8); z-index: 9999;">
+                    <div class="d-flex align-items-center justify-content-center h-100">
+                        <div class="text-center text-white">
+                            <div class="success-animation mb-4">
+                                <div class="success-checkmark">
+                                    <div class="check-icon">
+                                        <span class="icon-line line-tip"></span>
+                                        <span class="icon-line line-long"></span>
+                                        <div class="icon-circle"></div>
+                                        <div class="icon-fix"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h3 class="mb-3">Giriş Başarılı!</h3>
+                            <p class="mb-4">Admin paneline yönlendiriliyorsunuz...</p>
+                            <div class="spinner-border text-light" role="status"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../assets/js/app.js"></script>
+    <script>
+        let currentMathAnswer = 0;
+
+        // Initialize admin login
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAdminLogin();
+        });
+
+        function initializeAdminLogin() {
+            // Master password form
+            new FormHandler('#masterPasswordForm', {
+                onSubmit: verifyMasterPassword,
+                onSuccess: showAdminLoginStep
+            });
+
+            // Admin login form
+            new FormHandler('#adminLoginForm', {
+                onSubmit: adminLogin,
+                onSuccess: handleLoginSuccess
+            });
+
+            // Generate initial math question
+            generateMathQuestion();
+        }
+
+        async function verifyMasterPassword(data) {
+            const result = await Utils.request('/admin/verify-master-password', {
+                method: 'POST',
+                body: { masterPassword: data.masterPassword }
+            });
+
+            return result;
+        }
+
+        function showAdminLoginStep() {
+            document.getElementById('masterPasswordCard').classList.add('d-none');
+            document.getElementById('adminLoginCard').classList.remove('d-none');
+            
+            // Animate appearance
+            Animations.fadeIn(document.getElementById('adminLoginCard'));
+            
+            // Load security question
+            loadSecurityQuestion();
+        }
+
+        async function loadSecurityQuestion() {
+            try {
+                const result = await Utils.request('/admin/security-question');
+                if (result.success) {
+                    document.getElementById('securityQuestion').textContent = result.data.question;
+                }
+            } catch (error) {
+                console.error('Security question load error:', error);
+            }
+        }
+
+        function generateMathQuestion() {
+            const operations = [
+                () => {
+                    const a = Math.floor(Math.random() * 20) + 1;
+                    const b = Math.floor(Math.random() * 20) + 1;
+                    currentMathAnswer = a + b;
+                    return `${a} + ${b} = ?`;
+                },
+                () => {
+                    const a = Math.floor(Math.random() * 30) + 10;
+                    const b = Math.floor(Math.random() * 10) + 1;
+                    currentMathAnswer = a - b;
+                    return `${a} - ${b} = ?`;
+                },
+                () => {
+                    const a = Math.floor(Math.random() * 12) + 1;
+                    const b = Math.floor(Math.random() * 12) + 1;
+                    currentMathAnswer = a * b;
+                    return `${a} × ${b} = ?`;
+                }
+            ];
+
+            const randomOp = operations[Math.floor(Math.random() * operations.length)];
+            document.getElementById('mathQuestion').textContent = randomOp();
+        }
+
+        async function adminLogin(data) {
+            // Validate math answer
+            if (parseInt(data.mathAnswer) !== currentMathAnswer) {
+                generateMathQuestion(); // Generate new question on wrong answer
+                throw new Error('Matematik sorusunun cevabı yanlış');
+            }
+
+            const result = await Utils.request('/admin/login', {
+                method: 'POST',
+                body: {
+                    username: data.username,
+                    password: data.password,
+                    securityAnswer: data.securityAnswer,
+                    mathAnswer: data.mathAnswer
+                }
+            });
+
+            return result;
+        }
+
+        function handleLoginSuccess(result) {
+            // Show success animation
+            document.getElementById('successOverlay').classList.remove('d-none');
+            
+            // Redirect after animation
+            setTimeout(() => {
+                window.location.href = 'dashboard.html';
+            }, 2000);
+        }
+
+        function backToMasterPassword() {
+            document.getElementById('adminLoginCard').classList.add('d-none');
+            document.getElementById('masterPasswordCard').classList.remove('d-none');
+            
+            // Reset forms
+            document.getElementById('masterPasswordForm').reset();
+            document.getElementById('adminLoginForm').reset();
+        }
+
+        function togglePasswordVisibility(inputId, button) {
+            const input = document.getElementById(inputId);
+            const icon = button.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+    </script>
+</body>
+</html>
