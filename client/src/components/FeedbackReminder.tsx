@@ -18,29 +18,44 @@ export function FeedbackReminder({ onClose, userEmail, userName, orderId }: Feed
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = async () => {
-    if (!message.trim()) return;
+    console.log("Submit clicked, message:", message.trim());
+    if (!message.trim()) {
+      console.log("Message is empty, returning early");
+      return;
+    }
     
     setIsSubmitting(true);
+    console.log("Submitting feedback...");
     try {
+      const payload = {
+        userEmail,
+        userName,
+        orderId,
+        message: message.trim(),
+        satisfactionLevel,
+      };
+      console.log("Payload:", payload);
+      
       const response = await fetch("/api/feedback", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          userEmail,
-          userName,
-          orderId,
-          message: message.trim(),
-          satisfactionLevel,
-        }),
+        body: JSON.stringify(payload),
       });
 
+      console.log("Response status:", response.status);
+      const responseData = await response.json();
+      console.log("Response data:", responseData);
+
       if (response.ok) {
+        console.log("Success! Setting submitted to true");
         setSubmitted(true);
         setTimeout(() => {
           onClose();
         }, 2000);
+      } else {
+        console.error("API returned error:", responseData);
       }
     } catch (error) {
       console.error("Feedback submission error:", error);
