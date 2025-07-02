@@ -162,19 +162,45 @@ export default function Landing() {
                 <span className="text-purple-400 font-bold"> 7/24 güvenilir</span> hizmet.
               </p>
               
-              {/* Live Stats */}
-              <div className="flex flex-wrap justify-center gap-8 mb-16">
-                <div className="flex items-center space-x-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-                  <CheckCircle className="w-5 h-5 text-emerald-400" />
-                  <span className="text-white font-semibold">5.847 Aktif Servis</span>
+              {/* Enhanced Live Stats */}
+              <div className="flex flex-wrap justify-center gap-6 mb-16">
+                <div className="group relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/30 to-green-500/30 rounded-2xl blur-lg group-hover:blur-xl transition-all duration-300"></div>
+                  <div className="relative flex items-center space-x-3 bg-gradient-to-r from-emerald-500/20 to-green-500/20 border border-emerald-400/30 backdrop-blur-sm px-6 py-4 rounded-2xl hover:scale-105 transition-all duration-300">
+                    <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center">
+                      <CheckCircle className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-emerald-400 font-bold text-lg">5.847</p>
+                      <p className="text-white text-sm">Aktif Servis</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-                  <TrendingUp className="w-5 h-5 text-blue-400" />
-                  <span className="text-white font-semibold">%99.8 Başarı Oranı</span>
+                
+                <div className="group relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/30 to-cyan-500/30 rounded-2xl blur-lg group-hover:blur-xl transition-all duration-300"></div>
+                  <div className="relative flex items-center space-x-3 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-400/30 backdrop-blur-sm px-6 py-4 rounded-2xl hover:scale-105 transition-all duration-300">
+                    <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+                      <TrendingUp className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-blue-400 font-bold text-lg">%99.8</p>
+                      <p className="text-white text-sm">Başarı Oranı</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
-                  <Activity className="w-5 h-5 text-purple-400" />
-                  <span className="text-white font-semibold">2-30 Sn Teslimat</span>
+                
+                <div className="group relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500/30 to-pink-500/30 rounded-2xl blur-lg group-hover:blur-xl transition-all duration-300"></div>
+                  <div className="relative flex items-center space-x-3 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-400/30 backdrop-blur-sm px-6 py-4 rounded-2xl hover:scale-105 transition-all duration-300">
+                    <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center">
+                      <Activity className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-purple-400 font-bold text-lg">2-30s</p>
+                      <p className="text-white text-sm">Teslimat</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
