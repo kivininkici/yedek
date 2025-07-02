@@ -21,6 +21,13 @@ export function FeedbackReminder({ onClose, userEmail, userName, orderId }: Feed
     console.log("Submit clicked, message:", message.trim());
     if (!message.trim()) {
       console.log("Message is empty, returning early");
+      alert("Lütfen geri bildirim mesajınızı yazın!");
+      return;
+    }
+    
+    if (!satisfactionLevel) {
+      console.log("Satisfaction level not selected");
+      alert("Lütfen memnuniyet düzeyinizi seçin!");
       return;
     }
     
@@ -54,12 +61,14 @@ export function FeedbackReminder({ onClose, userEmail, userName, orderId }: Feed
         setTimeout(() => {
           // Redirect to admin feedback page
           window.location.href = '/admin/feedback';
-        }, 2000);
+        }, 2500);
       } else {
         console.error("API returned error:", responseData);
+        alert("Geri bildirim gönderilirken hata oluştu!");
       }
     } catch (error) {
       console.error("Feedback submission error:", error);
+      alert("Geri bildirim gönderilirken hata oluştu!");
     }
     setIsSubmitting(false);
   };
@@ -82,10 +91,13 @@ export function FeedbackReminder({ onClose, userEmail, userName, orderId }: Feed
           <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
             <Star className="w-6 h-6 text-white" />
           </div>
-          <h3 className="font-bold text-lg mb-2">Teşekkürler!</h3>
+          <h3 className="font-bold text-lg mb-2">Başarıyla Gönderildi!</h3>
           <p className="text-sm opacity-90">
-            Geri bildiriminiz başarıyla gönderildi.
+            Geri bildiriminiz alındı. Admin panele yönlendiriliyorsunuz...
           </p>
+          <div className="mt-3">
+            <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto"></div>
+          </div>
         </div>
       </motion.div>
     );
@@ -201,9 +213,11 @@ export function FeedbackReminder({ onClose, userEmail, userName, orderId }: Feed
                   e.preventDefault();
                   e.stopPropagation();
                   console.log("Gönder button clicked!");
+                  console.log("Message:", message.trim());
+                  console.log("Satisfaction level:", satisfactionLevel);
                   handleSubmit();
                 }}
-                disabled={!message.trim() || isSubmitting}
+                disabled={!message.trim() || !satisfactionLevel || isSubmitting}
                 className="w-full bg-white/20 hover:bg-white/30 text-white border-none disabled:opacity-50"
                 type="button"
               >
