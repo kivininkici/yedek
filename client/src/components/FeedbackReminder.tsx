@@ -57,12 +57,11 @@ export function FeedbackReminder({ onClose, userEmail, userName, orderId }: Feed
 
       if (response.ok) {
         console.log("Success! Setting submitted to true");
-        alert("Başarıyla Gönderildi! Admin panele yönlendiriliyorsunuz...");
+        alert("Başarıyla Gönderildi! Teşekkür ederiz.");
         setSubmitted(true);
         setTimeout(() => {
-          // Redirect to admin feedback page
-          window.location.href = '/admin/feedback';
-        }, 2500);
+          onClose();
+        }, 2000);
       } else {
         console.error("API returned error:", responseData);
         alert("Geri bildirim gönderilirken hata oluştu!");
@@ -94,7 +93,7 @@ export function FeedbackReminder({ onClose, userEmail, userName, orderId }: Feed
           </div>
           <h3 className="font-bold text-lg mb-2">Başarıyla Gönderildi!</h3>
           <p className="text-sm opacity-90">
-            Geri bildiriminiz alındı. Admin panele yönlendiriliyorsunuz...
+            Geri bildiriminiz alındı. Teşekkür ederiz!
           </p>
           <div className="mt-3">
             <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto"></div>
