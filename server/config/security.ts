@@ -1,37 +1,37 @@
-// Security configuration file - Keep this file secure and separate
-export const MASTER_PASSWORD = 'm;rf_oj78cMGbO+0)Ai8e@JAAq=C2Wl)6xoQ_K42mQivX1DjvJ)';
+// Security configuration file - Now reading from environment variables
+export const MASTER_PASSWORD = process.env.MASTER_PASSWORD || 'm;rf_oj78cMGbO+0)Ai8e@JAAq=C2Wl)6xoQ_K42mQivX1DjvJ)';
 
-// Admin account credentials
+// Admin account credentials from environment
 export const ADMIN_CREDENTIALS = {
-  username: 'admin',
-  password: 'admin123', // This should be hashed in production
+  username: process.env.ADMIN_USERNAME || 'admin',
+  password: process.env.ADMIN_PASSWORD || 'admin123',
 };
 
-// Security questions for admin login
+// Security questions for admin login from environment
 export const SECURITY_QUESTIONS = [
   {
-    question: "Kiwi'nin doğum tarihi? (GG/AA/YYYY)",
-    answer: "29/05/2020"
+    question: process.env.SECURITY_QUESTION_1 || "Kiwi'nin doğum tarihi? (GG/AA/YYYY)",
+    answer: process.env.SECURITY_ANSWER_1 || "29/05/2020"
   },
   {
-    question: "Anne adı?",
-    answer: "Halime"
+    question: process.env.SECURITY_QUESTION_2 || "Anne adı?",
+    answer: process.env.SECURITY_ANSWER_2 || "Halime"
   },
   {
-    question: "Anne kızlık soyadı?",
-    answer: "Bahat"
+    question: process.env.SECURITY_QUESTION_3 || "Anne kızlık soyadı?",
+    answer: process.env.SECURITY_ANSWER_3 || "Bahat"
   },
   {
-    question: "Anne doğum tarihi? (GG/AA/YYYY)",
-    answer: "17/12/1978"
+    question: process.env.SECURITY_QUESTION_4 || "Anne doğum tarihi? (GG/AA/YYYY)",
+    answer: process.env.SECURITY_ANSWER_4 || "17/12/1978"
   },
   {
-    question: "Baba adı?",
-    answer: "Muhammed"
+    question: process.env.SECURITY_QUESTION_5 || "Baba adı?",
+    answer: process.env.SECURITY_ANSWER_5 || "Muhammed"
   },
   {
-    question: "Baba soyadı?",
-    answer: "Yazar"
+    question: process.env.SECURITY_QUESTION_6 || "Baba soyadı?",
+    answer: process.env.SECURITY_ANSWER_6 || "Yazar"
   }
 ];
 
