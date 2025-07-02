@@ -32,7 +32,7 @@ import HostingPreview from "@/pages/HostingPreview";
 import HostingDemo from "@/pages/HostingDemo";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
-import { CursorFollower, CursorTrail } from "@/hooks/useMouseTracking";
+
 
 function Router() {
   const { isAuthenticated: isUserAuthenticated, isLoading: isUserLoading } = useAuth();

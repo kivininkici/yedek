@@ -74,6 +74,8 @@ const ModernBackground = () => {
         style={{
           background: 'radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.05) 40%, transparent 70%)',
           filter: 'blur(40px)',
+          top: '20%', 
+          left: '10%'
         }}
         animate={{
           x: [0, 200, 0],
@@ -85,7 +87,6 @@ const ModernBackground = () => {
           repeat: Infinity,
           ease: "easeInOut"
         }}
-        style={{ top: '20%', left: '10%' }}
       />
       
       <motion.div 
@@ -93,6 +94,8 @@ const ModernBackground = () => {
         style={{
           background: 'radial-gradient(circle, rgba(236, 72, 153, 0.08) 0%, rgba(168, 85, 247, 0.04) 40%, transparent 70%)',
           filter: 'blur(35px)',
+          top: '60%', 
+          right: '15%'
         }}
         animate={{
           x: [0, -150, 0],
@@ -104,7 +107,6 @@ const ModernBackground = () => {
           repeat: Infinity,
           ease: "easeInOut"
         }}
-        style={{ top: '60%', right: '15%' }}
       />
 
       {/* Subtle Grid */}

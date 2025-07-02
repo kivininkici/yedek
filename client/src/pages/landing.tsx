@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { KeyRound, Shield, Zap, Users, Star, CheckCircle, TrendingUp, Activity, LogIn, UserPlus, Crown, Sparkles, ShoppingCart, MessageCircle, Send, Heart } from "lucide-react";
 import { useState } from "react";
-import { LandingCursorFollower } from "@/hooks/useMouseTracking";
+
 import { FeedbackReminder } from "@/components/FeedbackReminder";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -60,8 +60,6 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white relative overflow-hidden">
-      {/* Landing Page Cursor Effect */}
-      <LandingCursorFollower />
       
       {/* Animated Background */}
       <div className="absolute inset-0">

@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useToast } from "@/hooks/use-toast";
-import { AdminCursorFollower } from "@/hooks/useMouseTracking";
+
 
 import Sidebar from "@/components/layout/sidebar";
 import Header from "@/components/layout/header";
@@ -125,8 +125,7 @@ export default function Dashboard() {
           />
         </div>
         
-        {/* Admin Blue Cursor */}
-        <AdminCursorFollower />
+
         
         <Header 
           title="🚀 Admin Dashboard" 

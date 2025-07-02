@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { KeyRound, Shield, Zap, Users, Star, TrendingUp, Activity, LogOut, User, ExternalLink, Search, ShoppingCart, Crown, Sparkles, CheckCircle, Send, MessageCircle, Frown, Meh, Smile, BarChart3, Globe, Clock, Award, Rocket, Target, Fingerprint, Heart } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
-import { UserCursorFollower } from "@/hooks/useMouseTracking";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 
@@ -267,9 +266,6 @@ export default function Home() {
     <div className="min-h-screen text-white relative">
       {/* Advanced Background */}
       <AdvancedBackground />
-      
-      {/* User Cursor Effect */}
-      <UserCursorFollower />
       
       {/* Header */}
       <motion.header 
