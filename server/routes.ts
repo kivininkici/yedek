@@ -3133,6 +3133,112 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   }, 60 * 60 * 1000); // 1 hour
 
+  // Hosting PHP preview route
+  app.get("/hosting-php-preview", (req, res) => {
+    const fs = require('fs');
+    const path = require('path');
+    
+    try {
+      const phpFilePath = path.join(process.cwd(), 'hosting/public_html/index.php');
+      const phpContent = fs.readFileSync(phpFilePath, 'utf8');
+      
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.send(`
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KeyPanel PHP Hosting Preview</title>
+    <style>
+        body { 
+            font-family: 'Courier New', monospace; 
+            background: #1a1a1a; 
+            color: #00ff00; 
+            margin: 0; 
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .header {
+            background: #333;
+            color: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            color: #00ff00;
+        }
+        .code-block {
+            background: #000;
+            border: 1px solid #333;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            font-size: 14px;
+        }
+        .php-tag { color: #ff6b6b; }
+        .comment { color: #6c757d; }
+        .string { color: #ffc107; }
+        .keyword { color: #007bff; }
+        .variable { color: #28a745; }
+        .back-btn {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .back-btn:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔑 KeyPanel - PHP Hosting Dosyası Preview</h1>
+        <p>hosting/public_html/index.php - cPanel Hosting Uyumlu Ana Dosya</p>
+        <a href="/" class="back-btn">← Ana Sayfaya Dön</a>
+    </div>
+    
+    <div class="code-block">${phpContent
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/(&lt;\?php)/g, '<span class="php-tag">$1</span>')
+      .replace(/(&lt;\?)/g, '<span class="php-tag">$1</span>')
+      .replace(/(\/\/.+)/g, '<span class="comment">$1</span>')
+      .replace(/(["'][^"']*["'])/g, '<span class="string">$1</span>')
+      .replace(/(\$\w+)/g, '<span class="variable">$1</span>')
+      .replace(/\b(function|class|if|else|while|for|foreach|return|echo|include|require|public|private|protected|static|const|var)\b/g, '<span class="keyword">$1</span>')
+    }</div>
+    
+    <div style="background: #333; color: #fff; padding: 20px; margin-top: 20px; border-radius: 8px;">
+        <h3>📋 Dosya Bilgileri:</h3>
+        <ul>
+            <li><strong>Dosya:</strong> hosting/public_html/index.php</li>
+            <li><strong>Boyut:</strong> ${phpContent.length} karakter</li>
+            <li><strong>Tip:</strong> PHP Router + HTML Template</li>
+            <li><strong>Özellikler:</strong> cPanel hosting uyumlu, API routing, static file serving</li>
+        </ul>
+    </div>
+</body>
+</html>
+      `);
+    } catch (error: any) {
+      res.status(500).send(`
+        <h1>Dosya Okuma Hatası</h1>
+        <p>PHP dosyası okunamadı: ${error?.message || 'Bilinmeyen hata'}</p>
+        <a href="/">← Ana Sayfaya Dön</a>
+      `);
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

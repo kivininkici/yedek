@@ -14,10 +14,25 @@ export default function HostingPreview() {
 
         <div className="bg-white rounded-xl p-6 shadow-lg mb-8">
           <h2 className="text-2xl font-bold text-blue-600 mb-4">📋 Hosting Klasörü Preview</h2>
-          <p className="text-gray-700">
+          <p className="text-gray-700 mb-4">
             Bu sayfa, hosting klasöründe bulunan PHP tabanlı KeyPanel sisteminin özelliklerini göstermektedir. 
             cPanel hosting ortamına yüklendiğinde aynı özellikler ile çalışacaktır.
           </p>
+          <div className="flex gap-4">
+            <Link 
+              href="/hosting-php-preview" 
+              className="inline-block bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold"
+            >
+              📄 PHP Dosyasını Gör
+            </Link>
+            <a 
+              href="/hosting-php-preview" 
+              target="_blank"
+              className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+            >
+              🔗 Yeni Sekmede Aç
+            </a>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
