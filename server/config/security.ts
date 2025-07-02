@@ -5,11 +5,11 @@ import { config } from "dotenv";
 config();
 
 // Get security credentials from environment variables
-export const MASTER_PASSWORD = process.env.MASTER_PASSWORD!;
+export const MASTER_PASSWORD = process.env.MASTER_PASSWORD || "5c2z6D1UicpYVvPBQkeoPy0OMsDgxAobfke1Hv5FoV9CwLhuxh";
 
 export const ADMIN_CREDENTIALS = {
-  username: process.env.ADMIN_USERNAME!,
-  password: process.env.ADMIN_PASSWORD!,
+  username: process.env.ADMIN_USERNAME || "admin",
+  password: process.env.ADMIN_PASSWORD || "admin123",
 };
 
 // Build security questions array from environment variables
