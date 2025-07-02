@@ -6,6 +6,7 @@ import { db } from "./db";
 import { desc, eq, sql } from "drizzle-orm";
 import fs from 'fs';
 import path from 'path';
+import { sendFeedbackResponse } from './emailService';
 
 // Using admin session-based authentication only
 import { insertKeySchema, insertServiceSchema, insertOrderSchema, insertApiSettingsSchema } from "@shared/schema";
@@ -3297,9 +3298,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Yanıt mesajı gerekli" });
       }
 
+      // Get original feedback before updating
+      const originalFeedback = await storage.getFeedbackById(parseInt(id));
+      if (!originalFeedback) {
+        return res.status(404).json({ message: "Geri bildirim bulunamadı" });
+      }
+
       const updatedFeedback = await storage.respondToFeedback(parseInt(id), response.trim());
+
+      // Send email if user provided email
+      if (originalFeedback.userEmail) {
+        try {
+          const emailSent = await sendFeedbackResponse(
+            originalFeedback.userEmail,
+            originalFeedback.userName || 'Değerli Kullanıcımız',
+            originalFeedback.message,
+            response.trim(),
+            originalFeedback.satisfactionLevel ?? undefined
+          );
+          
+          if (emailSent) {
+            console.log(`Feedback response email sent to: ${originalFeedback.userEmail}`);
+          } else {
+            console.log(`Failed to send email to: ${originalFeedback.userEmail}`);
+          }
+        } catch (emailError) {
+          console.error("Email sending error:", emailError);
+          // Don't fail the response if email fails
+        }
+      }
+
       res.json({ 
-        message: "Yanıt başarıyla gönderildi",
+        message: "Yanıt başarıyla gönderildi" + (originalFeedback.userEmail ? " ve e-posta ile bildirildi" : ""),
         feedback: updatedFeedback
       });
     } catch (error) {

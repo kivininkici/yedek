@@ -151,6 +151,7 @@ export interface IStorage {
   createUserFeedback(feedback: InsertUserFeedback): Promise<UserFeedback>;
   getAllUserFeedback(): Promise<UserFeedback[]>;
   getUnreadUserFeedback(): Promise<UserFeedback[]>;
+  getFeedbackById(id: number): Promise<UserFeedback | undefined>;
   markFeedbackAsRead(id: number): Promise<void>;
   respondToFeedback(id: number, response: string): Promise<UserFeedback>;
 }
@@ -913,6 +914,14 @@ export class DatabaseStorage implements IStorage {
       .from(userFeedback)
       .where(eq(userFeedback.isRead, false))
       .orderBy(desc(userFeedback.createdAt));
+  }
+
+  async getFeedbackById(id: number): Promise<UserFeedback | undefined> {
+    const [feedback] = await db
+      .select()
+      .from(userFeedback)
+      .where(eq(userFeedback.id, id));
+    return feedback;
   }
 
   async markFeedbackAsRead(id: number): Promise<void> {
