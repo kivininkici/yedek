@@ -3227,6 +3227,87 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // User Feedback API endpoints
+  app.post("/api/feedback", async (req, res) => {
+    try {
+      const { userEmail, userName, orderId, message, satisfactionLevel } = req.body;
+      const ipAddress = req.ip || req.connection.remoteAddress || 'unknown';
+      
+      if (!message || message.trim().length === 0) {
+        return res.status(400).json({ message: "Geri bildirim mesajı gerekli" });
+      }
+
+      const feedback = await storage.createUserFeedback({
+        userEmail,
+        userName,
+        orderId,
+        message: message.trim(),
+        satisfactionLevel,
+        ipAddress
+      });
+
+      res.json({ 
+        message: "Geri bildiriminiz başarıyla gönderildi. Teşekkür ederiz!",
+        feedbackId: feedback.id
+      });
+    } catch (error) {
+      console.error("Error creating feedback:", error);
+      res.status(500).json({ message: "Geri bildirim gönderilemedi" });
+    }
+  });
+
+  // Admin feedback routes
+  app.get("/api/admin/feedback", requireAdminAuth, async (req, res) => {
+    try {
+      const feedback = await storage.getAllUserFeedback();
+      res.json(feedback);
+    } catch (error) {
+      console.error("Error fetching feedback:", error);
+      res.status(500).json({ message: "Geri bildirimler alınamadı" });
+    }
+  });
+
+  app.get("/api/admin/feedback/unread", requireAdminAuth, async (req, res) => {
+    try {
+      const unreadFeedback = await storage.getUnreadUserFeedback();
+      res.json(unreadFeedback);
+    } catch (error) {
+      console.error("Error fetching unread feedback:", error);
+      res.status(500).json({ message: "Okunmamış geri bildirimler alınamadı" });
+    }
+  });
+
+  app.put("/api/admin/feedback/:id/read", requireAdminAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      await storage.markFeedbackAsRead(parseInt(id));
+      res.json({ message: "Geri bildirim okundu olarak işaretlendi" });
+    } catch (error) {
+      console.error("Error marking feedback as read:", error);
+      res.status(500).json({ message: "Geri bildirim güncellenemedi" });
+    }
+  });
+
+  app.post("/api/admin/feedback/:id/respond", requireAdminAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { response } = req.body;
+      
+      if (!response || response.trim().length === 0) {
+        return res.status(400).json({ message: "Yanıt mesajı gerekli" });
+      }
+
+      const updatedFeedback = await storage.respondToFeedback(parseInt(id), response.trim());
+      res.json({ 
+        message: "Yanıt başarıyla gönderildi",
+        feedback: updatedFeedback
+      });
+    } catch (error) {
+      console.error("Error responding to feedback:", error);
+      res.status(500).json({ message: "Yanıt gönderilemedi" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

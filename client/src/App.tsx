@@ -23,6 +23,7 @@ import ApiManagement from "@/pages/admin/api-management";
 import AdminKeyStats from "@/pages/admin-key-stats";
 import ApiBalances from "@/pages/admin/api-balances";
 import LoginAttempts from "@/pages/admin/login-attempts";
+import AdminFeedback from "@/pages/admin/feedback";
 import HostingPreview from "@/pages/HostingPreview";
 import HostingDemo from "@/pages/HostingDemo";
 import { useAuth } from "@/hooks/useAuth";
@@ -120,6 +121,9 @@ function Router() {
       </Route>
       <Route path="/admin/login-attempts">
         {isAdminAuthenticated ? <LoginAttempts /> : <AdminLogin />}
+      </Route>
+      <Route path="/admin/feedback">
+        {isAdminAuthenticated ? <AdminFeedback /> : <AdminLogin />}
       </Route>
       
       {/* 404 fallback */}

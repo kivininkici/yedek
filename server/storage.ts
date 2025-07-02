@@ -28,7 +28,10 @@ import {
   type AdminUser,
   type InsertAdminUser,
   type LoginAttempt,
-  type InsertLoginAttempt
+  type InsertLoginAttempt,
+  userFeedback,
+  type UserFeedback,
+  type InsertUserFeedback
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, sql, and, isNull, isNotNull, count } from "drizzle-orm";
@@ -143,6 +146,13 @@ export interface IStorage {
   getLoginAttemptsByIP(ipAddress: string): Promise<LoginAttempt[]>;
   getRecentFailedAttempts(ipAddress: string, minutes: number): Promise<number>;
   getAllLoginAttempts(): Promise<LoginAttempt[]>;
+
+  // User feedback operations
+  createUserFeedback(feedback: InsertUserFeedback): Promise<UserFeedback>;
+  getAllUserFeedback(): Promise<UserFeedback[]>;
+  getUnreadUserFeedback(): Promise<UserFeedback[]>;
+  markFeedbackAsRead(id: number): Promise<void>;
+  respondToFeedback(id: number, response: string): Promise<UserFeedback>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -879,6 +889,50 @@ export class DatabaseStorage implements IStorage {
       .from(loginAttempts)
       .orderBy(desc(loginAttempts.createdAt))
       .limit(1000); // Son 1000 attempt
+  }
+
+  // User feedback operations
+  async createUserFeedback(feedback: InsertUserFeedback): Promise<UserFeedback> {
+    const [userFeedbackRecord] = await db
+      .insert(userFeedback)
+      .values(feedback)
+      .returning();
+    return userFeedbackRecord;
+  }
+
+  async getAllUserFeedback(): Promise<UserFeedback[]> {
+    return await db
+      .select()
+      .from(userFeedback)
+      .orderBy(desc(userFeedback.createdAt));
+  }
+
+  async getUnreadUserFeedback(): Promise<UserFeedback[]> {
+    return await db
+      .select()
+      .from(userFeedback)
+      .where(eq(userFeedback.isRead, false))
+      .orderBy(desc(userFeedback.createdAt));
+  }
+
+  async markFeedbackAsRead(id: number): Promise<void> {
+    await db
+      .update(userFeedback)
+      .set({ isRead: true })
+      .where(eq(userFeedback.id, id));
+  }
+
+  async respondToFeedback(id: number, response: string): Promise<UserFeedback> {
+    const [updated] = await db
+      .update(userFeedback)
+      .set({ 
+        adminResponse: response, 
+        respondedAt: new Date(),
+        isRead: true
+      })
+      .where(eq(userFeedback.id, id))
+      .returning();
+    return updated;
   }
 }
 

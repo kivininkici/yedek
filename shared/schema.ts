@@ -161,6 +161,21 @@ export const loginAttempts = pgTable("login_attempts", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// User feedback table
+export const userFeedback = pgTable("user_feedback", {
+  id: serial("id").primaryKey(),
+  userEmail: varchar("user_email", { length: 255 }),
+  userName: varchar("user_name", { length: 255 }),
+  orderId: varchar("order_id", { length: 50 }), // Related order if any
+  message: text("message").notNull(),
+  satisfactionLevel: varchar("satisfaction_level", { length: 20 }), // 'unsatisfied', 'neutral', 'satisfied'
+  ipAddress: varchar("ip_address", { length: 45 }),
+  isRead: boolean("is_read").notNull().default(false),
+  adminResponse: text("admin_response"),
+  createdAt: timestamp("created_at").defaultNow(),
+  respondedAt: timestamp("responded_at"),
+});
+
 // Schema exports
 export const insertKeySchema = createInsertSchema(keys).omit({
   id: true,
@@ -201,6 +216,13 @@ export const insertNotificationSchema = createInsertSchema(notifications).omit({
 export const insertLoginAttemptSchema = createInsertSchema(loginAttempts).omit({
   id: true,
   createdAt: true,
+});
+
+export const insertUserFeedbackSchema = createInsertSchema(userFeedback).omit({
+  id: true,
+  createdAt: true,
+  respondedAt: true,
+  isRead: true,
 });
 
 export const insertAdminUserSchema = createInsertSchema(adminUsers).omit({
@@ -244,3 +266,5 @@ export type InsertNotification = z.infer<typeof insertNotificationSchema>;
 export type Notification = typeof notifications.$inferSelect;
 export type InsertLoginAttempt = z.infer<typeof insertLoginAttemptSchema>;
 export type LoginAttempt = typeof loginAttempts.$inferSelect;
+export type InsertUserFeedback = z.infer<typeof insertUserFeedbackSchema>;
+export type UserFeedback = typeof userFeedback.$inferSelect;

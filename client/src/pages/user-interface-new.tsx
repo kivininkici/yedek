@@ -36,6 +36,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/useAuth";
 import { UserCursorFollower } from "@/hooks/useMouseTracking";
+import { FeedbackReminder } from "@/components/FeedbackReminder";
 
 const keyValidationSchema = z.object({
   keyValue: z.string().min(1, "Key değeri gerekli"),
@@ -102,6 +103,12 @@ export default function UserInterface() {
   const [activeTab, setActiveTab] = useState<'create-order' | 'order-history'>('create-order');
   const [orderProgress, setOrderProgress] = useState(0);
   const [isCreatingOrder, setIsCreatingOrder] = useState(false);
+  const [showFeedbackReminder, setShowFeedbackReminder] = useState(false);
+  const [completedOrderData, setCompletedOrderData] = useState<{
+    orderId: string;
+    userEmail?: string;
+    userName?: string;
+  } | null>(null);
 
   // Form configurations
   const keyForm = useForm<KeyValidationData>({
@@ -167,6 +174,16 @@ export default function UserInterface() {
     onSuccess: (data: any) => {
       setOrderId(data.orderId);
       setCurrentStep('order-tracking');
+      
+      // Show feedback reminder after successful order
+      setTimeout(() => {
+        setCompletedOrderData({
+          orderId: data.orderId,
+          userEmail: isAuthenticated ? 'user@example.com' : undefined, // We can get this from auth context later
+          userName: isAuthenticated ? 'Kullanıcı' : undefined
+        });
+        setShowFeedbackReminder(true);
+      }, 3000); // Show reminder 3 seconds after order completion
       
       toast({
         title: "Sipariş Başarıyla Oluşturuldu",
@@ -940,6 +957,16 @@ export default function UserInterface() {
           </motion.div>
         </div>
       </div>
+      
+      {/* Feedback Reminder */}
+      {showFeedbackReminder && completedOrderData && (
+        <FeedbackReminder
+          onClose={() => setShowFeedbackReminder(false)}
+          userEmail={completedOrderData.userEmail}
+          userName={completedOrderData.userName}
+          orderId={completedOrderData.orderId}
+        />
+      )}
     </div>
   );
 }
