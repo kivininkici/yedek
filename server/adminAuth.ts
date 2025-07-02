@@ -2,6 +2,13 @@ import bcrypt from 'bcryptjs';
 import type { Express, RequestHandler } from 'express';
 import { storage } from './storage';
 import { adminLoginSchema, type AdminLogin } from '@shared/schema';
+import { 
+  getCurrentMasterPassword, 
+  updateMasterPassword, 
+  getRandomSecurityQuestion, 
+  validateSecurityAnswer,
+  ADMIN_CREDENTIALS 
+} from './config/security';
 
 // Admin session middleware
 export const requireAdminAuth: RequestHandler = (req, res, next) => {
@@ -25,26 +32,16 @@ export async function comparePassword(password: string, hash: string): Promise<b
 export function setupAdminAuth(app: Express) {
   // Get random security question
   app.get('/api/admin/security-question', (req, res) => {
-    const securityQuestions = [
-      { id: 1, question: "Kiwi'nin Doğum Tarihi?", answer: "29/05/2020" },
-      { id: 2, question: "Anne Adın?", answer: "halime" },
-      { id: 3, question: "Anne Kızlık Soyadı?", answer: "bahat" },
-      { id: 4, question: "Anne Doğum Tarihi?", answer: "17/12/1978" },
-      { id: 5, question: "Baba Adı?", answer: "muhammed" },
-      { id: 6, question: "Baba Soyadı?", answer: "yazar" }
-    ];
-    
-    const randomQuestion = securityQuestions[Math.floor(Math.random() * securityQuestions.length)];
+    const randomQuestion = getRandomSecurityQuestion();
     res.json({ 
-      question: randomQuestion.question,
-      questionId: randomQuestion.id 
+      question: randomQuestion.question
     });
   });
 
   // Admin login
   app.post('/api/admin/login', async (req, res) => {
     try {
-      const { username, password, securityAnswer }: AdminLogin = adminLoginSchema.parse(req.body);
+      const { username, password, securityQuestion, securityAnswer }: AdminLogin = adminLoginSchema.parse(req.body);
       const ipAddress = req.ip || req.connection.remoteAddress || 'unknown';
       const userAgent = req.get('User-Agent') || '';
       
@@ -80,7 +77,7 @@ export function setupAdminAuth(app: Express) {
       }
 
       // Check if password matches the admin password (either original or changed)
-      const currentAdminPassword = "m;rf_oj78cMGbO+0)Ai8e@JAAq=C2Wl)6xoQ_K42mQivX1DjvJ";
+      const currentAdminPassword = ADMIN_CREDENTIALS.password;
       let isValidPassword = false;
       
       // First try direct password comparison (for the fixed password)
@@ -102,20 +99,8 @@ export function setupAdminAuth(app: Express) {
         return res.status(401).json({ message: 'Geçersiz kullanıcı adı veya şifre' });
       }
 
-      // Güvenlik sorusu kontrolü - Rastgele seçilen soru cevabını kontrol et
-      const securityQuestions = {
-        "29/05/2020": "Kiwi'nin Doğum Tarihi?",
-        "halime": "Anne Adın?",
-        "bahat": "Anne Kızlık Soyadı?", 
-        "17/12/1978": "Anne Doğum Tarihi?",
-        "muhammed": "Baba Adı?",
-        "yazar": "Baba Soyadı?"
-      };
-      
-      const normalizedAnswer = securityAnswer.toLowerCase().trim();
-      const validAnswers = Object.keys(securityQuestions);
-      
-      if (!validAnswers.includes(normalizedAnswer)) {
+      // Güvenlik sorusu kontrolü - config'den validasyon yap
+      if (!validateSecurityAnswer(securityQuestion, securityAnswer)) {
         // Log failed security question attempt
         await storage.createLoginAttempt({
           ipAddress,
@@ -199,8 +184,8 @@ export function setupAdminAuth(app: Express) {
     try {
       const { password } = req.body;
       
-      // Hard-coded master password 
-      const correctMasterPassword = 'm;rf_oj78cMGbO+0)Ai8e@JAAq=C2Wl)6xoQ_K42mQivX1DjvJ)';
+      // Get current master password from security config
+      const correctMasterPassword = getCurrentMasterPassword();
       
       if (password !== correctMasterPassword) {
         return res.status(401).json({ message: 'Hatalı master şifre' });

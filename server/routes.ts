@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAdminAuth, requireAdminAuth, hashPassword, comparePassword } from "./adminAuth";
+import { getCurrentMasterPassword, updateMasterPassword } from "./config/security";
 import { db } from "./db";
 import { desc, eq, sql } from "drizzle-orm";
 import fs from 'fs';
@@ -2419,13 +2420,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Global variable to store current master password
-  let currentMasterPassword = "m;rf_oj78cMGbO+0)Ai8e@JAAq=C2Wl)6xoQ_K42mQivX1DjvJ)";
-
   // Master password management routes
   app.get("/api/admin/master-password-info", requireAdminAuth, async (req, res) => {
     try {
-      res.json({ currentPassword: currentMasterPassword });
+      res.json({ currentPassword: getCurrentMasterPassword() });
     } catch (error) {
       console.error("Error fetching master password info:", error);
       res.status(500).json({ message: "Master şifre bilgisi alınamadı" });
@@ -2441,12 +2439,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Verify current master password
-      if (currentPassword !== currentMasterPassword) {
+      if (currentPassword !== getCurrentMasterPassword()) {
         return res.status(401).json({ message: "Mevcut master şifre hatalı" });
       }
 
       // Update master password
-      currentMasterPassword = newPassword;
+      updateMasterPassword(newPassword);
 
       res.json({ message: "Master şifre başarıyla güncellendi" });
     } catch (error) {
@@ -2468,12 +2466,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Verify current password
-      if (currentPassword !== currentMasterPassword) {
+      if (currentPassword !== getCurrentMasterPassword()) {
         return res.status(400).json({ message: "Mevcut şifre hatalı" });
       }
       
-      // Update the global password variable
-      currentMasterPassword = newPassword;
+      // Update master password
+      updateMasterPassword(newPassword);
       
       res.json({ 
         message: "Şifre başarıyla değiştirildi",

@@ -407,6 +407,12 @@ Changelog:
 - API endpoint'leri: /api/admin/verify-master-password, /api/admin/master-password-info, /api/admin/update-master-password
 - Sidebar menüsüne "Master Şifre" seçeneği eklendi
 - Sistem artık çift katmanlı güvenlik ile çalışıyor: Master şifre + Admin giriş bilgileri
+- July 2, 2025: Güvenlik konfigürasyonu ayrı dosyaya taşındı
+- server/config/security.ts dosyası oluşturuldu - master şifre ve güvenlik soruları config'den yönetiliyor
+- MASTER_PASSWORD, ADMIN_CREDENTIALS, SECURITY_QUESTIONS merkezi config'de tutuluyor
+- adminAuth.ts ve routes.ts dosyaları security config'i kullanacak şekilde güncellendi
+- validateSecurityAnswer, getRandomSecurityQuestion fonksiyonları config'den çalışıyor
+- Güvenlik için hassas veriler artık ayrı dosyada merkezi olarak yönetiliyor
 
 ## User Preferences
 

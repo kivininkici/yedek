@@ -128,7 +128,12 @@ export default function AdminLogin() {
   const onSubmit = (data: AdminLogin) => {
     setIsLoading(true);
     setIsSuccess(false);
-    loginMutation.mutate(data);
+    // Include the current security question with the form data
+    const submitData = {
+      ...data,
+      securityQuestion: securityQuestion
+    };
+    loginMutation.mutate(submitData);
   };
 
   return (
