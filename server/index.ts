@@ -2,19 +2,31 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import session from "express-session";
+import ConnectPgSimple from "connect-pg-simple";
+import { pool } from "./db";
+import { setupAuth } from "./replitAuth";
+import { setupAdminAuth } from "./adminAuth";
 
 const app = express();
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: false, limit: '50mb' }));
 
-// Session middleware for admin authentication
+// PostgreSQL session store
+const PgSession = ConnectPgSimple(session);
+
+// Session middleware with PostgreSQL store
 app.use(
   session({
+    store: new PgSession({
+      pool: pool,
+      tableName: 'session',
+      createTableIfMissing: true,
+    }),
     secret: process.env.SESSION_SECRET || "admin-secret-key-change-in-production",
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: process.env.NODE_ENV === 'production',
+      secure: false, // Set to true in production with HTTPS
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000, // 24 hours
     },
@@ -51,7 +63,13 @@ app.use((req, res, next) => {
   next();
 });
 
+// Setup authentication systems
+setupAdminAuth(app);
+
 (async () => {
+  // Setup Replit Auth
+  await setupAuth(app);
+  
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
