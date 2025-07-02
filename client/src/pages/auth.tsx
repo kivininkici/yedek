@@ -327,27 +327,54 @@ export default function Auth() {
         </div>
 
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
+          initial={{ opacity: 0, y: 30, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="relative"
         >
-          <Card className="backdrop-blur-sm bg-white/95 shadow-2xl border-blue-100">
-            <CardHeader className="text-center pb-2">
-              <CardTitle className="text-2xl font-bold text-blue-900">OtoKiwi</CardTitle>
-              <CardDescription className="text-blue-600">Hesabınıza giriş yapın veya yeni hesap oluşturun</CardDescription>
+          {/* Glow effect */}
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-300/20 via-blue-400/20 to-purple-300/20 rounded-3xl blur-xl"></div>
+          
+          <Card className="relative backdrop-blur-xl bg-white/90 shadow-2xl border-0 rounded-3xl overflow-hidden">
+            {/* Header section */}
+            <CardHeader className="text-center pb-6 pt-10 bg-gradient-to-br from-blue-50/50 to-purple-50/30">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.3, duration: 0.5, type: "spring" }}
+                className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg"
+              >
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" className="text-white">
+                  <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM12 17c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM15.1 8H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" fill="currentColor"/>
+                </svg>
+              </motion.div>
+              
+              <CardTitle className="text-4xl font-black text-transparent bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text mb-3">
+                OtoKiwi
+              </CardTitle>
+              <CardDescription className="text-lg text-gray-600 font-medium">
+                Hesabınıza giriş yapın veya yeni hesap oluşturun
+              </CardDescription>
             </CardHeader>
-            <CardContent>
+            
+            <CardContent className="px-8 pb-8">
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-2 mb-6 bg-blue-50">
-                  <TabsTrigger value="login" className="data-[state=active]:bg-white data-[state=active]:text-blue-700">
+                <TabsList className="grid w-full grid-cols-2 mb-8 bg-gray-100/80 rounded-2xl p-1 h-14">
+                  <TabsTrigger 
+                    value="login" 
+                    className="data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-md rounded-xl font-semibold text-base transition-all duration-300"
+                  >
                     Giriş Yap
                   </TabsTrigger>
-                  <TabsTrigger value="register" className="data-[state=active]:bg-white data-[state=active]:text-blue-700">
+                  <TabsTrigger 
+                    value="register" 
+                    className="data-[state=active]:bg-white data-[state=active]:text-blue-700 data-[state=active]:shadow-md rounded-xl font-semibold text-base transition-all duration-300"
+                  >
                     Kayıt Ol
                   </TabsTrigger>
                 </TabsList>
 
-                <div className="min-h-[480px]">
+                <div className="min-h-[420px]">
                   <TabsContent value="login" className="space-y-4 mt-0">
                     <AnimatePresence mode="wait">
                       <motion.div
