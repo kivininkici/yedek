@@ -423,46 +423,92 @@ export default function Landing() {
           </div>
         </footer>
       </div>
-      {/* Auth Modal */}
+      {/* Enhanced Auth Modal */}
       {showAuthModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-gradient-to-br from-slate-800 to-slate-900 border border-white/20 rounded-2xl p-8 max-w-md w-full relative">
+        <div className="fixed inset-0 bg-black/90 backdrop-blur-md flex items-center justify-center z-50 p-4">
+          <div className="bg-gradient-to-br from-slate-800/95 via-blue-900/90 to-slate-800/95 border border-blue-400/30 rounded-3xl p-8 max-w-lg w-full relative shadow-2xl overflow-hidden">
+            {/* Background pattern */}
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5"></div>
+            <div className="absolute top-0 left-0 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl"></div>
+            <div className="absolute bottom-0 right-0 w-24 h-24 bg-purple-500/10 rounded-full blur-xl"></div>
+            
             <button 
               onClick={() => setShowAuthModal(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+              className="absolute top-6 right-6 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-all duration-300 hover:scale-110 backdrop-blur-sm"
             >
               ✕
             </button>
             
-            <div className="text-center mb-8">
-              <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <KeyRound className="w-8 h-8 text-white" />
+            <div className="relative z-10">
+              <div className="text-center mb-10">
+                <div className="w-20 h-20 bg-gradient-to-r from-blue-500 via-cyan-500 to-purple-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl">
+                  <KeyRound className="w-10 h-10 text-white" />
+                </div>
+                <h3 className="text-3xl font-black text-white mb-3 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                  OtoKiwi'e Hoş Geldin! 🎉
+                </h3>
+                <p className="text-lg text-gray-300 leading-relaxed">
+                  Premium sosyal medya deneyimine hazır mısın?
+                  <br />
+                  <span className="text-blue-400 font-semibold">Hemen başla</span> ve farkı hisset!
+                </p>
               </div>
-              <h3 className="text-2xl font-bold text-white mb-2">OtoKiwi'e Hoş Geldin</h3>
-              <p className="text-gray-400">Hesabınıza giriş yapın veya yeni hesap oluşturun</p>
-            </div>
 
-            <div className="space-y-4">
-              <Button 
-                onClick={() => {
-                  setShowAuthModal(false);
-                  window.location.href = '/auth';
-                }}
-                className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold py-3 rounded-xl transition-all duration-300 hover:scale-105"
-              >
-                <UserPlus className="w-5 h-5 mr-2" />
-                Kayıt Ol / Giriş Yap
-              </Button>
-            </div>
+              <div className="space-y-6">
+                <Button 
+                  onClick={() => {
+                    setShowAuthModal(false);
+                    window.location.href = '/auth';
+                  }}
+                  className="w-full bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600 hover:from-blue-600 hover:via-cyan-600 hover:to-blue-700 text-white font-black py-4 px-8 rounded-2xl shadow-2xl hover:shadow-blue-500/30 transition-all duration-300 transform hover:scale-105 hover:-translate-y-1 text-lg"
+                >
+                  <UserPlus className="w-6 h-6 mr-3" />
+                  Şimdi Başla - Kayıt Ol / Giriş Yap
+                </Button>
+                
+                <div className="text-center">
+                  <p className="text-sm text-gray-400 mb-4">Veya direkt key kullanmaya başla</p>
+                  <Button 
+                    variant="outline"
+                    onClick={() => {
+                      setShowAuthModal(false);
+                      window.location.href = '/user';
+                    }}
+                    className="border-2 border-emerald-400/50 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 hover:text-emerald-300 font-bold px-6 py-3 rounded-xl backdrop-blur-sm hover:scale-105 transition-all duration-300"
+                  >
+                    <KeyRound className="w-5 h-5 mr-2" />
+                    Key Doğrula & Kullan
+                  </Button>
+                </div>
+              </div>
 
-            <div className="mt-8 p-4 bg-emerald-500/10 border border-emerald-400/30 rounded-xl">
-              <div className="flex items-start space-x-3">
-                <CheckCircle className="w-5 h-5 text-emerald-400 mt-0.5" />
-                <div>
-                  <p className="text-sm text-emerald-400 font-semibold">Güvenli Giriş</p>
-                  <p className="text-xs text-gray-400 mt-1">
-                    Hızlı kayıt olun ve güvenli key yönetimi sistemimize erişin
-                  </p>
+              <div className="mt-8 space-y-4">
+                <div className="p-5 bg-gradient-to-r from-emerald-500/15 to-blue-500/15 border border-emerald-400/30 rounded-2xl backdrop-blur-sm">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center flex-shrink-0">
+                      <CheckCircle className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-emerald-400 font-bold text-sm mb-1">%100 Güvenli Sistem</p>
+                      <p className="text-gray-300 text-sm leading-relaxed">
+                        Tek kullanımlık key sistemi ile maksimum güvenlik
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="p-5 bg-gradient-to-r from-blue-500/15 to-purple-500/15 border border-blue-400/30 rounded-2xl backdrop-blur-sm">
+                  <div className="flex items-start space-x-4">
+                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Zap className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-blue-400 font-bold text-sm mb-1">Anlık Teslimat</p>
+                      <p className="text-gray-300 text-sm leading-relaxed">
+                        2-30 saniye içinde hızlı sonuç garantisi
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
