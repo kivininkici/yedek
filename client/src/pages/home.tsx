@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { KeyRound, Shield, Zap, Users, Star, TrendingUp, Activity, LogOut, User, ExternalLink, Search, ShoppingCart, Crown, Sparkles, CheckCircle, Send, MessageCircle, Frown, Meh, Smile } from "lucide-react";
+import { KeyRound, Shield, Zap, Users, Star, TrendingUp, Activity, LogOut, User, ExternalLink, Search, ShoppingCart, Crown, Sparkles, CheckCircle, Send, MessageCircle, Frown, Meh, Smile, BarChart3, Globe, Clock, Award } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { UserCursorFollower } from "@/hooks/useMouseTracking";
@@ -79,49 +79,6 @@ const FloatingParticles = () => {
       >
         <Zap className="w-4 h-4 text-emerald-400" />
       </motion.div>
-      
-      <motion.div 
-        className="absolute w-8 h-8 bg-pink-400/20 rounded-lg flex items-center justify-center"
-        animate={{ 
-          y: [0, -30, 0],
-          rotate: [0, 20, -20, 0]
-        }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 3 }}
-        style={{ top: '15%', right: '30%' }}
-      >
-        <Shield className="w-4 h-4 text-pink-400" />
-      </motion.div>
-      
-      {/* Tiny sparkles */}
-      <motion.div 
-        className="absolute w-2 h-2 bg-blue-300 rounded-full"
-        animate={{ 
-          opacity: [0, 1, 0],
-          scale: [0, 1, 0]
-        }}
-        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        style={{ top: '25%', left: '70%' }}
-      />
-      
-      <motion.div 
-        className="absolute w-2 h-2 bg-purple-300 rounded-full"
-        animate={{ 
-          opacity: [0, 1, 0],
-          scale: [0, 1, 0]
-        }}
-        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
-        style={{ top: '80%', left: '30%' }}
-      />
-      
-      <motion.div 
-        className="absolute w-2 h-2 bg-cyan-300 rounded-full"
-        animate={{ 
-          opacity: [0, 1, 0],
-          scale: [0, 1, 0]
-        }}
-        transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
-        style={{ top: '60%', left: '80%' }}
-      />
     </div>
   );
 };
@@ -212,84 +169,6 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white relative overflow-hidden">
       {/* Floating Particles Background */}
       <FloatingParticles />
-      
-      {/* Additional Static Particles like in auth */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Large gradual orbs */}
-        <motion.div 
-          className="absolute w-80 h-80 bg-blue-500/6 rounded-full blur-3xl"
-          animate={{ 
-            x: [0, 40, 0],
-            y: [0, -30, 0],
-            scale: [1, 1.15, 1]
-          }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-          style={{ top: '10%', left: '5%' }}
-        />
-        <motion.div 
-          className="absolute w-96 h-96 bg-purple-500/5 rounded-full blur-3xl"
-          animate={{ 
-            x: [0, -35, 0],
-            y: [0, 25, 0],
-            scale: [1, 0.85, 1]
-          }}
-          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-          style={{ top: '50%', right: '5%' }}
-        />
-        
-        {/* Small floating dots */}
-        <motion.div 
-          className="absolute w-3 h-3 bg-blue-400/50 rounded-full"
-          animate={{ 
-            y: [0, -40, 0],
-            opacity: [0.5, 1, 0.5]
-          }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-          style={{ top: '25%', left: '20%' }}
-        />
-        
-        <motion.div 
-          className="absolute w-2 h-2 bg-purple-400/60 rounded-full"
-          animate={{ 
-            y: [0, -25, 0],
-            x: [0, 15, 0],
-            opacity: [0.6, 1, 0.6]
-          }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          style={{ top: '70%', left: '80%' }}
-        />
-        
-        <motion.div 
-          className="absolute w-4 h-4 bg-cyan-400/40 rounded-full"
-          animate={{ 
-            y: [0, -35, 0],
-            opacity: [0.4, 1, 0.4]
-          }}
-          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut", delay: 4 }}
-          style={{ top: '80%', left: '15%' }}
-        />
-        
-        <motion.div 
-          className="absolute w-3 h-3 bg-pink-400/50 rounded-full"
-          animate={{ 
-            y: [0, -45, 0],
-            x: [0, -20, 0],
-            opacity: [0.5, 1, 0.5]
-          }}
-          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-          style={{ top: '30%', right: '20%' }}
-        />
-        
-        <motion.div 
-          className="absolute w-2 h-2 bg-emerald-400/70 rounded-full"
-          animate={{ 
-            y: [0, -20, 0],
-            opacity: [0.7, 1, 0.7]
-          }}
-          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 3 }}
-          style={{ top: '85%', right: '35%' }}
-        />
-      </div>
       
       {/* User Cursor Effect */}
       <UserCursorFollower />
@@ -428,117 +307,99 @@ export default function Home() {
         </div>
       </motion.header>
 
-      {/* Hero Section */}
+      {/* Main Content */}
       <main className="container mx-auto px-4 py-16 relative z-10">
+        {/* Hero Section */}
         <motion.div 
           className="text-center mb-16"
-          initial={{ y: 50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 1, delay: 0.5 }}
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.3 }}
         >
-          {/* Premium Badge */}
           <motion.div
-            className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 px-4 py-2 rounded-full border border-blue-400/30 backdrop-blur-sm mb-6"
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
+            className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full mb-6 border border-blue-400/30"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
           >
-            <Crown className="w-4 h-4 text-yellow-400" />
+            <Crown className="w-4 h-4 text-yellow-400 mr-2" />
             <span className="text-blue-200 text-sm font-medium">Türkiye'nin #1 Sosyal Medya Paneli</span>
           </motion.div>
-
-          <motion.h2 
-            className="text-6xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent"
-            initial={{ y: 30, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 1 }}
-          >
-            OtoKiwi
-          </motion.h2>
           
-          <motion.h3
-            className="text-2xl md:text-3xl font-semibold mb-4 bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 1.2 }}
+          <motion.h1 
+            className="text-6xl md:text-8xl font-bold mb-6"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.7 }}
           >
-            Premium Experience
-          </motion.h3>
+            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-blue-400 bg-clip-text text-transparent">
+              OtoKiwi
+            </span>
+          </motion.h1>
           
           <motion.p 
-            className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 1.4 }}
+            className="text-2xl text-blue-200 mb-8 font-light"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.9 }}
           >
-            <span className="text-blue-400 font-semibold">5000+</span> aktif servis ile Instagram, TikTok, YouTube ve daha fazlası. 
-            <span className="text-emerald-400 font-semibold"> Anlık teslimat</span> ve 
-            <span className="text-purple-400 font-semibold"> 7/24 güvenilir hizmet.</span>
+            Premium Experience
           </motion.p>
           
-          {/* Service Stats Badge */}
-          <motion.div
-            className="flex flex-wrap items-center justify-center gap-4 mb-12"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 1.6 }}
+          <motion.p 
+            className="text-lg text-white/80 mb-12 max-w-2xl mx-auto leading-relaxed"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 1.1 }}
           >
-            <div className="flex items-center space-x-2 px-4 py-2 bg-blue-500/10 rounded-full border border-blue-400/20">
-              <CheckCircle className="w-4 h-4 text-emerald-400" />
-              <span className="text-blue-200 text-sm">5.847 Aktif Servis</span>
-            </div>
-            <div className="flex items-center space-x-2 px-4 py-2 bg-purple-500/10 rounded-full border border-purple-400/20">
-              <TrendingUp className="w-4 h-4 text-purple-400" />
-              <span className="text-purple-200 text-sm">%99.8 Başarı Oranı</span>
-            </div>
-            <div className="flex items-center space-x-2 px-4 py-2 bg-emerald-500/10 rounded-full border border-emerald-400/20">
-              <Zap className="w-4 h-4 text-emerald-400" />
-              <span className="text-emerald-200 text-sm">2-30 Sn Teslimat</span>
-            </div>
+            <span className="text-blue-300 font-semibold">5000+</span> aktif servis ile Instagram, TikTok, YouTube ve daha fazlası. 
+            <span className="text-emerald-300 font-semibold"> Anlık teslimat</span> ve 
+            <span className="text-purple-300 font-semibold"> 7/24</span> güvenilir hizmet.
+          </motion.p>
+
+          {/* Stats */}
+          <motion.div 
+            className="flex flex-wrap justify-center gap-6 mb-12"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 1.3 }}
+          >
+            <motion.div 
+              className="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 px-6 py-3 rounded-full border border-blue-400/30"
+              whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(59, 130, 246, 0.3)" }}
+            >
+              <span className="text-blue-300 font-semibold">✓ 5.847 Aktif Servis</span>
+            </motion.div>
+            
+            <motion.div 
+              className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 px-6 py-3 rounded-full border border-purple-400/30"
+              whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(147, 51, 234, 0.3)" }}
+            >
+              <span className="text-purple-300 font-semibold">📈 %99.8 Başarı Oranı</span>
+            </motion.div>
+            
+            <motion.div 
+              className="bg-gradient-to-r from-emerald-500/20 to-teal-500/20 px-6 py-3 rounded-full border border-emerald-400/30"
+              whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(16, 185, 129, 0.3)" }}
+            >
+              <span className="text-emerald-300 font-semibold">⚡ 2-30 Sn Teslimat</span>
+            </motion.div>
           </motion.div>
-          
+
           {/* Action Buttons */}
           <motion.div 
-            className="flex flex-col sm:flex-row items-center justify-center gap-6"
-            initial={{ y: 30, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 1.8 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 1.5 }}
           >
-            {/* Only show register/login button for non-authenticated users */}
-            {!user && (
-              <motion.div
-                whileHover={{ 
-                  scale: 1.05,
-                  y: -5,
-                  boxShadow: "0 20px 40px rgba(59, 130, 246, 0.3)"
-                }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ type: "spring", stiffness: 400, damping: 10 }}
-              >
-                <Button 
-                  size="lg" 
-                  className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold px-12 py-6 text-xl rounded-2xl shadow-2xl transition-all duration-300 flex items-center space-x-3"
-                  onClick={() => window.location.href = '/user'}
-                >
-                  <KeyRound className="w-6 h-6" />
-                  <span>Kayıt Ol / Giriş Yap</span>
-                  <Sparkles className="w-5 h-5" />
-                </Button>
-              </motion.div>
-            )}
-            
             <motion.div
-              whileHover={{ 
-                scale: 1.05,
-                y: -5
-              }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
               <Button 
-                size="lg" 
-                className="bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 hover:text-cyan-200 font-bold px-12 py-6 text-xl rounded-2xl transition-all duration-300 flex items-center space-x-3 border border-cyan-400/50"
                 onClick={() => window.location.href = '/user'}
+                className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold px-8 py-4 rounded-xl text-lg shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-1 flex items-center space-x-3 min-w-[200px]"
               >
                 <KeyRound className="w-6 h-6" />
                 <span>Key Kullan</span>
@@ -546,17 +407,13 @@ export default function Home() {
             </motion.div>
             
             <motion.div
-              whileHover={{ 
-                scale: 1.05,
-                y: -5
-              }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
               <Button 
-                size="lg" 
-                className="bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 hover:text-emerald-200 font-bold px-12 py-6 text-xl rounded-2xl transition-all duration-300 flex items-center space-x-3 border border-emerald-400/50"
                 onClick={() => window.location.href = '/order-search'}
+                variant="outline"
+                className="border-2 border-white/30 bg-white/10 hover:bg-white/20 text-white font-bold px-8 py-4 rounded-xl text-lg backdrop-blur-sm transition-all duration-300 transform hover:-translate-y-1 flex items-center space-x-3 min-w-[200px]"
               >
                 <Search className="w-6 h-6" />
                 <span>Sipariş Sorgula</span>
@@ -568,256 +425,252 @@ export default function Home() {
         {/* Feature Cards */}
         <motion.div 
           className="grid md:grid-cols-3 gap-8 mb-16"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 2 }}
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 1.7 }}
         >
-          {[
-            {
-              icon: Zap,
-              title: "Hızlı İşlem",
-              description: "Key kodunuzu girin ve hemen sosyal medya hizmetlerinize başlayın. Anında işlem garantisi.",
-              color: "blue",
-              gradient: "from-blue-500 to-cyan-500"
-            },
-            {
-              icon: Users,
-              title: "Güvenilir Hizmet", 
-              description: "Instagram, YouTube, Twitter ve daha fazla platform için güvenli ve kaliteli hizmetler.",
-              color: "purple",
-              gradient: "from-purple-500 to-pink-500"
-            },
-            {
-              icon: Activity,
-              title: "Canlı Takip",
-              description: "Siparişlerinizi gerçek zamanlı olarak takip edin ve durumunu anında öğrenin.",
-              color: "emerald",
-              gradient: "from-emerald-500 to-teal-500"
-            }
-          ].map((feature, index) => (
-            <motion.div
-              key={feature.title}
-              initial={{ y: 50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.6, delay: 2.2 + index * 0.2 }}
-              whileHover={{ 
-                y: -10,
-                scale: 1.02,
-                transition: { type: "spring", stiffness: 400, damping: 10 }
-              }}
-            >
-              <Card className="bg-white/5 border-white/10 backdrop-blur-sm hover:bg-white/10 transition-all duration-300 relative overflow-hidden group">
-                <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
-                <CardHeader>
-                  <CardTitle className={`flex items-center text-${feature.color}-400`}>
-                    <motion.div
-                      whileHover={{ rotate: 360, scale: 1.2 }}
-                      transition={{ duration: 0.6 }}
-                    >
-                      <feature.icon className="w-6 h-6 mr-2" />
-                    </motion.div>
-                    {feature.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-300">
-                    {feature.description}
-                  </p>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Service Stats */}
-        <motion.div 
-          className="grid grid-cols-2 md:grid-cols-4 gap-6"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 2.8 }}
-        >
-          {[
-            { stat: "5.847", label: "Aktif Servis", color: "blue", icon: Activity },
-            { stat: "50K+", label: "Tamamlanan Sipariş", color: "purple", icon: TrendingUp },
-            { stat: "24/7", label: "Destek", color: "emerald", icon: Shield },
-            { stat: "⭐ 4.9", label: "Müşteri Memnuniyeti", color: "yellow", icon: Star }
-          ].map((item, index) => (
-            <motion.div
-              key={item.label}
-              className="text-center p-6 bg-white/5 rounded-2xl backdrop-blur-sm hover:bg-white/10 transition-all duration-300 group relative overflow-hidden"
-              initial={{ y: 30, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.6, delay: 3 + index * 0.1 }}
-              whileHover={{ 
-                y: -5,
-                scale: 1.05,
-                transition: { type: "spring", stiffness: 400, damping: 10 }
-              }}
-            >
-              <div className={`absolute inset-0 bg-gradient-to-br from-${item.color}-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-              
-              <motion.div
-                className="relative z-10"
-                whileHover={{ scale: 1.1 }}
-                transition={{ duration: 0.2 }}
-              >
-                <item.icon className={`w-6 h-6 text-${item.color}-400 mx-auto mb-2`} />
+          <motion.div
+            whileHover={{ scale: 1.02, y: -5 }}
+            transition={{ type: "spring", stiffness: 300, damping: 10 }}
+          >
+            <Card className="bg-gradient-to-br from-blue-900/50 to-purple-900/50 border border-blue-400/30 backdrop-blur-xl hover:border-blue-400/50 transition-all duration-300 group">
+              <CardHeader className="text-center pb-3">
                 <motion.div 
-                  className={`text-3xl font-bold text-${item.color}-400 mb-2`}
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 0.5, delay: 3.2 + index * 0.1, type: "spring", stiffness: 200 }}
+                  className="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300"
+                  whileHover={{ rotate: 10 }}
                 >
-                  {item.stat}
+                  <Zap className="w-8 h-8 text-white" />
                 </motion.div>
-                <div className="text-gray-300 text-sm">{item.label}</div>
-              </motion.div>
-            </motion.div>
-          ))}
+                <CardTitle className="text-xl font-bold text-white">⚡ Hızlı İşlem</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center">
+                <p className="text-blue-200">
+                  Key kodunuzu girin ve hemen sosyal medya hizmetlerinize başlayın. Anında işlem garantisi.
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          <motion.div
+            whileHover={{ scale: 1.02, y: -5 }}
+            transition={{ type: "spring", stiffness: 300, damping: 10 }}
+          >
+            <Card className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 border border-purple-400/30 backdrop-blur-xl hover:border-purple-400/50 transition-all duration-300 group">
+              <CardHeader className="text-center pb-3">
+                <motion.div 
+                  className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300"
+                  whileHover={{ rotate: -10 }}
+                >
+                  <Shield className="w-8 h-8 text-white" />
+                </motion.div>
+                <CardTitle className="text-xl font-bold text-white">🛡️ Güvenilir Hizmet</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center">
+                <p className="text-purple-200">
+                  Instagram, YouTube, Twitter ve daha fazla platform için güvenli ve kaliteli hizmetler.
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          <motion.div
+            whileHover={{ scale: 1.02, y: -5 }}
+            transition={{ type: "spring", stiffness: 300, damping: 10 }}
+          >
+            <Card className="bg-gradient-to-br from-emerald-900/50 to-teal-900/50 border border-emerald-400/30 backdrop-blur-xl hover:border-emerald-400/50 transition-all duration-300 group">
+              <CardHeader className="text-center pb-3">
+                <motion.div 
+                  className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300"
+                  whileHover={{ rotate: 10 }}
+                >
+                  <Clock className="w-8 h-8 text-white" />
+                </motion.div>
+                <CardTitle className="text-xl font-bold text-white">📊 Canlı Takip</CardTitle>
+              </CardHeader>
+              <CardContent className="text-center">
+                <p className="text-emerald-200">
+                  Siparişlerinizi gerçek zamanlı olarak takip edin ve durumunu anında öğrenin.
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
         </motion.div>
 
-        {/* Feedback Section at bottom */}
+        {/* Stats Section */}
         <motion.div 
-          className="mt-16 text-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 3.2 }}
+          className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 1.9 }}
         >
-          <div className="bg-gradient-to-r from-slate-800/50 to-slate-700/50 border border-white/10 rounded-2xl p-8 backdrop-blur-sm">
-            <h4 className="text-2xl font-bold text-white mb-4">Hızlı Geri Bildirim</h4>
-            <p className="text-gray-300 mb-6">
-              OtoKiwi deneyiminizle ilgili hızlı bir geri bildirim gönderin
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-              <input 
-                type="text" 
-                value={feedbackMessage}
-                onChange={(e) => setFeedbackMessage(e.target.value)}
-                placeholder="Geri bildiriminizi yazın..."
-                className="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-emerald-400/50 backdrop-blur-sm"
-                disabled={isSubmittingFeedback}
-              />
-              <Button 
-                onClick={() => setShowFeedback(true)}
-                disabled={!feedbackMessage.trim() || isSubmittingFeedback}
-                className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <Send className="w-4 h-4 mr-2" />
-                Gönder
-              </Button>
-            </div>
-          </div>
+          <motion.div 
+            className="text-center"
+            whileHover={{ scale: 1.05 }}
+          >
+            <motion.div 
+              className="text-4xl font-bold text-blue-400 mb-2"
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ duration: 2, repeat: Infinity, delay: 0 }}
+            >
+              5.847
+            </motion.div>
+            <p className="text-blue-200">Aktif Servis</p>
+          </motion.div>
+          
+          <motion.div 
+            className="text-center"
+            whileHover={{ scale: 1.05 }}
+          >
+            <motion.div 
+              className="text-4xl font-bold text-purple-400 mb-2"
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
+            >
+              50K+
+            </motion.div>
+            <p className="text-purple-200">Tamamlanan Sipariş</p>
+          </motion.div>
+          
+          <motion.div 
+            className="text-center"
+            whileHover={{ scale: 1.05 }}
+          >
+            <motion.div 
+              className="text-4xl font-bold text-emerald-400 mb-2"
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ duration: 2, repeat: Infinity, delay: 1 }}
+            >
+              24/7
+            </motion.div>
+            <p className="text-emerald-200">Destek</p>
+          </motion.div>
+          
+          <motion.div 
+            className="text-center"
+            whileHover={{ scale: 1.05 }}
+          >
+            <motion.div 
+              className="text-4xl font-bold text-yellow-400 mb-2 flex items-center justify-center"
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ duration: 2, repeat: Infinity, delay: 1.5 }}
+            >
+              <Star className="w-8 h-8 mr-1" />
+              4.9
+            </motion.div>
+            <p className="text-yellow-200">Müşteri Memnuniyeti</p>
+          </motion.div>
         </motion.div>
       </main>
 
       {/* Feedback Modal */}
       <AnimatePresence>
         {showFeedback && (
-          <motion.div
+          <motion.div 
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-            onClick={() => !isSubmittingFeedback && !feedbackSubmitted && setShowFeedback(false)}
+            onClick={() => setShowFeedback(false)}
           >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ duration: 0.2 }}
-              className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-8 max-w-md w-full mx-4 border border-white/10 backdrop-blur-xl shadow-2xl"
+            <motion.div 
+              className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl p-8 max-w-md w-full border border-white/20 shadow-2xl"
+              initial={{ scale: 0.8, opacity: 0, y: 50 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.8, opacity: 0, y: 50 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
               onClick={(e) => e.stopPropagation()}
             >
-              {!feedbackSubmitted ? (
-                <>
-                  <div className="text-center mb-6">
-                    <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <MessageCircle className="w-8 h-8 text-white" />
-                    </div>
-                    <h3 className="text-2xl font-bold text-white mb-2">Hızlı Geri Bildirim</h3>
-                    <p className="text-gray-300">OtoKiwi deneyiminizle ilgili geri bildirim gönderin</p>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-2">
-                        Geri bildiriminiz
-                      </label>
-                      <textarea
-                        value={feedbackMessage}
-                        onChange={(e) => setFeedbackMessage(e.target.value)}
-                        placeholder="Deneyiminizi bizimle paylaşın..."
-                        className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-emerald-400/50 backdrop-blur-sm resize-none h-24"
-                        disabled={isSubmittingFeedback}
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-medium text-gray-300 mb-3">
-                        Memnuniyet düzeyiniz
-                      </label>
-                      <div className="flex justify-center space-x-4">
-                        {[
-                          { value: "unsatisfied", label: "Memnun Değilim", icon: Frown, color: "red" },
-                          { value: "neutral", label: "Normal", icon: Meh, color: "yellow" },
-                          { value: "satisfied", label: "Memnunum", icon: Smile, color: "green" }
-                        ].map((option) => (
-                          <motion.button
-                            key={option.value}
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => setSatisfactionLevel(option.value)}
-                            className={`flex flex-col items-center p-3 rounded-xl border-2 transition-all ${
-                              satisfactionLevel === option.value 
-                                ? `border-${option.color}-400 bg-${option.color}-400/10` 
-                                : "border-white/20 bg-white/5 hover:bg-white/10"
-                            }`}
-                            disabled={isSubmittingFeedback}
-                          >
-                            <option.icon className={`w-6 h-6 mb-1 ${
-                              satisfactionLevel === option.value 
-                                ? `text-${option.color}-400` 
-                                : "text-gray-400"
-                            }`} />
-                            <span className={`text-xs ${
-                              satisfactionLevel === option.value 
-                                ? `text-${option.color}-400` 
-                                : "text-gray-400"
-                            }`}>
-                              {option.label}
-                            </span>
-                          </motion.button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="flex space-x-3 pt-4">
-                      <Button
-                        onClick={handleFeedbackSubmit}
-                        disabled={!feedbackMessage.trim() || !satisfactionLevel || isSubmittingFeedback}
-                        className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold py-3 rounded-xl transition-all duration-300 disabled:opacity-50"
-                      >
-                        {isSubmittingFeedback ? "Gönderiliyor..." : "Gönder"}
-                      </Button>
-                      <Button
-                        onClick={() => setShowFeedback(false)}
-                        variant="outline"
-                        className="px-6 py-3 border-white/20 text-gray-300 hover:bg-white/10 rounded-xl"
-                        disabled={isSubmittingFeedback}
-                      >
-                        İptal
-                      </Button>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <div className="text-center">
-                  <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              {feedbackSubmitted ? (
+                <motion.div 
+                  className="text-center"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <motion.div 
+                    className="w-16 h-16 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-4"
+                    animate={{ scale: [1, 1.2, 1] }}
+                    transition={{ duration: 0.8 }}
+                  >
                     <CheckCircle className="w-8 h-8 text-white" />
-                  </div>
+                  </motion.div>
                   <h3 className="text-2xl font-bold text-white mb-2">Teşekkürler!</h3>
                   <p className="text-gray-300">Geri bildiriminiz başarıyla gönderildi.</p>
-                </div>
+                </motion.div>
+              ) : (
+                <>
+                  <h3 className="text-2xl font-bold text-white mb-6 text-center">Geri Bildirim</h3>
+                  
+                  {/* Satisfaction Level */}
+                  <div className="mb-6">
+                    <label className="block text-white mb-3 font-medium">Memnuniyet Düzeyiniz:</label>
+                    <div className="flex justify-center space-x-4">
+                      {[
+                        { value: "dissatisfied", icon: Frown, color: "text-red-400", label: "Memnun Değilim" },
+                        { value: "neutral", icon: Meh, color: "text-yellow-400", label: "Orta" },
+                        { value: "satisfied", icon: Smile, color: "text-emerald-400", label: "Memnunum" }
+                      ].map(({ value, icon: Icon, color, label }) => (
+                        <motion.button
+                          key={value}
+                          onClick={() => setSatisfactionLevel(value)}
+                          className={`p-3 rounded-xl border-2 transition-all duration-200 ${
+                            satisfactionLevel === value 
+                              ? `border-current ${color} bg-current/10` 
+                              : "border-gray-600 text-gray-400 hover:border-gray-500"
+                          }`}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                        >
+                          <Icon className="w-8 h-8" />
+                          <div className="text-xs mt-1">{label}</div>
+                        </motion.button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Message */}
+                  <div className="mb-6">
+                    <label className="block text-white mb-2 font-medium">Mesajınız:</label>
+                    <textarea
+                      value={feedbackMessage}
+                      onChange={(e) => setFeedbackMessage(e.target.value)}
+                      placeholder="Geri bildiriminizi yazın..."
+                      className="w-full h-32 px-4 py-3 bg-slate-700/50 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                    />
+                  </div>
+
+                  {/* Buttons */}
+                  <div className="flex space-x-3">
+                    <motion.button
+                      onClick={() => setShowFeedback(false)}
+                      className="flex-1 py-3 px-4 bg-slate-600 hover:bg-slate-700 text-white rounded-lg font-medium transition-colors"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      İptal
+                    </motion.button>
+                    <motion.button
+                      onClick={handleFeedbackSubmit}
+                      disabled={isSubmittingFeedback}
+                      className="flex-1 py-3 px-4 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white rounded-lg font-medium transition-all duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      {isSubmittingFeedback ? (
+                        <motion.div 
+                          className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                        />
+                      ) : (
+                        <>
+                          <Send className="w-4 h-4" />
+                          <span>Gönder</span>
+                        </>
+                      )}
+                    </motion.button>
+                  </div>
+                </>
               )}
             </motion.div>
           </motion.div>
