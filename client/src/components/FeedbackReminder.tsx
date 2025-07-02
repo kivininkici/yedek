@@ -196,9 +196,15 @@ export function FeedbackReminder({ onClose, userEmail, userName, orderId }: Feed
               </div>
 
               <Button
-                onClick={handleSubmit}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  console.log("Gönder button clicked!");
+                  handleSubmit();
+                }}
                 disabled={!message.trim() || isSubmitting}
                 className="w-full bg-white/20 hover:bg-white/30 text-white border-none disabled:opacity-50"
+                type="button"
               >
                 {isSubmitting ? (
                   "Gönderiliyor..."

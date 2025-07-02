@@ -3,9 +3,11 @@ import { Button } from "@/components/ui/button";
 import { KeyRound, Shield, Zap, Users, Star, CheckCircle, TrendingUp, Activity, LogIn, UserPlus, Crown, Sparkles, ShoppingCart, MessageCircle, Send, Heart } from "lucide-react";
 import { useState } from "react";
 import { LandingCursorFollower } from "@/hooks/useMouseTracking";
+import { FeedbackReminder } from "@/components/FeedbackReminder";
 
 export default function Landing() {
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white relative overflow-hidden">
@@ -59,6 +61,14 @@ export default function Landing() {
                 </Button>
 
                 
+                <Button 
+                  onClick={() => setShowFeedback(true)}
+                  className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold px-4 md:px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                >
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  <span className="hidden sm:inline">Geri Bildirim</span>
+                  <span className="sm:hidden">Feedback</span>
+                </Button>
                 <Button 
                   onClick={() => setShowAuthModal(true)}
                   className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
@@ -396,6 +406,15 @@ export default function Landing() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Feedback Reminder */}
+      {showFeedback && (
+        <FeedbackReminder
+          onClose={() => setShowFeedback(false)}
+          userEmail=""
+          userName="Ziyaretçi"
+        />
       )}
     </div>
   );
