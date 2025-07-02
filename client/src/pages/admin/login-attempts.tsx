@@ -125,7 +125,7 @@ export default function LoginAttempts() {
       <div className="lg:ml-64">
         <main className="px-4 py-2">
           {/* Page Title - Above Header */}
-          <div className="mb-4">
+          <div className="mb-4 mt-0">
             <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 via-cyan-400 to-green-400 bg-clip-text text-transparent">
               Giriş Denemeleri
             </h1>
