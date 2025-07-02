@@ -420,6 +420,17 @@ Changelog:
 - Auto-login fonksiyonu düzeltildi - credentials: 'include' eklendi
 - PostgreSQL database başarıyla kuruldu ve session store aktiv
 - KeyPanel sistemi production seviyesinde Replit ortamında çalışıyor
+- July 2, 2025: cPanel Hosting Uyumlu Tam Stack Dönüşümü Tamamlandı
+- PHP/MySQL tam stack'e dönüştürüldü - Node.js bağımlılığı kaldırıldı
+- hosting/ klasöründe production-ready cPanel sistemi oluşturuldu
+- MySQL database schema ve automated setup script hazırlandı
+- Tüm API endpoint'leri PHP ile yeniden yazıldı (auth, admin, keys, orders)
+- Frontend SPA vanilla JavaScript'e dönüştürüldü - React bağımlılığı kaldırıldı
+- Bootstrap 5.3 + Font Awesome 6.4 + SweetAlert2 modern UI framework
+- .htaccess güvenlik, performans ve URL rewriting konfigürasyonu
+- Kapsamlı kurulum rehberi ve otomatik setup sihirbazı eklendi
+- Tüm animasyonlar ve modern UI/UX özellikleri korundu
+- %100 cPanel hosting uyumlu - herhangi bir shared hosting'de çalışır
 
 ## User Preferences
 

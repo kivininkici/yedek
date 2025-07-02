@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Key Kullan - KeyPanel</title>
+    <meta name="description" content="Sosyal medya servisleri için key kullanın. Hızlı ve güvenli sipariş sistemi.">
+    
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome 6.4 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- SweetAlert2 -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="assets/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">
+                <i class="fas fa-key me-2"></i>KeyPanel
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Ana Sayfa</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="user.html">Key Kullan</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="order-search.html">Sipariş Sorgula</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="auth.html">Giriş Yap</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-danger ms-2" href="https://www.itemsatis.com/p/KiwiPazari" target="_blank">
+                            <i class="fas fa-shopping-cart me-1"></i>Satın Al
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-5 mt-4">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <!-- Header -->
+                    <div class="text-center mb-5">
+                        <h1 class="display-5 fw-bold text-primary mb-3">
+                            <i class="fas fa-key me-2"></i>Key Kullan
+                        </h1>
+                        <p class="lead text-muted">
+                            Anahtarınızı doğrulayın, servisinizi seçin ve siparişinizi oluşturun
+                        </p>
+                    </div>
+
+                    <!-- Key Validation Form -->
+                    <div class="card shadow-lg border-0 rounded-4 mb-4" id="keyValidationCard">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-shield-alt me-2"></i>1. Anahtar Doğrulama
+                            </h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <form id="keyValidationForm">
+                                <div class="mb-3">
+                                    <label for="keyInput" class="form-label fw-semibold">Anahtarınızı Girin</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-key text-primary"></i>
+                                        </span>
+                                        <input type="text" class="form-control form-control-lg" id="keyInput" 
+                                               placeholder="Anahtarınızı buraya yapıştırın..." required>
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-check me-1"></i>Doğrula
+                                        </button>
+                                    </div>
+                                    <div class="form-text">Anahtarınızı doğruladıktan sonra servis seçimi yapabilirsiniz</div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Service Selection Form (Hidden initially) -->
+                    <div class="card shadow-lg border-0 rounded-4 mb-4 d-none" id="serviceSelectionCard">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">
+                                <i class="fas fa-list me-2"></i>2. Servis Seçimi
+                            </h5>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="alert alert-success">
+                                <i class="fas fa-check-circle me-2"></i>
+                                Anahtar doğrulandı! Kategori: <strong id="keyCategory"></strong>
+                            </div>
+
+                            <form id="serviceSelectionForm">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="serviceSelect" class="form-label fw-semibold">Servis Seçin</label>
+                                        <select class="form-select form-select-lg" id="serviceSelect" required>
+                                            <option value="">Servis seçin...</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="quantityInput" class="form-label fw-semibold">Miktar</label>
+                                        <input type="number" class="form-control form-control-lg" id="quantityInput" 
+                                               min="1" max="10000" value="100" required>
+                                        <div class="form-text">Min: <span id="minQuantity">1</span> - Max: <span id="maxQuantity">10000</span></div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="targetUrlInput" class="form-label fw-semibold">Hedef URL</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-link text-primary"></i>
+                                        </span>
+                                        <input type="url" class="form-control form-control-lg" id="targetUrlInput" 
+                                               placeholder="https://instagram.com/username" required>
+                                    </div>
+                                    <div class="form-text">Servisin uygulanacağı profil/post linki</div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <div class="card bg-light">
+                                        <div class="card-body">
+                                            <div class="row text-center">
+                                                <div class="col-md-4">
+                                                    <div class="text-primary fw-bold">Birim Fiyat</div>
+                                                    <div class="h5" id="unitPrice">-</div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="text-primary fw-bold">Toplam Tutar</div>
+                                                    <div class="h5 text-success" id="totalPrice">-</div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="text-primary fw-bold">Para Birimi</div>
+                                                    <div class="h5">₺ TRY</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-success btn-lg w-100">
+                                    <i class="fas fa-shopping-cart me-2"></i>Sipariş Oluştur
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Order Success (Hidden initially) -->
+                    <div class="card shadow-lg border-0 rounded-4 mb-4 d-none" id="orderSuccessCard">
+                        <div class="card-header bg-warning text-dark">
+                            <h5 class="mb-0">
+                                <i class="fas fa-check-circle me-2"></i>3. Sipariş Oluşturuldu
+                            </h5>
+                        </div>
+                        <div class="card-body p-4 text-center">
+                            <div class="mb-4">
+                                <i class="fas fa-check-circle fa-4x text-success mb-3"></i>
+                                <h4 class="text-success">Siparişiniz Oluşturuldu!</h4>
+                                <p class="text-muted">Sipariş detayları aşağıda belirtilmiştir</p>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <div class="bg-light rounded p-3 mb-2">
+                                        <strong>Sipariş ID:</strong><br>
+                                        <span class="h6 text-primary" id="orderIdDisplay"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="bg-light rounded p-3 mb-2">
+                                        <strong>Tutar:</strong><br>
+                                        <span class="h6 text-success" id="orderAmountDisplay"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                                <a href="order-search.html" class="btn btn-primary">
+                                    <i class="fas fa-search me-2"></i>Sipariş Sorgula
+                                </a>
+                                <button type="button" class="btn btn-outline-primary" onclick="resetForm()">
+                                    <i class="fas fa-plus me-2"></i>Yeni Sipariş
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Indicator -->
+                    <div class="text-center mb-4 d-none" id="progressIndicator">
+                        <div class="card shadow-sm border-0">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <div class="spinner-border text-primary me-3" role="status"></div>
+                                    <span class="fw-semibold" id="progressText">İşleniyor...</span>
+                                </div>
+                                <div class="progress mt-3" style="height: 8px;">
+                                    <div class="progress-bar progress-bar-animated" id="progressBar" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h5><i class="fas fa-key me-2"></i>KeyPanel</h5>
+                    <p class="text-muted">Güvenli anahtar yönetim sistemi</p>
+                </div>
+                <div class="col-lg-6 text-lg-end">
+                    <a href="feedback.html" class="btn btn-outline-light btn-sm me-2">
+                        <i class="fas fa-comment me-1"></i>Geri Bildirim
+                    </a>
+                    <a href="complaint.html" class="btn btn-outline-danger btn-sm">
+                        <i class="fas fa-exclamation-triangle me-1"></i>Şikayet
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="assets/js/app.js"></script>
+    <script>
+        let validatedKey = null;
+        let selectedService = null;
+        let services = [];
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeUserInterface();
+        });
+
+        function initializeUserInterface() {
+            // Key validation form
+            new FormHandler('#keyValidationForm', {
+                onSubmit: validateKey,
+                onSuccess: (result) => {
+                    if (result.success) {
+                        showServiceSelection(result.data.key);
+                        loadServicesForKey();
+                    }
+                }
+            });
+
+            // Service selection form
+            new FormHandler('#serviceSelectionForm', {
+                onSubmit: createOrder,
+                onSuccess: (result) => {
+                    if (result.success) {
+                        showOrderSuccess(result.data);
+                    }
+                }
+            });
+
+            // Service selection change handler
+            document.getElementById('serviceSelect').addEventListener('change', updatePricing);
+            document.getElementById('quantityInput').addEventListener('input', updatePricing);
+        }
+
+        async function validateKey(data) {
+            showProgress('Anahtar doğrulanıyor...', 30);
+
+            const result = await Utils.request('/keys/validate', {
+                method: 'POST',
+                body: { key: data.keyInput }
+            });
+
+            hideProgress();
+            return result;
+        }
+
+        function showServiceSelection(keyData) {
+            validatedKey = keyData;
+            document.getElementById('keyCategory').textContent = keyData.category || 'Genel';
+            
+            // Hide validation card and show service selection
+            document.getElementById('keyValidationCard').classList.add('d-none');
+            document.getElementById('serviceSelectionCard').classList.remove('d-none');
+            
+            Animations.fadeIn(document.getElementById('serviceSelectionCard'));
+        }
+
+        async function loadServicesForKey() {
+            if (!validatedKey) return;
+
+            try {
+                showProgress('Servisler yükleniyor...', 60);
+
+                const keyValue = document.getElementById('keyInput').value;
+                const result = await Utils.request(`/keys/services?key=${encodeURIComponent(keyValue)}`);
+
+                if (result.success) {
+                    services = result.data.services;
+                    populateServiceSelect(services);
+                }
+
+                hideProgress();
+            } catch (error) {
+                hideProgress();
+                console.error('Servis yükleme hatası:', error);
+            }
+        }
+
+        function populateServiceSelect(serviceList) {
+            const select = document.getElementById('serviceSelect');
+            select.innerHTML = '<option value="">Servis seçin...</option>';
+
+            serviceList.forEach(service => {
+                const option = document.createElement('option');
+                option.value = service.id;
+                option.textContent = `${service.name} (₺${service.rate})`;
+                option.dataset.service = JSON.stringify(service);
+                select.appendChild(option);
+            });
+        }
+
+        function updatePricing() {
+            const serviceSelect = document.getElementById('serviceSelect');
+            const quantityInput = document.getElementById('quantityInput');
+            
+            if (!serviceSelect.value) {
+                document.getElementById('unitPrice').textContent = '-';
+                document.getElementById('totalPrice').textContent = '-';
+                return;
+            }
+
+            const serviceData = JSON.parse(serviceSelect.selectedOptions[0].dataset.service);
+            const quantity = parseInt(quantityInput.value) || 0;
+            
+            // Update quantity limits
+            document.getElementById('minQuantity').textContent = serviceData.min_quantity;
+            document.getElementById('maxQuantity').textContent = serviceData.max_quantity;
+            quantityInput.min = serviceData.min_quantity;
+            quantityInput.max = serviceData.max_quantity;
+            
+            // Update pricing
+            const unitPrice = parseFloat(serviceData.rate);
+            const totalPrice = unitPrice * quantity;
+            
+            document.getElementById('unitPrice').textContent = Utils.formatCurrency(unitPrice);
+            document.getElementById('totalPrice').textContent = Utils.formatCurrency(totalPrice);
+            
+            selectedService = serviceData;
+        }
+
+        async function createOrder(data) {
+            if (!validatedKey || !selectedService) {
+                throw new Error('Key doğrulaması veya servis seçimi eksik');
+            }
+
+            showProgress('Sipariş oluşturuluyor...', 90);
+
+            const orderData = {
+                key: document.getElementById('keyInput').value,
+                serviceId: selectedService.id,
+                quantity: parseInt(data.quantityInput),
+                targetUrl: data.targetUrlInput
+            };
+
+            const result = await Utils.request('/keys/use', {
+                method: 'POST',
+                body: orderData
+            });
+
+            hideProgress();
+            return result;
+        }
+
+        function showOrderSuccess(orderData) {
+            document.getElementById('serviceSelectionCard').classList.add('d-none');
+            document.getElementById('orderSuccessCard').classList.remove('d-none');
+            
+            document.getElementById('orderIdDisplay').textContent = orderData.orderId;
+            document.getElementById('orderAmountDisplay').textContent = Utils.formatCurrency(orderData.charge);
+            
+            Animations.fadeIn(document.getElementById('orderSuccessCard'));
+        }
+
+        function showProgress(text, percent) {
+            document.getElementById('progressIndicator').classList.remove('d-none');
+            document.getElementById('progressText').textContent = text;
+            document.getElementById('progressBar').style.width = percent + '%';
+        }
+
+        function hideProgress() {
+            document.getElementById('progressIndicator').classList.add('d-none');
+        }
+
+        function resetForm() {
+            // Reset all forms and hide cards
+            document.getElementById('keyValidationForm').reset();
+            document.getElementById('serviceSelectionForm').reset();
+            
+            document.getElementById('serviceSelectionCard').classList.add('d-none');
+            document.getElementById('orderSuccessCard').classList.add('d-none');
+            document.getElementById('keyValidationCard').classList.remove('d-none');
+            
+            // Reset variables
+            validatedKey = null;
+            selectedService = null;
+            services = [];
+        }
+    </script>
+</body>
+</html>
