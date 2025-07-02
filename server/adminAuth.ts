@@ -179,15 +179,20 @@ export function setupAdminAuth(app: Express) {
     }
   });
 
-  // Master password verification - simple approach
+  // Master password verification - accepts both password and masterPassword fields
   app.post('/api/admin/verify-master-password', async (req, res) => {
     try {
-      const { password } = req.body;
+      const { password, masterPassword } = req.body;
+      const inputPassword = password || masterPassword;
+      
+      if (!inputPassword) {
+        return res.status(400).json({ message: 'Master şifre gerekli' });
+      }
       
       // Get current master password from security config
       const correctMasterPassword = getCurrentMasterPassword();
       
-      if (password !== correctMasterPassword) {
+      if (inputPassword !== correctMasterPassword) {
         return res.status(401).json({ message: 'Hatalı master şifre' });
       }
 
@@ -227,6 +232,45 @@ export function setupAdminAuth(app: Express) {
       });
     } catch (error) {
       console.error('Admin setup error:', error);
+      res.status(500).json({ message: 'Admin oluşturulamadı' });
+    }
+  });
+
+  // Direct admin creation with master password verification
+  app.post('/api/admin/create-direct', async (req, res) => {
+    try {
+      const { username, password, email, masterPassword } = req.body;
+      
+      // Verify master password first
+      const correctMasterPassword = getCurrentMasterPassword();
+      if (masterPassword !== correctMasterPassword) {
+        return res.status(401).json({ message: 'Hatalı master şifre' });
+      }
+      
+      // Check if admin already exists
+      const existingAdmin = await storage.getAdminByUsername(username);
+      if (existingAdmin) {
+        return res.status(409).json({ message: 'Admin kullanıcısı zaten mevcut' });
+      }
+
+      const hashedPassword = await hashPassword(password);
+      const newAdmin = await storage.createAdminUser({
+        username,
+        password: hashedPassword,
+        email,
+        isActive: true
+      });
+
+      res.status(201).json({ 
+        message: 'Admin başarıyla oluşturuldu',
+        admin: {
+          id: newAdmin.id,
+          username: newAdmin.username,
+          email: newAdmin.email
+        }
+      });
+    } catch (error) {
+      console.error('Direct admin creation error:', error);
       res.status(500).json({ message: 'Admin oluşturulamadı' });
     }
   });
