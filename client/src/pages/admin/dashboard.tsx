@@ -308,7 +308,7 @@ export default function Dashboard() {
             <StatCard
               icon={Key}
               title="Toplam Key"
-              value={dashboardStats?.totalKeys || 0}
+              value={(dashboardStats as any)?.totalKeys || 0}
               change="+12% bu hafta"
               changeType="up"
               color="bg-gradient-to-r from-blue-500 to-cyan-500"
@@ -317,7 +317,7 @@ export default function Dashboard() {
             <StatCard
               icon={CheckCircle}
               title="Kullanılmış Key"
-              value={dashboardStats?.usedKeys || 0}
+              value={(dashboardStats as any)?.usedKeys || 0}
               change="+8% bu hafta"
               changeType="up"
               color="bg-gradient-to-r from-emerald-500 to-teal-500"
@@ -326,7 +326,7 @@ export default function Dashboard() {
             <StatCard
               icon={Globe}
               title="Aktif Servis"
-              value={dashboardStats?.activeServices || 0}
+              value={(dashboardStats as any)?.activeServices || 0}
               change="+5 yeni"
               changeType="up"
               color="bg-gradient-to-r from-purple-500 to-pink-500"
@@ -335,7 +335,7 @@ export default function Dashboard() {
             <StatCard
               icon={Activity}
               title="Günlük İşlem"
-              value={dashboardStats?.dailyTransactions || 0}
+              value={(dashboardStats as any)?.dailyTransactions || 0}
               change="+25% dün"
               changeType="up"
               color="bg-gradient-to-r from-orange-500 to-red-500"
@@ -498,8 +498,8 @@ export default function Dashboard() {
 
       {/* Key Creation Modal */}
       <KeyCreationModal 
-        isOpen={showKeyModal} 
-        onClose={() => setShowKeyModal(false)} 
+        open={showKeyModal} 
+        onOpenChange={setShowKeyModal}
       />
     </div>
   );
