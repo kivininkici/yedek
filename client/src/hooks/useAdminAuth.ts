@@ -20,7 +20,14 @@ export function useAdminAuth() {
     queryKey: ["/api/admin/me"],
     queryFn: getQueryFn({ on401: "returnNull" }),
     retry: false,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes
   });
+
+  // If we got a 401 error, we're definitely not authenticated
+  const is401Error = error?.message?.includes("401");
+  const effectiveIsLoading = isLoading && !is401Error;
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
@@ -45,7 +52,7 @@ export function useAdminAuth() {
 
   return {
     admin,
-    isLoading,
+    isLoading: effectiveIsLoading,
     error,
     isAuthenticated: !!admin,
     logout: logoutMutation.mutate,

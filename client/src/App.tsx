@@ -27,8 +27,20 @@ import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { CursorFollower, CursorTrail } from "@/hooks/useMouseTracking";
 
 function Router() {
-  const { isAuthenticated: isUserAuthenticated } = useAuth();
-  const { isAuthenticated: isAdminAuthenticated } = useAdminAuth();
+  const { isAuthenticated: isUserAuthenticated, isLoading: isUserLoading } = useAuth();
+  const { isAuthenticated: isAdminAuthenticated, isLoading: isAdminLoading } = useAdminAuth();
+
+  // Show loading screen while auth checks are in progress
+  if (isUserLoading || isAdminLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <div className="text-xl font-semibold text-gray-700">KeyPanel Yükleniyor...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Switch>
