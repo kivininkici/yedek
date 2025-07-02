@@ -28,6 +28,9 @@ export default function Complaints() {
   const { user, isAuthenticated } = useAuth();
   const { toast } = useToast();
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [accessGranted, setAccessGranted] = useState(false);
+  const [orderIdInput, setOrderIdInput] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
 
   const form = useForm<ComplaintFormData>({
     resolver: zodResolver(complaintSchema),
@@ -40,11 +43,45 @@ export default function Complaints() {
     },
   });
 
-  // Check if user has orders
-  const { data: orderCount = 0, isLoading: isCheckingOrders } = useQuery({
-    queryKey: ["/api/user/orders/count"],
-    enabled: isAuthenticated,
-  });
+  // Check if order ID exists and grant access
+  const verifyOrderAccess = async () => {
+    if (!orderIdInput.trim()) {
+      toast({
+        title: "Hata",
+        description: "Lütfen sipariş ID'nizi girin",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsVerifying(true);
+    try {
+      const response = await fetch(`/api/orders/search/${orderIdInput.trim()}`);
+      const data = await response.json();
+      
+      if (response.ok && data.order) {
+        setAccessGranted(true);
+        form.setValue("orderId", orderIdInput.trim());
+        toast({
+          title: "Erişim Sağlandı",
+          description: "Sipariş doğrulandı. Şikayet formunu doldurabilirsiniz.",
+        });
+      } else {
+        toast({
+          title: "Sipariş Bulunamadı",
+          description: "Girdiğiniz sipariş ID'si bulunamadı. Lütfen doğru ID'yi girin.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Hata",
+        description: "Sipariş doğrulanırken hata oluştu",
+        variant: "destructive",
+      });
+    }
+    setIsVerifying(false);
+  };
 
   const submitComplaintMutation = useMutation({
     mutationFn: async (data: ComplaintFormData) => {
@@ -95,23 +132,8 @@ export default function Complaints() {
     );
   }
 
-  if (isCheckingOrders) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
-        <motion.div 
-          className="text-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <Clock className="w-16 h-16 text-blue-400 mx-auto mb-4 animate-spin" />
-          <p className="text-gray-300">Sipariş geçmişiniz kontrol ediliyor...</p>
-        </motion.div>
-      </div>
-    );
-  }
-
-  if (orderCount === 0) {
+  // Show order ID verification form if access not granted
+  if (!accessGranted) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
         <motion.div 
@@ -121,16 +143,33 @@ export default function Complaints() {
           transition={{ duration: 0.5 }}
         >
           <FileText className="w-16 h-16 text-yellow-400 mx-auto mb-6" />
-          <h2 className="text-2xl font-bold text-white mb-4">Sipariş Gerekli</h2>
+          <h2 className="text-2xl font-bold text-white mb-4">Sipariş Doğrulama</h2>
           <p className="text-gray-300 mb-6">
-            Şikayet göndermek için en az bir siparişiniz olmalı. Önce bir key kullanarak sipariş oluşturun.
+            Şikayet formuna erişmek için geçerli bir sipariş ID'niz olması gerekir.
           </p>
-          <Button 
-            onClick={() => window.location.href = '/user'}
-            className="w-full bg-yellow-500 hover:bg-yellow-600 text-black"
-          >
-            Key Kullan
-          </Button>
+          
+          <div className="space-y-4">
+            <Input
+              value={orderIdInput}
+              onChange={(e) => setOrderIdInput(e.target.value)}
+              placeholder="Sipariş ID'nizi girin (örn: #32390242)"
+              className="bg-white/10 border-white/20 text-white placeholder-gray-400"
+            />
+            
+            <Button 
+              onClick={verifyOrderAccess}
+              disabled={isVerifying || !orderIdInput.trim()}
+              className="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
+            >
+              {isVerifying ? "Doğrulanıyor..." : "Sipariş Doğrula"}
+            </Button>
+          </div>
+          
+          <div className="mt-6 p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl">
+            <p className="text-sm text-blue-400">
+              💡 Sipariş ID'nizi sipariş sorgulama sayfasından öğrenebilirsiniz.
+            </p>
+          </div>
         </motion.div>
       </div>
     );

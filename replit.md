@@ -390,6 +390,14 @@ Changelog:
 - Kayıt ol formu yükseklik sorunu düzeltildi - kompakt tasarım
 - Login attempt logging sistemi matematik hatalarını da takip ediyor
 - Admin panel matematik doğrulama hatalarını ayrı kategoriler halinde gösteriyor
+- July 2, 2025: Final migration from Replit Agent to Replit environment başarıyla tamamlandı
+- PostgreSQL database kuruldu ve tüm schema başarıyla push edildi
+- tsx dependency yüklendi ve server port 5000'de stable çalışıyor
+- Geri bildirim ve şikayet sistemi güncellendi - sadece kayıtlı kullanıcılar erişebiliyor
+- Memnuniyetsiz kullanıcılar otomatik şikayet sayfasına yönlendiriliyor
+- Şikayet sayfasına erişim sipariş ID kontrolü ile güvenli hale getirildi
+- Admin panelinde şikayet yönetimi aktif ve e-posta bildirim sistemi çalışıyor
+- KeyPanel production seviyesinde güvenilir çalışıyor
 
 ## User Preferences
 
