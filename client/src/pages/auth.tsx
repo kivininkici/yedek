@@ -34,16 +34,48 @@ const registerSchema = z.object({
 type LoginData = z.infer<typeof loginSchema>;
 type RegisterData = z.infer<typeof registerSchema>;
 
-// Background effects components
+// Modern Background effects
 const FloatingOrbs = () => {
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none">
-      <div className="absolute -top-10 -left-10 w-20 h-20 bg-blue-400/20 rounded-full blur-xl animate-pulse" />
-      <div className="absolute top-1/4 right-1/4 w-32 h-32 bg-blue-300/15 rounded-full blur-2xl animate-bounce" style={{ animationDuration: '3s' }} />
-      <div className="absolute bottom-1/3 left-1/3 w-24 h-24 bg-blue-500/25 rounded-full blur-xl animate-pulse" style={{ animationDelay: '1s' }} />
-      <div className="absolute top-1/2 right-10 w-16 h-16 bg-blue-200/30 rounded-full blur-lg animate-bounce" style={{ animationDelay: '2s' }} />
-      <div className="absolute bottom-20 right-1/3 w-28 h-28 bg-blue-400/20 rounded-full blur-2xl animate-pulse" style={{ animationDelay: '0.5s' }} />
-      <div className="absolute top-20 left-1/2 w-12 h-12 bg-blue-300/25 rounded-full blur-md animate-bounce" style={{ animationDelay: '1.5s' }} />
+      <motion.div 
+        className="absolute w-80 h-80 bg-blue-500/8 rounded-full blur-3xl"
+        animate={{ 
+          x: [0, 50, 0],
+          y: [0, -30, 0],
+          scale: [1, 1.1, 1]
+        }}
+        transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+        style={{ top: '10%', left: '10%' }}
+      />
+      <motion.div 
+        className="absolute w-96 h-96 bg-purple-500/6 rounded-full blur-3xl"
+        animate={{ 
+          x: [0, -40, 0],
+          y: [0, 40, 0],
+          scale: [1, 0.9, 1]
+        }}
+        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+        style={{ top: '60%', right: '10%' }}
+      />
+      <motion.div 
+        className="absolute w-3 h-3 bg-blue-400/60 rounded-full"
+        animate={{ 
+          y: [0, -20, 0],
+          opacity: [0.4, 1, 0.4]
+        }}
+        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        style={{ top: '20%', left: '30%' }}
+      />
+      <motion.div 
+        className="absolute w-2 h-2 bg-purple-400/50 rounded-full"
+        animate={{ 
+          y: [0, 15, 0],
+          opacity: [0.3, 0.8, 0.3]
+        }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+        style={{ top: '70%', left: '70%' }}
+      />
     </div>
   );
 };
@@ -51,7 +83,7 @@ const FloatingOrbs = () => {
 const AnimatedBackground = () => {
   return (
     <div className="fixed inset-0 -z-10">
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-blue-100 to-blue-200" />
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100" />
       <FloatingOrbs />
     </div>
   );
