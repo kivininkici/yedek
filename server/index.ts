@@ -1,4 +1,5 @@
 import express, { type Request, Response, NextFunction } from "express";
+import { config } from "dotenv";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import session from "express-session";
@@ -6,6 +7,9 @@ import ConnectPgSimple from "connect-pg-simple";
 import { pool } from "./db";
 import { setupAuth } from "./replitAuth";
 import { setupAdminAuth } from "./adminAuth";
+
+// Load environment variables
+config();
 
 const app = express();
 app.use(express.json({ limit: '50mb' }));

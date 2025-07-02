@@ -56,7 +56,7 @@ export default function AdminLogin() {
   // Master password verification mutation
   const masterPasswordMutation = useMutation({
     mutationFn: async (password: string) => {
-      const res = await apiRequest("POST", "/api/admin/verify-master-password", { password });
+      const res = await apiRequest("POST", "/api/admin/verify-master-password", { password: password });
       return await res.json();
     },
     onSuccess: () => {

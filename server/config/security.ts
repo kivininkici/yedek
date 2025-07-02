@@ -1,4 +1,8 @@
 // Security configuration - All sensitive data now stored in .env file
+import { config } from "dotenv";
+
+// Load environment variables first
+config();
 
 // Get security credentials from environment variables
 export const MASTER_PASSWORD = process.env.MASTER_PASSWORD!;
