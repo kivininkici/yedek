@@ -57,15 +57,7 @@ export default function Landing() {
                   <KeyRound className="w-4 h-4 mr-2" />
                   Kullanıcı Paneli
                 </Button>
-                <Button 
-                  variant="outline" 
-                  className="border-orange-400/30 bg-orange-500/10 hover:bg-orange-500/20 text-orange-300 backdrop-blur-sm"
-                  onClick={() => window.location.href = '/hosting-preview'}
-                >
-                  <Zap className="w-4 h-4 mr-2" />
-                  <span className="hidden sm:inline">Hosting Preview</span>
-                  <span className="sm:hidden">Hosting</span>
-                </Button>
+
                 <Button 
                   variant="outline" 
                   className="border-green-400/30 bg-green-500/10 hover:bg-green-500/20 text-green-300 backdrop-blur-sm"
