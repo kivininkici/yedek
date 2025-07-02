@@ -381,7 +381,15 @@ Changelog:
 - tsx dependency yüklendi ve server port 5000'de çalışıyor
 - Feedback sistemi düzeltildi - gönder butonuna basınca admin panele yönlendiriyor
 - Session store PostgreSQL ile entegre edildi ve authentication çalışıyor
-- KeyPanel sistemi production seviyesinde Replit ortamında aktif
+- KeyPanel sistemi production seviyesinde Replit ortamında aktiv
+- July 2, 2025: Gelişmiş güvenlik ve UI iyileştirmeleri tamamlandı
+- Matematik doğrulama sistemi eklendi - rastgele toplama/çıkarma problemleri
+- 6 farklı soru türü ile çeşitlilik sağlandı (basit toplama, çıkarma, çift basamaklı, sıfır işlemleri)
+- Her yanlış denemede farklı soru garantisi - tekrar eden sorular engellendi
+- Giriş olan kullanıcılarda geri bildirim kısımları gizlendi
+- Kayıt ol formu yükseklik sorunu düzeltildi - kompakt tasarım
+- Login attempt logging sistemi matematik hatalarını da takip ediyor
+- Admin panel matematik doğrulama hatalarını ayrı kategoriler halinde gösteriyor
 
 ## User Preferences
 

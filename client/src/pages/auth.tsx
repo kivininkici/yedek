@@ -127,26 +127,60 @@ const FloatingParticles = () => {
   );
 };
 
-// Math verification helper functions
+// Math verification helper functions - improved with more variety
 const generateMathQuestion = () => {
-  const num1 = Math.floor(Math.random() * 20) + 1;
-  const num2 = Math.floor(Math.random() * 20) + 1;
-  const operations = ['+', '-'];
-  const operation = operations[Math.floor(Math.random() * operations.length)];
+  // Generate different types of questions with more variety
+  const questionTypes = [
+    // Simple addition
+    () => {
+      const num1 = Math.floor(Math.random() * 15) + 1;
+      const num2 = Math.floor(Math.random() * 15) + 1;
+      return { question: `${num1} + ${num2}`, answer: num1 + num2 };
+    },
+    // Simple subtraction
+    () => {
+      const num1 = Math.floor(Math.random() * 25) + 10;
+      const num2 = Math.floor(Math.random() * 10) + 1;
+      return { question: `${num1} - ${num2}`, answer: num1 - num2 };
+    },
+    // Double digit addition
+    () => {
+      const num1 = Math.floor(Math.random() * 50) + 10;
+      const num2 = Math.floor(Math.random() * 30) + 5;
+      return { question: `${num1} + ${num2}`, answer: num1 + num2 };
+    },
+    // Larger subtraction
+    () => {
+      const num1 = Math.floor(Math.random() * 40) + 30;
+      const num2 = Math.floor(Math.random() * 20) + 5;
+      return { question: `${num1} - ${num2}`, answer: num1 - num2 };
+    },
+    // Zero addition
+    () => {
+      const num1 = Math.floor(Math.random() * 25) + 1;
+      const num2 = 0;
+      return { question: `${num1} + ${num2}`, answer: num1 + num2 };
+    },
+    // Sequential numbers
+    () => {
+      const num1 = Math.floor(Math.random() * 20) + 5;
+      const num2 = num1 + 1;
+      return { question: `${num2} - ${num1}`, answer: 1 };
+    }
+  ];
   
-  let question, answer;
-  if (operation === '+') {
-    question = `${num1} + ${num2}`;
-    answer = num1 + num2;
-  } else {
-    // Make sure subtraction doesn't result in negative numbers
-    const larger = Math.max(num1, num2);
-    const smaller = Math.min(num1, num2);
-    question = `${larger} - ${smaller}`;
-    answer = larger - smaller;
-  }
+  // Add timestamp and random factor to ensure uniqueness
+  const timestamp = Date.now();
+  const randomFactor = Math.floor(Math.random() * 1000);
+  const questionIndex = (timestamp + randomFactor) % questionTypes.length;
+  const questionType = questionTypes[questionIndex];
   
-  return { question, answer };
+  const result = questionType();
+  
+  return {
+    ...result,
+    id: `${timestamp}_${randomFactor}`
+  };
 };
 
 export default function Auth() {
@@ -255,10 +289,15 @@ export default function Auth() {
         variant: "destructive",
       });
       
-      // Generate new math question and log failed attempt
-      const newQuestion = generateMathQuestion();
+      // Generate new math question with forced uniqueness and log failed attempt
+      let newQuestion;
+      do {
+        newQuestion = generateMathQuestion();
+      } while (newQuestion.question === loginMathQuestion.question);
+      
       setLoginMathQuestion(newQuestion);
       loginForm.setValue("mathAnswer", "");
+      loginForm.clearErrors("mathAnswer");
       
       // Log failed math verification attempt
       try {
@@ -308,10 +347,15 @@ export default function Auth() {
         variant: "destructive",
       });
       
-      // Generate new math question and log failed attempt
-      const newQuestion = generateMathQuestion();
+      // Generate new math question with forced uniqueness and log failed attempt
+      let newQuestion;
+      do {
+        newQuestion = generateMathQuestion();
+      } while (newQuestion.question === registerMathQuestion.question);
+      
       setRegisterMathQuestion(newQuestion);
       registerForm.setValue("mathAnswer", "");
+      registerForm.clearErrors("mathAnswer");
       
       // Log failed math verification attempt
       try {
@@ -480,7 +524,7 @@ export default function Auth() {
               </div>
 
               {/* Content Area */}
-              <div className="min-h-[550px] relative pb-4">
+              <div className="min-h-[500px] relative pb-4">
                 <AnimatePresence mode="wait">
                   {activeTab === "login" ? (
                     <motion.div
@@ -812,9 +856,9 @@ export default function Auth() {
                               ease: [0.25, 0.46, 0.45, 0.94]
                             }}
                             onSubmit={registerForm.handleSubmit(onRegisterSubmit)}
-                            className="space-y-5 mt-6"
+                            className="space-y-3 mt-4"
                           >
-                            <div className="space-y-3">
+                            <div className="space-y-2">
                               <Label htmlFor="register-username" className="text-slate-300 text-sm">
                                 Kullanıcı Adı
                               </Label>
@@ -834,7 +878,7 @@ export default function Auth() {
                               )}
                             </div>
 
-                            <div className="space-y-3">
+                            <div className="space-y-2">
                               <Label htmlFor="register-email" className="text-slate-300 text-sm">
                                 E-posta
                               </Label>
@@ -855,7 +899,7 @@ export default function Auth() {
                               )}
                             </div>
 
-                            <div className="space-y-3">
+                            <div className="space-y-2">
                               <Label htmlFor="register-password" className="text-slate-300 text-sm">
                                 Şifre
                               </Label>
@@ -886,7 +930,7 @@ export default function Auth() {
                               )}
                             </div>
 
-                            <div className="space-y-3">
+                            <div className="space-y-2">
                               <Label htmlFor="confirm-password" className="text-slate-300 text-sm">
                                 Şifre Tekrarı
                               </Label>
@@ -918,7 +962,7 @@ export default function Auth() {
                             </div>
 
                             {/* Math Verification Field */}
-                            <div className="space-y-3">
+                            <div className="space-y-2">
                               <Label htmlFor="register-math" className="text-slate-300 text-sm">
                                 Matematik Doğrulama: {registerMathQuestion.question} = ?
                               </Label>
@@ -945,7 +989,7 @@ export default function Auth() {
                               <Button
                                 type="submit"
                                 disabled={isRegisterLoading || registerMutation.isPending}
-                                className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white h-14 font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 mt-6"
+                                className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white h-14 font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 mt-4"
                               >
                                 {isRegisterLoading || registerMutation.isPending ? (
                                   <>
