@@ -34,11 +34,22 @@ export default function Landing() {
         }),
       });
 
+      const responseData = await response.json();
       if (response.ok) {
+        // Check if user should be redirected to complaints
+        if (responseData.redirectToComplaints) {
+          window.location.href = '/complaints';
+          return;
+        }
         alert("Başarıyla Gönderildi! Teşekkür ederiz.");
         setFeedbackMessage("");
       } else {
-        alert("Geri bildirim gönderilirken hata oluştu!");
+        if (responseData.message && responseData.message.includes("Giriş yapmanız gerekli")) {
+          alert("Geri bildirim göndermek için lütfen giriş yapın!");
+          window.location.href = '/auth';
+        } else {
+          alert("Geri bildirim gönderilirken hata oluştu!");
+        }
       }
     } catch (error) {
       console.error("Feedback error:", error);

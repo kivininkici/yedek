@@ -163,7 +163,14 @@ export default function Home() {
         body: JSON.stringify(payload),
       });
       
+      const responseData = await response.json();
       if (response.ok) {
+        // Check if user should be redirected to complaints
+        if (responseData.redirectToComplaints) {
+          setShowFeedback(false);
+          window.location.href = '/complaints';
+          return;
+        }
         setFeedbackSubmitted(true);
         setFeedbackMessage("");
         setSatisfactionLevel("");
@@ -172,7 +179,7 @@ export default function Home() {
           setFeedbackSubmitted(false);
         }, 2000);
       } else {
-        throw new Error("Geri bildirim gönderilirken hata oluştu");
+        throw new Error(responseData.message || "Geri bildirim gönderilirken hata oluştu");
       }
     } catch (error) {
       alert("Geri bildirim gönderilirken hata oluştu. Lütfen tekrar deneyin.");

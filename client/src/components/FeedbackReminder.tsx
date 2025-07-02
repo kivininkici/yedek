@@ -60,7 +60,6 @@ export function FeedbackReminder({ onClose, userEmail, userName, orderId }: Feed
         
         // Check if user should be redirected to complaints
         if (responseData.redirectToComplaints) {
-          alert("Memnun olmadığınız için üzgünüz. Şikayet formuna yönlendiriliyorsunuz.");
           onClose();
           window.location.href = '/complaints';
           return;
