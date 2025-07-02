@@ -167,22 +167,32 @@ export function FeedbackReminder({ onClose, userEmail, userName, orderId }: Feed
                 <div className="flex space-x-2">
                   {satisfactionOptions.map((option) => {
                     const IconComponent = option.icon;
+                    console.log("Rendering satisfaction option:", option.value, option.label);
                     return (
                       <Button
                         key={option.value}
                         variant="ghost"
-                        onClick={() => setSatisfactionLevel(option.value)}
+                        onClick={() => {
+                          console.log("Satisfaction level clicked:", option.value);
+                          setSatisfactionLevel(option.value);
+                        }}
                         className={`flex-1 p-3 border border-white/20 rounded-xl hover:bg-white/20 ${
                           satisfactionLevel === option.value 
                             ? 'bg-white/30 border-white/50' 
                             : ''
                         }`}
+                        title={option.label}
                       >
                         <IconComponent className={`w-6 h-6 ${option.color}`} />
                       </Button>
                     );
                   })}
                 </div>
+                {satisfactionLevel && (
+                  <p className="text-xs text-white/80 mt-2">
+                    Seçilen: {satisfactionOptions.find(opt => opt.value === satisfactionLevel)?.label}
+                  </p>
+                )}
               </div>
 
               <Button
