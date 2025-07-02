@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Progress } from "@/components/ui/progress";
-import { Eye, EyeOff, Home } from "lucide-react";
+import { Eye, EyeOff, Home, LogIn, UserPlus } from "lucide-react";
 import { Link } from "wouter";
 import { z } from "zod";
 import { apiRequest } from "@/lib/queryClient";
@@ -75,6 +75,50 @@ const FloatingOrbs = () => {
         }}
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut", delay: 2 }}
         style={{ top: '70%', left: '70%' }}
+      />
+      
+      {/* Additional floating particles */}
+      <motion.div 
+        className="absolute w-4 h-4 bg-gradient-to-r from-cyan-400/40 to-blue-400/40 rounded-full"
+        animate={{ 
+          x: [0, 30, 0],
+          y: [0, -25, 0],
+          rotate: [0, 180, 360],
+          opacity: [0.4, 0.8, 0.4]
+        }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+        style={{ top: '15%', right: '25%' }}
+      />
+      
+      <motion.div 
+        className="absolute w-1 h-1 bg-white/80 rounded-full"
+        animate={{ 
+          scale: [1, 1.5, 1],
+          opacity: [0.6, 1, 0.6]
+        }}
+        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+        style={{ top: '40%', left: '15%' }}
+      />
+      
+      <motion.div 
+        className="absolute w-1 h-1 bg-white/70 rounded-full"
+        animate={{ 
+          scale: [1, 2, 1],
+          opacity: [0.4, 1, 0.4]
+        }}
+        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+        style={{ top: '80%', right: '40%' }}
+      />
+      
+      <motion.div 
+        className="absolute w-5 h-5 bg-gradient-to-r from-indigo-400/30 to-purple-400/30 rounded-full"
+        animate={{ 
+          x: [0, -20, 0],
+          y: [0, 20, 0],
+          scale: [1, 1.2, 1]
+        }}
+        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+        style={{ top: '50%', left: '5%' }}
       />
     </div>
   );
@@ -377,15 +421,17 @@ export default function Auth() {
                 <TabsList className="grid w-full grid-cols-2 mb-10 bg-white/10 backdrop-blur-sm rounded-2xl p-2 h-16 border border-white/20">
                   <TabsTrigger 
                     value="login" 
-                    className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl font-bold text-lg transition-all duration-300 text-gray-300 hover:text-white"
+                    className="w-full data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl font-bold text-lg transition-all duration-300 text-gray-300 hover:text-white flex items-center justify-center space-x-2"
                   >
-                    Giriş Yap
+                    <LogIn className="w-5 h-5" />
+                    <span>Giriş Yap</span>
                   </TabsTrigger>
                   <TabsTrigger 
                     value="register" 
-                    className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl font-bold text-lg transition-all duration-300 text-gray-300 hover:text-white"
+                    className="w-full data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl font-bold text-lg transition-all duration-300 text-gray-300 hover:text-white flex items-center justify-center space-x-2"
                   >
-                    Kayıt Ol
+                    <UserPlus className="w-5 h-5" />
+                    <span>Kayıt Ol</span>
                   </TabsTrigger>
                 </TabsList>
 
@@ -484,7 +530,10 @@ export default function Auth() {
                                   <span>Giriş Yapılıyor...</span>
                                 </div>
                               ) : (
-                                "🚀 Giriş Yap"
+                                <div className="flex items-center space-x-3">
+                                  <LogIn className="w-6 h-6" />
+                                  <span>Giriş Yap</span>
+                                </div>
                               )}
                             </Button>
                           </form>
@@ -643,7 +692,10 @@ export default function Auth() {
                                   <span>Hesap Oluşturuluyor...</span>
                                 </div>
                               ) : (
-                                "✨ Kayıt Ol"
+                                <div className="flex items-center space-x-3">
+                                  <UserPlus className="w-6 h-6" />
+                                  <span>Kayıt Ol</span>
+                                </div>
                               )}
                             </Button>
                           </form>

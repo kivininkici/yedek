@@ -24,7 +24,9 @@ import {
   Send,
   Frown,
   Meh,
-  Smile
+  Smile,
+  UserPlus,
+  Home
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -418,7 +420,10 @@ export default function UserInterface() {
                     onClick={() => window.location.href = '/auth'}
                     className="w-full h-16 text-xl font-bold bg-gradient-to-r from-red-500 via-pink-500 to-red-600 hover:from-red-600 hover:via-pink-600 hover:to-red-700 text-white rounded-2xl shadow-2xl hover:shadow-red-500/30 transition-all duration-300 transform hover:scale-105"
                   >
-                    🚀 Giriş Yap / Kayıt Ol
+                    <div className="flex items-center space-x-3">
+                      <UserPlus className="w-6 h-6" />
+                      <span>Giriş Yap / Kayıt Ol</span>
+                    </div>
                   </Button>
                   
                   <Button 
@@ -426,7 +431,10 @@ export default function UserInterface() {
                     onClick={() => window.location.href = '/'}
                     className="w-full h-14 text-lg font-semibold border-2 border-white/30 bg-white/10 hover:bg-white/20 text-white hover:text-white rounded-2xl backdrop-blur-sm transition-all duration-300 hover:scale-105"
                   >
-                    🏠 Ana Sayfaya Dön
+                    <div className="flex items-center space-x-3">
+                      <Home className="w-5 h-5" />
+                      <span>Ana Sayfaya Dön</span>
+                    </div>
                   </Button>
                 </motion.div>
                 

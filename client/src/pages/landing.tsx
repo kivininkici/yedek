@@ -69,11 +69,24 @@ export default function Landing() {
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
         <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-cyan-500/10 rounded-full blur-2xl animate-bounce"></div>
       </div>
-      {/* Floating Particles */}
+      {/* Enhanced Floating Particles */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-10 w-2 h-2 bg-blue-400 rounded-full animate-ping"></div>
-        <div className="absolute top-40 right-20 w-1 h-1 bg-blue-400 rounded-full animate-ping delay-500"></div>
-        <div className="absolute bottom-32 left-1/3 w-3 h-3 bg-cyan-400 rounded-full animate-ping delay-1000"></div>
+        {/* Large floating orbs */}
+        <div className="absolute top-20 left-10 w-4 h-4 bg-gradient-to-r from-blue-400 to-cyan-400 rounded-full animate-bounce opacity-70"></div>
+        <div className="absolute top-40 right-20 w-6 h-6 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-pulse opacity-60"></div>
+        <div className="absolute bottom-32 left-1/3 w-3 h-3 bg-gradient-to-r from-cyan-400 to-blue-400 rounded-full animate-ping"></div>
+        <div className="absolute top-1/2 right-10 w-5 h-5 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-full animate-bounce delay-500 opacity-50"></div>
+        <div className="absolute bottom-20 right-1/3 w-2 h-2 bg-gradient-to-r from-cyan-300 to-blue-300 rounded-full animate-ping delay-1000"></div>
+        
+        {/* Small twinkling stars */}
+        <div className="absolute top-16 right-1/4 w-1 h-1 bg-white rounded-full animate-ping delay-300"></div>
+        <div className="absolute top-1/3 left-20 w-1 h-1 bg-white rounded-full animate-ping delay-700"></div>
+        <div className="absolute bottom-40 left-10 w-1 h-1 bg-white rounded-full animate-ping delay-1200"></div>
+        <div className="absolute top-3/4 right-20 w-1 h-1 bg-white rounded-full animate-ping delay-1500"></div>
+        
+        {/* Moving dots */}
+        <div className="absolute top-24 left-1/2 w-2 h-2 bg-blue-300 rounded-full animate-pulse delay-800"></div>
+        <div className="absolute bottom-16 left-1/4 w-2 h-2 bg-purple-300 rounded-full animate-pulse delay-1100"></div>
       </div>
       <div className="relative z-10">
         {/* Header */}
@@ -460,9 +473,11 @@ export default function Landing() {
             
             <button 
               onClick={() => setShowAuthModal(false)}
-              className="absolute top-6 right-6 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-all duration-300 hover:scale-110 backdrop-blur-sm"
+              className="absolute top-4 right-4 w-12 h-12 bg-white/10 hover:bg-red-500/20 rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-all duration-300 hover:scale-110 backdrop-blur-sm shadow-lg hover:shadow-red-500/20 z-50"
             >
-              ✕
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
             </button>
             
             <div className="relative z-10">
