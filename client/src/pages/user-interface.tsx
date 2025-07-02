@@ -428,7 +428,7 @@ export default function UserInterface() {
                 <Key className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-slate-50">KeyPanel</h1>
+                <h1 className="text-2xl font-bold text-slate-50">OtoKiwi</h1>
                 <p className="text-slate-400">Sosyal Medya Servis Platformu</p>
               </div>
             </div>

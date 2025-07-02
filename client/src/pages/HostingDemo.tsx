@@ -16,7 +16,7 @@ export default function HostingDemo() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                  KeyPanel
+                  OtoKiwi
                 </h1>
                 <p className="text-xs text-gray-400">cPanel Hosting Demo</p>
               </div>
@@ -44,7 +44,7 @@ export default function HostingDemo() {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-5xl font-black mb-6">
             <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-              KeyPanel
+              OtoKiwi
             </span>
             <br />
             <span className="text-3xl bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
@@ -119,7 +119,7 @@ export default function HostingDemo() {
               <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white text-sm">
                 🔑
               </div>
-              <h1 className="text-xl font-bold text-gray-800">KeyPanel - Key Kullanım</h1>
+              <h1 className="text-xl font-bold text-gray-800">OtoKiwi - Key Kullanım</h1>
             </div>
             <button 
               onClick={() => setCurrentPage('home')}
@@ -236,7 +236,7 @@ export default function HostingDemo() {
               <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center text-white">
                 👑
               </div>
-              <h1 className="text-xl font-bold text-gray-800">KeyPanel Admin</h1>
+              <h1 className="text-xl font-bold text-gray-800">OtoKiwi Admin</h1>
             </div>
             <button 
               onClick={() => setCurrentPage('home')}

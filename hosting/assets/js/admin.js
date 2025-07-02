@@ -1,5 +1,5 @@
 /**
- * KeyPanel Admin JavaScript
+ * OtoKiwi Admin JavaScript
  * cPanel Compatible Version
  */
 

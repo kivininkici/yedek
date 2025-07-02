@@ -438,7 +438,7 @@ export default function UserInterface() {
                 <Key className="w-5 h-5 md:w-6 md:h-6 text-white" />
               </motion.div>
               <div>
-                <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100">KeyPanel</h1>
+                <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100">OtoKiwi</h1>
                 <p className="text-xs md:text-sm text-gray-600 dark:text-gray-400 hidden sm:block">Sosyal Medya Servis Platformu</p>
               </div>
             </div>

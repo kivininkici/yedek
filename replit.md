@@ -1,8 +1,8 @@
-# KeyPanel - Key Yönetim Sistemi
+# OtoKiwi - Key Yönetim Sistemi
 
 ## Overview
 
-KeyPanel is a modern key management system designed for social media services. It provides a secure platform for managing single-use keys through both admin and public user interfaces. The application features a dashboard for administrators to create and manage keys, services, and users, while providing a public interface for end users to validate keys and place orders.
+OtoKiwi is a modern key management system designed for social media services. It provides a secure platform for managing single-use keys through both admin and public user interfaces. The application features a dashboard for administrators to create and manage keys, services, and users, while providing a public interface for end users to validate keys and place orders.
 
 ## System Architecture
 
@@ -219,7 +219,7 @@ Changelog:
 - June 30, 2025: Replit Agent'tan Replit ortamına migration başarıyla tamamlandı
 - PostgreSQL database kuruldu, tüm dependencies yüklendi
 - tsx paketi eklendi, server port 5000'de çalışıyor
-- KeyPanel sistemi Replit ortamında production seviyesinde aktiv
+- OtoKiwi sistemi Replit ortamında production seviyesinde aktiv
 - June 30, 2025: Kullanıcı rol değiştirme sistemi tamamen düzeltildi
 - updateUserRole fonksiyonu normal ve Replit kullanıcıları için optimize edildi
 - Duplicate kullanıcı görünme sorunu çözüldı - unique ID kontrolü eklendi
@@ -245,7 +245,7 @@ Changelog:
 - July 1, 2025: Replit Agent'tan Replit ortamına migration başarıyla tamamlandı
 - PostgreSQL database kuruldu ve tüm schema başarıyla push edildi
 - Tüm dependencies yüklendi ve sistem production seviyesinde çalışıyor
-- KeyPanel uygulaması port 5000'de başarıyla çalışıyor
+- OtoKiwi uygulaması port 5000'de başarıyla çalışıyor
 - API bakiye yenileme sistemi iyileştirildi - form-data ve JSON formatları destekleniyor
 - ResellerProvider API uyumluluğu artırıldı - balance parsing optimize edildi
 - TypeScript hataları giderildi, sistem stable çalışıyor
@@ -308,7 +308,7 @@ Changelog:
 - July 1, 2025: Replit Agent'tan Replit ortamına migration başarıyla tamamlandı
 - PostgreSQL database kuruldu ve tüm schema başarıyla push edildi
 - API adı uyumsuzluğu sorunu çözüldü - flexible API search implementasyonu
-- KeyPanel uygulaması production seviyesinde port 5000'de çalışıyor
+- OtoKiwi uygulaması production seviyesinde port 5000'de çalışıyor
 - "Key Kullan" butonunun yönlendirme hatası düzeltildi (/user sayfasına yönlendiriyor)
 - Giriş yapmış kullanıcılar için "Kayıt Ol / Giriş Yap" butonu gizlendi
 - Buton hover efektlerinde köşe rendering sorunu çözüldü (Motion boxShadow animasyon çakışması)
@@ -328,7 +328,7 @@ Changelog:
 - Button boyutları ve spacing mobil için optimize edildi
 - July 1, 2025: Replit Agent'tan Replit ortamına migration başarıyla tamamlandı
 - PostgreSQL database kuruldu ve schema başarıyla push edildi
-- Tüm dependencies yüklendi ve KeyPanel sistemi production seviyesinde çalışıyor
+- Tüm dependencies yüklendi ve OtoKiwi sistemi production seviyesinde çalışıyor
 - Giriş Denemeleri sayfası layout optimize edildi - boş alanlar minimize edildi
 - Header padding azaltıldı (p-6'dan p-3'e), main content padding optimize edildi
 - Page header kaldırıldı, istatistik kartları direkt header altında konumlandırıldı
@@ -353,7 +353,7 @@ Changelog:
 - E-posta template'leri hazırlandı - HTML ve text formatında profesyonel tasarım
 - Feedback sistemi console log debug'ları eklendi ve test edildi
 - PostgreSQL database schema başarıyla push edildi, tüm tablolar aktif
-- KeyPanel sistemi Replit ortamında production seviyesinde çalışıyor
+- OtoKiwi sistemi Replit ortamında production seviyesinde çalışıyor
 - SendGrid API key isteğe bağlı - sonradan eklenebilir, sistem API key olmadan da çalışıyor
 - July 2, 2025: Hosting Preview sayfası eklendi
 - Hosting klasöründeki PHP sisteminin özelliklerini gösteren detaylı preview sayfası
@@ -381,7 +381,7 @@ Changelog:
 - tsx dependency yüklendi ve server port 5000'de çalışıyor
 - Feedback sistemi düzeltildi - gönder butonuna basınca admin panele yönlendiriyor
 - Session store PostgreSQL ile entegre edildi ve authentication çalışıyor
-- KeyPanel sistemi production seviyesinde Replit ortamında aktiv
+- OtoKiwi sistemi production seviyesinde Replit ortamında aktiv
 - July 2, 2025: Gelişmiş güvenlik ve UI iyileştirmeleri tamamlandı
 - Matematik doğrulama sistemi eklendi - rastgele toplama/çıkarma problemleri
 - 6 farklı soru türü ile çeşitlilik sağlandı (basit toplama, çıkarma, çift basamaklı, sıfır işlemleri)
@@ -392,13 +392,14 @@ Changelog:
 - Admin panel matematik doğrulama hatalarını ayrı kategoriler halinde gösteriyor
 - July 2, 2025: Final migration from Replit Agent to Replit environment başarıyla tamamlandı
 - July 2, 2025: User interface background design güncellendi - mavi tonlarda partikül efektleri eklendi
+- July 2, 2025: Tüm proje ismi KeyPanel'den OtoKiwi'ye değiştirildi - UI, kod ve dökümantasyon
 - PostgreSQL database kuruldu ve tüm schema başarıyla push edildi
 - tsx dependency yüklendi ve server port 5000'de stable çalışıyor
 - Geri bildirim ve şikayet sistemi güncellendi - sadece kayıtlı kullanıcılar erişebiliyor
 - Memnuniyetsiz kullanıcılar otomatik şikayet sayfasına yönlendiriliyor
 - Şikayet sayfasına erişim sipariş ID kontrolü ile güvenli hale getirildi
 - Admin panelinde şikayet yönetimi aktif ve e-posta bildirim sistemi çalışıyor
-- KeyPanel production seviyesinde güvenilir çalışıyor
+- OtoKiwi production seviyesinde güvenilir çalışıyor
 - July 2, 2025: Master Şifre Koruması sistemi tamamen eklendi
 - Admin giriş sayfasına önce master şifre doğrulama ekranı eklendi
 - Master şifre: m;rf_oj78cMGbO+0)Ai8e@JAAq=C2Wl)6xoQ_K42mQivX1DjvJ) olarak ayarlandı
@@ -420,7 +421,7 @@ Changelog:
 - Admin giriş sayfası metinleri düzeltildi: "Güvenlik Şifresini Girin" ve "Şifreyi Doğrula"
 - Auto-login fonksiyonu düzeltildi - credentials: 'include' eklendi
 - PostgreSQL database başarıyla kuruldu ve session store aktiv
-- KeyPanel sistemi production seviyesinde Replit ortamında çalışıyor
+- OtoKiwi sistemi production seviyesinde Replit ortamında çalışıyor
 - July 2, 2025: cPanel Hosting Uyumlu Tam Stack Dönüşümü Tamamlandı
 - PHP/MySQL tam stack'e dönüştürüldü - Node.js bağımlılığı kaldırıldı
 - hosting/ klasöründe production-ready cPanel sistemi oluşturuldu

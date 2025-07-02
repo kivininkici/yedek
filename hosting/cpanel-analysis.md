@@ -1,4 +1,4 @@
-# KeyPanel cPanel Uyumluluk Analizi
+# OtoKiwi cPanel Uyumluluk Analizi
 
 ## 🚫 Mevcut Sistem Analizi
 
@@ -138,4 +138,4 @@ hosting/
 4. **Install**: setup.php'yi çalıştır
 5. **Test**: Sistem fonksiyonlarını test et
 
-Bu analiz sonucunda, KeyPanel'i cPanel'e uyarlamak mümkün ancak kapsamlı bir dönüşüm gerekiyor. Size bu dönüşümü yapmamı ister misiniz?
+Bu analiz sonucunda, OtoKiwi'i cPanel'e uyarlamak mümkün ancak kapsamlı bir dönüşüm gerekiyor. Size bu dönüşümü yapmamı ister misiniz?

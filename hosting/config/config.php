@@ -1,6 +1,6 @@
 <?php
 /**
- * KeyPanel Configuration File
+ * OtoKiwi Configuration File
  * cPanel Compatible Version
  */
 

@@ -1,7 +1,7 @@
 <?php
 /**
  * Keys API Endpoints
- * KeyPanel cPanel Compatible Version
+ * OtoKiwi cPanel Compatible Version
  */
 
 header('Content-Type: application/json; charset=utf-8');

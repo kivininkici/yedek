@@ -1,12 +1,12 @@
 <?php
 /**
- * KeyPanel Installation Script
+ * OtoKiwi Installation Script
  * cPanel Compatible Version
  */
 
 // Prevent direct access if already installed
 if (file_exists('../config/installed.lock')) {
-    die('KeyPanel is already installed. Delete config/installed.lock to reinstall.');
+    die('OtoKiwi is already installed. Delete config/installed.lock to reinstall.');
 }
 
 $step = $_GET['step'] ?? 'welcome';
@@ -169,7 +169,7 @@ function createAdminUser($data) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KeyPanel Kurulumu</title>
+    <title>OtoKiwi Kurulumu</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -243,7 +243,7 @@ function createAdminUser($data) {
         <div class="setup-container">
             <div class="setup-card">
                 <div class="setup-header">
-                    <h1><i class="fas fa-key me-2"></i>KeyPanel</h1>
+                    <h1><i class="fas fa-key me-2"></i>OtoKiwi</h1>
                     <p class="mb-0">Kurulum Sihirbazı</p>
                 </div>
                 
@@ -288,8 +288,8 @@ function createAdminUser($data) {
                     <!-- Step Content -->
                     <?php switch ($step): case 'welcome': ?>
                         <div class="text-center">
-                            <h3>KeyPanel'e Hoş Geldiniz</h3>
-                            <p class="text-muted mb-4">Bu sihirbaz size KeyPanel'i kurmada yardımcı olacaktır.</p>
+                            <h3>OtoKiwi'e Hoş Geldiniz</h3>
+                            <p class="text-muted mb-4">Bu sihirbaz size OtoKiwi'i kurmada yardımcı olacaktır.</p>
                             
                             <div class="mb-4">
                                 <div class="row g-3">
@@ -411,7 +411,7 @@ function createAdminUser($data) {
                     <?php break; case 'complete': ?>
                         <div class="text-center">
                             <h3>Kurulum Tamamlandı!</h3>
-                            <p class="text-muted mb-4">KeyPanel başarıyla kuruldu. Artık sistemi kullanmaya başlayabilirsiniz.</p>
+                            <p class="text-muted mb-4">OtoKiwi başarıyla kuruldu. Artık sistemi kullanmaya başlayabilirsiniz.</p>
                             
                             <div class="mb-4">
                                 <i class="fas fa-check-circle fa-4x text-success mb-3"></i>

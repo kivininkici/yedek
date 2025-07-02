@@ -84,7 +84,7 @@ export default function Sidebar() {
           </div>
           <div>
             <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 via-cyan-400 to-green-400 bg-clip-text text-transparent">
-              KeyPanel
+              OtoKiwi
             </h1>
             <p className="text-xs text-slate-400">Admin Dashboard</p>
           </div>

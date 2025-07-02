@@ -86,7 +86,7 @@ export default function Landing() {
                 </div>
                 <div>
                   <h1 className="text-3xl font-black bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                    KeyPanel
+                    OtoKiwi
                   </h1>
                   <p className="text-sm text-gray-400">Premium Key Yönetimi</p>
                 </div>
@@ -147,7 +147,7 @@ export default function Landing() {
               
               <h2 className="text-6xl md:text-8xl font-black mb-8 leading-tight">
                 <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent">
-                  KeyPanel
+                  OtoKiwi
                 </span>
                 <br />
                 <span className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
@@ -226,7 +226,7 @@ export default function Landing() {
                 <span className="text-sm font-medium text-white">SMMKİWİ</span>
               </div>
               <h3 className="text-5xl font-black mb-6 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Neden KeyPanel?
+                Neden OtoKiwi?
               </h3>
               <p className="text-xl text-gray-300 max-w-3xl mx-auto">
                 Sektörün en gelişmiş teknolojisi ile sosyal medya büyümenizi hızlandırın
@@ -306,7 +306,7 @@ export default function Landing() {
                 Deneyiminizi Paylaşın
               </h3>
               <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-12">
-                KeyPanel ile ilgili görüşleriniz bizim için çok değerli. Önerilerinizi ve deneyimlerinizi paylaşın.
+                OtoKiwi ile ilgili görüşleriniz bizim için çok değerli. Önerilerinizi ve deneyimlerinizi paylaşın.
               </p>
             </div>
 
@@ -370,7 +370,7 @@ export default function Landing() {
                 <div className="bg-gradient-to-r from-slate-800/50 to-slate-700/50 border border-white/10 rounded-2xl p-8 backdrop-blur-sm">
                   <h4 className="text-2xl font-bold text-white mb-4">Hızlı Geri Bildirim</h4>
                   <p className="text-gray-300 mb-6">
-                    KeyPanel deneyiminizle ilgili hızlı bir geri bildirim gönderin
+                    OtoKiwi deneyiminizle ilgili hızlı bir geri bildirim gönderin
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
                     <input 
@@ -406,14 +406,14 @@ export default function Landing() {
                   <KeyRound className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                  KeyPanel
+                  OtoKiwi
                 </h3>
               </div>
               <p className="text-gray-400 mb-8">
                 Türkiye'nin en güvenilir sosyal medya paneli
               </p>
               <div className="flex justify-center space-x-8 text-sm text-gray-500">
-                <span>© 2025 KeyPanel</span>
+                <span>© 2025 OtoKiwi</span>
                 <span>•</span>
                 <span>Tüm hakları saklıdır</span>
                 <span>•</span>
@@ -438,7 +438,7 @@ export default function Landing() {
               <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <KeyRound className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-2xl font-bold text-white mb-2">KeyPanel'e Hoş Geldin</h3>
+              <h3 className="text-2xl font-bold text-white mb-2">OtoKiwi'e Hoş Geldin</h3>
               <p className="text-gray-400">Hesabınıza giriş yapın veya yeni hesap oluşturun</p>
             </div>
 

@@ -1,4 +1,4 @@
--- KeyPanel MySQL Database Schema
+-- OtoKiwi MySQL Database Schema
 -- cPanel Compatible Version
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";

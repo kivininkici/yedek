@@ -5,7 +5,7 @@ export default function HostingPreview() {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-blue-600 mb-4">🔑 KeyPanel</h1>
+          <h1 className="text-4xl font-bold text-blue-600 mb-4">🔑 OtoKiwi</h1>
           <p className="text-xl text-gray-600">cPanel Hosting Uyumlu - Profesyonel Anahtar Yönetim Sistemi</p>
           <Link href="/" className="inline-block mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
             ← Ana Sayfaya Dön
@@ -15,7 +15,7 @@ export default function HostingPreview() {
         <div className="bg-white rounded-xl p-6 shadow-lg mb-8">
           <h2 className="text-2xl font-bold text-blue-600 mb-4">📋 Hosting Klasörü Preview</h2>
           <p className="text-gray-700 mb-4">
-            Bu sayfa, hosting klasöründe bulunan PHP tabanlı KeyPanel sisteminin özelliklerini göstermektedir. 
+            Bu sayfa, hosting klasöründe bulunan PHP tabanlı OtoKiwi sisteminin özelliklerini göstermektedir. 
             cPanel hosting ortamına yüklendiğinde aynı özellikler ile çalışacaktır.
           </p>
           <div className="flex gap-4 flex-wrap">

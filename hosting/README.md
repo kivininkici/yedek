@@ -1,7 +1,7 @@
-# KeyPanel - cPanel Hosting Uyumlu Versiyon
+# OtoKiwi - cPanel Hosting Uyumlu Versiyon
 
 ## 📋 Genel Bakış
-Bu klasör, KeyPanel sisteminin cPanel hosting ortamları için özel olarak hazırlanmış versiyonunu içerir.
+Bu klasör, OtoKiwi sisteminin cPanel hosting ortamları için özel olarak hazırlanmış versiyonunu içerir.
 
 ## 🛠 Teknoloji Stack (cPanel Uyumlu)
 - **Backend**: PHP 8.0+ (OOP yapısı)

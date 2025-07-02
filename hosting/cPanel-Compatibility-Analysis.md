@@ -1,8 +1,8 @@
-# cPanel Uyumluluk Analizi - KeyPanel
+# cPanel Uyumluluk Analizi - OtoKiwi
 
 ## 🔍 Analiz Sonucu: %100 UYUMLU ✅
 
-KeyPanel'in cPanel hosting ortamında çalışması için gerekli tüm düzenlemeler yapılmış ve tam uyumluluk sağlanmıştır.
+OtoKiwi'in cPanel hosting ortamında çalışması için gerekli tüm düzenlemeler yapılmış ve tam uyumluluk sağlanmıştır.
 
 ## 📊 Teknik Analiz
 
@@ -197,7 +197,7 @@ RewriteRule ^test$ index.html [L]
 
 ## 🎯 Sonuç
 
-**KeyPanel cPanel ortamında %100 uyumlu ve production-ready durumda.**
+**OtoKiwi cPanel ortamında %100 uyumlu ve production-ready durumda.**
 
 ### Öne Çıkan Özellikler:
 1. **Plug & Play**: Dosyaları yükle, kurulum çalıştır, kullanmaya başla

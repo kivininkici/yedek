@@ -1,8 +1,8 @@
-# KeyPanel cPanel Kurulum Rehberi
+# OtoKiwi cPanel Kurulum Rehberi
 
 ## 📋 Genel Bakış
 
-Bu rehber, KeyPanel'in cPanel hosting ortamında kurulumu için adım adım talimatları içerir.
+Bu rehber, OtoKiwi'in cPanel hosting ortamında kurulumu için adım adım talimatları içerir.
 
 ## 🛠 Sistem Gereksinimleri
 
@@ -227,4 +227,4 @@ Kurulum sırasında sorun yaşarsanız:
 
 ---
 
-**✅ Kurulum tamamlandığında KeyPanel tamamen çalışır durumda olacaktır!**
+**✅ Kurulum tamamlandığında OtoKiwi tamamen çalışır durumda olacaktır!**

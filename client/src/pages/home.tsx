@@ -328,7 +328,7 @@ export default function Home() {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.3 }}
                 >
-                  KeyPanel
+                  OtoKiwi
                 </motion.h1>
                 <motion.p 
                   className="text-blue-200 text-sm flex items-center space-x-1"
@@ -453,7 +453,7 @@ export default function Home() {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 1 }}
           >
-            KeyPanel
+            OtoKiwi
           </motion.h2>
           
           <motion.h3
@@ -686,7 +686,7 @@ export default function Home() {
           <div className="bg-gradient-to-r from-slate-800/50 to-slate-700/50 border border-white/10 rounded-2xl p-8 backdrop-blur-sm">
             <h4 className="text-2xl font-bold text-white mb-4">Hızlı Geri Bildirim</h4>
             <p className="text-gray-300 mb-6">
-              KeyPanel deneyiminizle ilgili hızlı bir geri bildirim gönderin
+              OtoKiwi deneyiminizle ilgili hızlı bir geri bildirim gönderin
             </p>
             <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
               <input 
@@ -735,7 +735,7 @@ export default function Home() {
                       <MessageCircle className="w-8 h-8 text-white" />
                     </div>
                     <h3 className="text-2xl font-bold text-white mb-2">Hızlı Geri Bildirim</h3>
-                    <p className="text-gray-300">KeyPanel deneyiminizle ilgili geri bildirim gönderin</p>
+                    <p className="text-gray-300">OtoKiwi deneyiminizle ilgili geri bildirim gönderin</p>
                   </div>
 
                   <div className="space-y-4">

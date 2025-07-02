@@ -473,7 +473,7 @@ export default function Auth() {
               </motion.div>
               
               <CardTitle className="text-3xl font-bold text-white mb-2">
-                KeyPanel
+                OtoKiwi
               </CardTitle>
               <p className="text-slate-400 text-sm">
                 Hesabınıza giriş yapın veya yeni hesap oluşturun

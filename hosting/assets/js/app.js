@@ -1,10 +1,10 @@
 /**
- * KeyPanel JavaScript Application
+ * OtoKiwi JavaScript Application
  * Modern ES6+ JavaScript - cPanel Compatible
  */
 
 // Global App Configuration
-window.KeyPanel = {
+window.OtoKiwi = {
     apiBase: '/api',
     version: '2.0.0',
     animations: {
@@ -33,7 +33,7 @@ const Utils = {
         }
 
         try {
-            const response = await fetch(`${KeyPanel.apiBase}${endpoint}`, config);
+            const response = await fetch(`${OtoKiwi.apiBase}${endpoint}`, config);
             const data = await response.json();
             
             if (!response.ok) {
@@ -599,7 +599,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }, 5000);
 
-    console.log('KeyPanel JavaScript initialized successfully');
+    console.log('OtoKiwi JavaScript initialized successfully');
 });
 
 // Export for use in other scripts

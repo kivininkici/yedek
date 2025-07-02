@@ -1,6 +1,6 @@
 <?php
 /**
- * KeyPanel Helper Functions
+ * OtoKiwi Helper Functions
  * cPanel Compatible Version
  */
 
