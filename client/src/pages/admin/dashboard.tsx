@@ -3,11 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useToast } from "@/hooks/use-toast";
-
-
 import Sidebar from "@/components/layout/sidebar";
 import Header from "@/components/layout/header";
-import StatsCard from "@/components/admin/stats-card";
 import KeyCreationModal from "@/components/admin/key-creation-modal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -36,9 +33,145 @@ import {
   TrendingUp,
   Crown,
   Star,
-  BarChart3
+  BarChart3,
+  Rocket,
+  Target,
+  Globe,
+  Settings,
+  Calendar,
+  ArrowUp,
+  ArrowDown,
+  Layers,
+  Shield,
+  Database
 } from "lucide-react";
 import { Key as KeyType } from "@shared/schema";
+
+// Modern Background Component
+const ModernBackground = () => {
+  return (
+    <div className="fixed inset-0 overflow-hidden pointer-events-none">
+      {/* Base Gradients */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-blue-950 to-purple-950" />
+      <div className="absolute inset-0 bg-gradient-to-tr from-indigo-950/30 via-transparent to-cyan-950/20" />
+      
+      {/* Floating Orbs */}
+      <motion.div 
+        className="absolute w-[600px] h-[600px] rounded-full"
+        style={{
+          background: 'radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, rgba(147, 51, 234, 0.04) 40%, transparent 70%)',
+          filter: 'blur(60px)',
+          top: '10%', 
+          right: '10%'
+        }}
+        animate={{
+          x: [0, 100, 0],
+          y: [0, -50, 0],
+          scale: [1, 1.2, 1],
+        }}
+        transition={{
+          duration: 25,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      />
+      
+      <motion.div 
+        className="absolute w-[400px] h-[400px] rounded-full"
+        style={{
+          background: 'radial-gradient(circle, rgba(236, 72, 153, 0.06) 0%, rgba(168, 85, 247, 0.03) 40%, transparent 70%)',
+          filter: 'blur(50px)',
+          bottom: '20%', 
+          left: '10%'
+        }}
+        animate={{
+          x: [0, -80, 0],
+          y: [0, 60, 0],
+          scale: [1.2, 0.8, 1.2],
+        }}
+        transition={{
+          duration: 30,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      />
+
+      {/* Grid Pattern */}
+      <div 
+        className="absolute inset-0 opacity-[0.02]"
+        style={{
+          backgroundImage: `radial-gradient(circle at 50% 50%, white 1px, transparent 1px)`,
+          backgroundSize: '50px 50px',
+        }}
+      />
+    </div>
+  );
+};
+
+// Stats Card Component
+const StatCard = ({ icon: Icon, title, value, change, changeType, color, delay }: any) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20, scale: 0.95 }}
+    animate={{ opacity: 1, y: 0, scale: 1 }}
+    transition={{ duration: 0.5, delay }}
+    whileHover={{ scale: 1.02, y: -2 }}
+    className="group"
+  >
+    <Card className="bg-black/30 border border-white/10 backdrop-blur-xl rounded-2xl group-hover:border-white/20 transition-all duration-300 overflow-hidden">
+      <div className={`absolute inset-0 ${color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
+      <CardContent className="p-6 relative z-10">
+        <div className="flex items-center justify-between mb-4">
+          <motion.div 
+            className={`w-12 h-12 ${color} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}
+            whileHover={{ rotate: 5 }}
+          >
+            <Icon className="w-6 h-6 text-white" />
+          </motion.div>
+          {change && (
+            <div className={`flex items-center text-sm ${changeType === 'up' ? 'text-emerald-400' : 'text-red-400'}`}>
+              {changeType === 'up' ? <ArrowUp className="w-4 h-4 mr-1" /> : <ArrowDown className="w-4 h-4 mr-1" />}
+              {change}
+            </div>
+          )}
+        </div>
+        <div className="space-y-1">
+          <motion.p 
+            className="text-3xl font-bold text-white"
+            animate={{ opacity: [0.8, 1, 0.8] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            {value}
+          </motion.p>
+          <p className="text-white/60 text-sm font-medium">{title}</p>
+        </div>
+      </CardContent>
+    </Card>
+  </motion.div>
+);
+
+// Quick Action Card
+const QuickActionCard = ({ icon: Icon, title, description, onClick, color }: any) => (
+  <motion.div
+    whileHover={{ scale: 1.02, y: -2 }}
+    whileTap={{ scale: 0.98 }}
+    className="group cursor-pointer"
+    onClick={onClick}
+  >
+    <Card className="bg-black/30 border border-white/10 backdrop-blur-xl rounded-2xl group-hover:border-white/20 transition-all duration-300 overflow-hidden h-full">
+      <div className={`absolute inset-0 ${color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`} />
+      <CardContent className="p-6 relative z-10 h-full flex flex-col">
+        <motion.div 
+          className={`w-14 h-14 ${color} rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}
+          whileHover={{ rotate: 10 }}
+        >
+          <Icon className="w-7 h-7 text-white" />
+        </motion.div>
+        <h3 className="text-lg font-bold text-white mb-2">{title}</h3>
+        <p className="text-white/60 text-sm flex-1">{description}</p>
+      </CardContent>
+    </Card>
+  </motion.div>
+);
 
 export default function Dashboard() {
   const { toast } = useToast();
@@ -80,430 +213,294 @@ export default function Dashboard() {
 
   if (isLoading || !isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-950">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-slate-400">Loading...</p>
-        </div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-blue-950 to-purple-950">
+        <motion.div 
+          className="text-center"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+        >
+          <motion.div 
+            className="w-16 h-16 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl"
+            animate={{ 
+              scale: [1, 1.1, 1],
+              rotate: [0, 360],
+            }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          >
+            <Shield className="w-8 h-8 text-white" />
+          </motion.div>
+          <p className="text-white text-lg font-medium">Admin Panel Yükleniyor...</p>
+        </motion.div>
       </div>
     );
   }
 
-  // Get recent 5 keys and orders
   const recentKeysData = Array.isArray(recentKeys) ? recentKeys.slice(0, 5) : [];
   const recentOrdersData = Array.isArray(recentOrders) ? recentOrders.slice(0, 5) : [];
 
   return (
-    <div className="min-h-screen flex bg-gradient-to-br from-slate-950 via-blue-950/20 to-purple-950/20">
+    <div className="min-h-screen flex bg-gradient-to-br from-slate-950 via-blue-950 to-purple-950 text-white relative">
+      {/* Modern Background */}
+      <ModernBackground />
+      
       <Sidebar />
-      <main className="flex-1 overflow-hidden relative md:ml-0 ml-0 min-w-0">
-        {/* Enhanced Background Effects */}
-        <div className="absolute inset-0 overflow-hidden">
-          <motion.div 
-            className="absolute -top-40 -right-40 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl"
-            animate={{ 
-              scale: [1, 1.2, 1],
-              rotate: [0, 180, 360] 
-            }}
-            transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div 
-            className="absolute bottom-0 left-0 w-96 h-96 bg-purple-500/15 rounded-full blur-3xl"
-            animate={{ 
-              scale: [1.2, 1, 1.2],
-              rotate: [360, 180, 0] 
-            }}
-            transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div 
-            className="absolute top-1/2 left-1/3 w-64 h-64 bg-cyan-500/10 rounded-full blur-2xl"
-            animate={{ 
-              x: [0, 50, 0],
-              y: [0, -30, 0]
-            }}
-            transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
-          />
-        </div>
-        
-
-        
+      
+      <main className="flex-1 overflow-hidden relative z-10">
         <Header 
-          title="🚀 Admin Dashboard" 
+          title="Dashboard" 
           description="Sistem kontrolü ve performans takibi" 
         />
         
-        <div className="content-area relative z-10">
-          <div className="p-4 md:p-8 space-y-8">
-            {/* Welcome Section with Animation */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="relative overflow-hidden"
-            >
-              <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-cyan-500/10 rounded-3xl p-6 md:p-8 border border-blue-500/20 backdrop-blur-xl shadow-2xl gap-6">
-                <div className="flex items-center space-x-6 flex-1">
-                  <motion.div
-                    whileHover={{ scale: 1.1, rotate: 10 }}
-                    transition={{ duration: 0.3 }}
-                    className="relative"
-                  >
-                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-xl">
-                      <Crown className="w-8 h-8 text-white" />
-                    </div>
+        <div className="p-6 space-y-8 max-h-[calc(100vh-80px)] overflow-y-auto">
+          {/* Welcome Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="relative"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-3xl blur-xl" />
+            <Card className="relative bg-black/30 border border-white/20 backdrop-blur-xl rounded-3xl overflow-hidden">
+              <CardContent className="p-8">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
                     <motion.div 
-                      className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center"
-                      animate={{ scale: [1, 1.2, 1] }}
-                      transition={{ duration: 2, repeat: Infinity }}
+                      className="w-16 h-16 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-2xl"
+                      animate={{ 
+                        boxShadow: [
+                          "0 0 30px rgba(59, 130, 246, 0.3)",
+                          "0 0 50px rgba(147, 51, 234, 0.4)",
+                          "0 0 30px rgba(236, 72, 153, 0.3)"
+                        ]
+                      }}
+                      transition={{ duration: 3, repeat: Infinity }}
                     >
-                      <Star className="w-3 h-3 text-yellow-900" />
+                      <Crown className="w-8 h-8 text-white" />
                     </motion.div>
-                  </motion.div>
-                  <div>
-                    <motion.h2 
-                      className="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent font-extrabold text-3xl md:text-4xl mb-2"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.8, delay: 0.2 }}
-                    >
-                      Hoş Geldiniz, {admin?.username || 'Admin'}! 👋
-                    </motion.h2>
-                    <motion.p 
-                      className="text-slate-300 text-lg"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.6, delay: 0.4 }}
-                    >
-                      Sistemin komuta merkezine hoş geldiniz. Tüm kontroller elinizin altında! ⚡
-                    </motion.p>
+                    <div>
+                      <h1 className="text-2xl font-bold text-white mb-1">
+                        Hoş Geldiniz, {admin?.username || 'Admin'}!
+                      </h1>
+                      <p className="text-white/70">
+                        Sistem başarıyla çalışıyor. Tüm kontroller elinizin altında.
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Button 
-                    className="bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 hover:from-blue-700 hover:via-purple-700 hover:to-cyan-700 text-white shadow-2xl hover:shadow-blue-500/25 transition-all duration-300 h-14 px-8 text-lg font-bold rounded-2xl w-full lg:w-auto"
-                    onClick={() => setShowKeyModal(true)}
-                  >
-                    <Plus className="w-6 h-6 mr-3" />
-                    🔑 Hızlı Key Oluştur
-                  </Button>
-                </motion.div>
-              </div>
-            </motion.div>
-
-            {/* Enhanced Statistics Cards */}
-            <motion.div 
-              className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-            >
-              {[
-                {
-                  title: "🔑 Toplam Key",
-                  value: (dashboardStats as any)?.totalKeys || 0,
-                  icon: Key,
-                  gradient: "from-blue-500 to-blue-600",
-                  bgGradient: "from-blue-500/10 to-blue-600/20",
-                  change: "+12% bu ay",
-                  changeType: "positive" as const,
-                  delay: 0
-                },
-                {
-                  title: "✅ Kullanılmış Key", 
-                  value: (dashboardStats as any)?.usedKeys || 0,
-                  icon: CheckCircle,
-                  gradient: "from-green-500 to-emerald-600",
-                  bgGradient: "from-green-500/10 to-emerald-600/20",
-                  change: "+8% bu hafta",
-                  changeType: "positive" as const,
-                  delay: 0.1
-                },
-                {
-                  title: "🚀 Aktif Servis",
-                  value: (dashboardStats as any)?.activeServices || 0,
-                  icon: Zap,
-                  gradient: "from-purple-500 to-purple-600",
-                  bgGradient: "from-purple-500/10 to-purple-600/20", 
-                  change: "5 servis aktif",
-                  changeType: "neutral" as const,
-                  delay: 0.2
-                },
-                {
-                  title: "📊 Günlük İşlem",
-                  value: (dashboardStats as any)?.dailyTransactions || 0,
-                  icon: TrendingUp,
-                  gradient: "from-cyan-500 to-cyan-600",
-                  bgGradient: "from-cyan-500/10 to-cyan-600/20",
-                  change: "+25% dün",
-                  changeType: "positive" as const,
-                  delay: 0.3
-                }
-              ].map((stat, index) => {
-                const IconComponent = stat.icon;
-                return (
                   <motion.div
-                    key={stat.title}
-                    initial={{ opacity: 0, y: 20, scale: 0.9 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ duration: 0.5, delay: stat.delay }}
-                    whileHover={{ scale: 1.05, y: -5 }}
-                    className="group"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
                   >
-                    <Card className={`relative overflow-hidden bg-gradient-to-br ${stat.bgGradient} border-0 shadow-2xl hover:shadow-3xl transition-all duration-300 backdrop-blur-xl`}>
-                      <CardContent className="p-6">
-                        <div className="flex items-center justify-between mb-4">
-                          <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${stat.gradient} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                            <IconComponent className="w-6 h-6 text-white" />
+                    <Button 
+                      onClick={() => setShowKeyModal(true)}
+                      className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold px-6 py-3 rounded-xl shadow-lg"
+                    >
+                      <Plus className="w-5 h-5 mr-2" />
+                      Hızlı Key Oluştur
+                    </Button>
+                  </motion.div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <StatCard
+              icon={Key}
+              title="Toplam Key"
+              value={dashboardStats?.totalKeys || 0}
+              change="+12% bu hafta"
+              changeType="up"
+              color="bg-gradient-to-r from-blue-500 to-cyan-500"
+              delay={0.1}
+            />
+            <StatCard
+              icon={CheckCircle}
+              title="Kullanılmış Key"
+              value={dashboardStats?.usedKeys || 0}
+              change="+8% bu hafta"
+              changeType="up"
+              color="bg-gradient-to-r from-emerald-500 to-teal-500"
+              delay={0.2}
+            />
+            <StatCard
+              icon={Globe}
+              title="Aktif Servis"
+              value={dashboardStats?.activeServices || 0}
+              change="+5 yeni"
+              changeType="up"
+              color="bg-gradient-to-r from-purple-500 to-pink-500"
+              delay={0.3}
+            />
+            <StatCard
+              icon={Activity}
+              title="Günlük İşlem"
+              value={dashboardStats?.dailyTransactions || 0}
+              change="+25% dün"
+              changeType="up"
+              color="bg-gradient-to-r from-orange-500 to-red-500"
+              delay={0.4}
+            />
+          </div>
+
+          {/* Quick Actions */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+          >
+            <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
+              <Rocket className="w-6 h-6 mr-3 text-blue-400" />
+              Hızlı İşlemler
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <QuickActionCard
+                icon={Key}
+                title="Key Yönetimi"
+                description="Yeni key oluştur, mevcut keyleri yönet"
+                onClick={() => window.location.href = '/admin/keys'}
+                color="bg-gradient-to-r from-blue-500 to-purple-500"
+              />
+              <QuickActionCard
+                icon={Settings}
+                title="Servis Ayarları"
+                description="API servislerini yapılandır ve güncelle"
+                onClick={() => window.location.href = '/admin/services'}
+                color="bg-gradient-to-r from-purple-500 to-pink-500"
+              />
+              <QuickActionCard
+                icon={Database}
+                title="API Yönetimi"
+                description="Dış API bağlantılarını kontrol et"
+                onClick={() => window.location.href = '/admin/api-management'}
+                color="bg-gradient-to-r from-emerald-500 to-cyan-500"
+              />
+              <QuickActionCard
+                icon={BarChart3}
+                title="İstatistikler"
+                description="Detaylı performans raporları görüntüle"
+                onClick={() => window.location.href = '/admin/key-stats'}
+                color="bg-gradient-to-r from-orange-500 to-red-500"
+              />
+            </div>
+          </motion.div>
+
+          {/* Recent Activity */}
+          <div className="grid lg:grid-cols-2 gap-8">
+            {/* Recent Keys */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+            >
+              <Card className="bg-black/30 border border-white/10 backdrop-blur-xl rounded-2xl h-full">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-xl font-bold text-white flex items-center">
+                    <Key className="w-5 h-5 mr-3 text-blue-400" />
+                    Son Oluşturulan Keyler
+                    <Badge className="ml-auto bg-blue-500/20 text-blue-300 border-blue-400/30">
+                      {recentKeysData.length}
+                    </Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {recentKeysData.length > 0 ? (
+                    <div className="space-y-3">
+                      {recentKeysData.map((key: any, index: number) => (
+                        <motion.div
+                          key={key.id}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                          className="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/10 hover:border-white/20 transition-colors"
+                        >
+                          <div>
+                            <p className="font-medium text-white">{key.name}</p>
+                            <p className="text-sm text-white/60">{key.category}</p>
                           </div>
-                          <motion.div
-                            animate={{ rotate: [0, 360] }}
-                            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                            className="opacity-10"
-                          >
-                            <Sparkles className="w-8 h-8 text-white" />
-                          </motion.div>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <p className="text-slate-400 text-sm font-medium">{stat.title}</p>
-                          <div className="flex items-end justify-between">
-                            <motion.p 
-                              className="text-3xl font-bold text-white"
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              transition={{ duration: 0.5, delay: stat.delay + 0.3, type: "spring" }}
-                            >
-                              {stat.value.toLocaleString()}
-                            </motion.p>
-                            <Badge 
-                              className={`text-xs px-2 py-1 ${
-                                stat.changeType === 'positive' 
-                                  ? 'bg-green-500/20 text-green-400 border-green-500/30' 
-                                  : 'bg-slate-500/20 text-slate-400 border-slate-500/30'
-                              }`}
-                            >
-                              {stat.change}
+                          <div className="flex items-center space-x-2">
+                            <Badge variant={key.isUsed ? "destructive" : "secondary"}>
+                              {key.isUsed ? "Kullanılmış" : "Aktif"}
                             </Badge>
                           </div>
-                        </div>
-                        
-                        {/* Hover effect */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/5 to-white/0 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
-                      </CardContent>
-                    </Card>
-                  </motion.div>
-                );
-              })}
+                        </motion.div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-8">
+                      <Key className="w-12 h-12 text-white/30 mx-auto mb-4" />
+                      <p className="text-white/60">Henüz key oluşturulmamış</p>
+                      <p className="text-white/40 text-sm">Hızlı key oluşturmak için yukarıdaki butonu kullanın</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             </motion.div>
 
-            {/* Enhanced Recent Activity */}
-            <motion.div 
-              className="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 1 }}
+            {/* Recent Orders */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.7 }}
             >
-              {/* Recent Keys */}
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Card className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 border-slate-600/50 backdrop-blur-xl shadow-2xl hover:shadow-3xl transition-all duration-300">
-                  <CardHeader className="border-b border-slate-700/50 pb-4">
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-xl font-bold text-white flex items-center">
+              <Card className="bg-black/30 border border-white/10 backdrop-blur-xl rounded-2xl h-full">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-xl font-bold text-white flex items-center">
+                    <ShoppingCart className="w-5 h-5 mr-3 text-emerald-400" />
+                    Son Siparişler
+                    <Badge className="ml-auto bg-emerald-500/20 text-emerald-300 border-emerald-400/30">
+                      {recentOrdersData.length}
+                    </Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {recentOrdersData.length > 0 ? (
+                    <div className="space-y-3">
+                      {recentOrdersData.map((order: any, index: number) => (
                         <motion.div
-                          whileHover={{ rotate: 360 }}
-                          transition={{ duration: 0.5 }}
-                          className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mr-3"
+                          key={order.id}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                          className="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/10 hover:border-white/20 transition-colors"
                         >
-                          <Key className="w-5 h-5 text-white" />
+                          <div>
+                            <p className="font-medium text-white">#{order.orderId}</p>
+                            <p className="text-sm text-white/60">{order.service?.name}</p>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <Badge 
+                              variant={
+                                order.status === 'completed' ? 'default' :
+                                order.status === 'failed' ? 'destructive' : 'secondary'
+                              }
+                            >
+                              {order.status === 'completed' ? 'Tamamlandı' :
+                               order.status === 'failed' ? 'Başarısız' : 'İşleniyor'}
+                            </Badge>
+                          </div>
                         </motion.div>
-                        🔑 Son Oluşturulan Key'ler
-                      </CardTitle>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="border-blue-500/30 text-blue-400 hover:bg-blue-500/10 hover:border-blue-400"
-                        onClick={() => window.location.href = '/admin/keys'}
-                      >
-                        Tümünü Gör
-                      </Button>
+                      ))}
                     </div>
-                  </CardHeader>
-                  <CardContent className="p-0">
-                    <div className="overflow-x-auto">
-                      <Table>
-                        <TableHeader className="bg-slate-900/50">
-                          <TableRow className="border-slate-700/50 hover:bg-slate-800/30">
-                            <TableHead className="text-slate-300 font-semibold text-xs md:text-sm">Key</TableHead>
-                            <TableHead className="text-slate-300 font-semibold text-xs md:text-sm">Durum</TableHead>
-                            <TableHead className="text-slate-300 font-semibold text-xs md:text-sm hidden sm:table-cell">Tarih</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {recentKeysData.length === 0 ? (
-                            <TableRow>
-                              <TableCell colSpan={3} className="text-center text-slate-400 py-12">
-                                <motion.div
-                                  initial={{ opacity: 0, scale: 0.8 }}
-                                  animate={{ opacity: 1, scale: 1 }}
-                                  transition={{ duration: 0.5 }}
-                                  className="flex flex-col items-center"
-                                >
-                                  <Key className="w-12 h-12 mx-auto mb-4 text-slate-600" />
-                                  <p className="text-lg font-medium">Henüz key oluşturulmamış</p>
-                                  <p className="text-sm text-slate-500 mt-1">Hızlı key oluşturmak için yukarıdaki butonu kullanın</p>
-                                </motion.div>
-                              </TableCell>
-                            </TableRow>
-                          ) : (
-                            recentKeysData.map((key: KeyType, index: number) => (
-                              <motion.tr 
-                                key={key.id}
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                transition={{ duration: 0.3, delay: index * 0.1 }}
-                                className="border-slate-700/50 hover:bg-slate-800/30 transition-all duration-200"
-                              >
-                                <TableCell>
-                                  <code className="px-2 py-1 bg-slate-900/70 text-blue-400 text-xs md:text-sm rounded-lg font-mono border border-blue-500/20">
-                                    {key.value.substring(0, 6)}...
-                                  </code>
-                                </TableCell>
-                                <TableCell>
-                                  <Badge 
-                                    variant={key.isUsed ? "default" : "secondary"}
-                                    className={`text-xs ${key.isUsed 
-                                      ? "bg-red-500/20 text-red-400 border-red-500/30" 
-                                      : "bg-green-500/20 text-green-400 border-green-500/30"
-                                    }`}
-                                  >
-                                    {key.isUsed ? "Kullanıldı" : "Aktif"}
-                                  </Badge>
-                                </TableCell>
-                                <TableCell className="text-slate-400 text-xs md:text-sm hidden sm:table-cell">
-                                  {key.createdAt ? new Date(key.createdAt).toLocaleDateString('tr-TR') : 'N/A'}
-                                </TableCell>
-                              </motion.tr>
-                            ))
-                          )}
-                        </TableBody>
-                      </Table>
+                  ) : (
+                    <div className="text-center py-8">
+                      <ShoppingCart className="w-12 h-12 text-white/30 mx-auto mb-4" />
+                      <p className="text-white/60">Henüz sipariş yok</p>
+                      <p className="text-white/40 text-sm">İlk siparişler burda görünecek</p>
                     </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-
-              {/* Recent Orders */}
-              <motion.div
-                whileHover={{ scale: 1.02 }}
-                transition={{ duration: 0.3 }}
-              >
-                <Card className="bg-gradient-to-br from-slate-800/50 to-slate-900/50 border-slate-600/50 backdrop-blur-xl shadow-2xl hover:shadow-3xl transition-all duration-300">
-                  <CardHeader className="border-b border-slate-700/50 pb-4">
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-xl font-bold text-white flex items-center">
-                        <motion.div
-                          whileHover={{ rotate: 360 }}
-                          transition={{ duration: 0.5 }}
-                          className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center mr-3"
-                        >
-                          <ShoppingCart className="w-5 h-5 text-white" />
-                        </motion.div>
-                        🛒 Son Siparişler
-                      </CardTitle>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="border-purple-500/30 text-purple-400 hover:bg-purple-500/10 hover:border-purple-400"
-                        onClick={() => window.location.href = '/admin/orders'}
-                      >
-                        Tümünü Gör
-                      </Button>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="p-0">
-                    <div className="overflow-x-auto">
-                      <Table>
-                        <TableHeader className="bg-slate-900/50">
-                          <TableRow className="border-slate-700/50 hover:bg-slate-800/30">
-                            <TableHead className="text-slate-300 font-semibold">Sipariş ID</TableHead>
-                            <TableHead className="text-slate-300 font-semibold">Durum</TableHead>
-                            <TableHead className="text-slate-300 font-semibold">Tarih</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {recentOrdersData.length === 0 ? (
-                            <TableRow>
-                              <TableCell colSpan={3} className="text-center text-slate-400 py-12">
-                                <motion.div
-                                  initial={{ opacity: 0, scale: 0.8 }}
-                                  animate={{ opacity: 1, scale: 1 }}
-                                  transition={{ duration: 0.5 }}
-                                  className="flex flex-col items-center"
-                                >
-                                  <ShoppingCart className="w-12 h-12 mx-auto mb-4 text-slate-600" />
-                                  <p className="text-lg font-medium">Henüz sipariş yok</p>
-                                  <p className="text-sm text-slate-500 mt-1">İlk siparişler geldiğinde burada görünecek</p>
-                                </motion.div>
-                              </TableCell>
-                            </TableRow>
-                          ) : (
-                            recentOrdersData.map((order: any, index: number) => (
-                              <TableRow 
-                                key={order.id}
-                                className="border-slate-700/50 hover:bg-slate-800/30 transition-all duration-200"
-                              >
-                                <TableCell>
-                                  <code className="px-3 py-1.5 bg-slate-900/70 text-purple-400 text-sm rounded-lg font-mono border border-purple-500/20">
-                                    #{order.orderId || order.id}
-                                  </code>
-                                </TableCell>
-                                <TableCell>
-                                  <Badge 
-                                    className={
-                                      order.status === 'completed' 
-                                        ? "bg-green-500/20 text-green-400 border-green-500/30"
-                                        : order.status === 'pending'
-                                        ? "bg-yellow-500/20 text-yellow-400 border-yellow-500/30"
-                                        : order.status === 'in_progress'
-                                        ? "bg-blue-500/20 text-blue-400 border-blue-500/30"
-                                        : "bg-red-500/20 text-red-400 border-red-500/30"
-                                    }
-                                  >
-                                    {order.status === 'completed' && 'Tamamlandı'}
-                                    {order.status === 'pending' && 'Bekliyor'}
-                                    {order.status === 'in_progress' && 'İşleniyor'}
-                                    {order.status === 'cancelled' && 'İptal Edildi'}
-                                    {order.status === 'failed' && 'Başarısız'}
-                                  </Badge>
-                                </TableCell>
-                                <TableCell className="text-slate-400">
-                                  {new Date(order.createdAt).toLocaleDateString('tr-TR')}
-                                </TableCell>
-                              </TableRow>
-                            ))
-                          )}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
+                  )}
+                </CardContent>
+              </Card>
             </motion.div>
-
-            {/* Key Creation Modal */}
-            <KeyCreationModal 
-              open={showKeyModal} 
-              onOpenChange={setShowKeyModal}
-            />
           </div>
         </div>
       </main>
+
+      {/* Key Creation Modal */}
+      <KeyCreationModal 
+        isOpen={showKeyModal} 
+        onClose={() => setShowKeyModal(false)} 
+      />
     </div>
   );
 }
