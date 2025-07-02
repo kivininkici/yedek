@@ -337,7 +337,9 @@ Changelog:
 - PostgreSQL database kuruldu ve session store entegre edildi
 - Authentication sistemi düzeltildi - admin ve user auth çalışıyor
 - Session tabanlı authentication PostgreSQL ile stable çalışıyor
-- cPanel hosting paketi hazırlandı ve tar.gz formatında sunuldu
+- cPanel hosting paketi hazırlandı ve ZIP formatında sunuldu  
+- Frontend loading sorunu düzeltildi - auth hook'ları optimize edildi
+- Query cache ve stale time ayarları eklendi
 - Tam PHP/MySQL stack'e dönüştürüldü, Node.js bağımlılığı kaldırıldı
 - hosting/ klasöründe production-ready dosyalar oluşturuldu
 - MySQL database schema ve setup script hazırlandı
