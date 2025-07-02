@@ -108,7 +108,7 @@ Bu e-posta KeyPanel sisteminden otomatik olarak gönderilmiştir.
 
   return await sendEmail({
     to: userEmail,
-    from: 'noreply@keypanel.com', // Bu adresi SendGrid'de doğrulamanız gerekecek
+    from: 'akivi@example.com', // Geçici olarak bu adresi kullanıyoruz
     subject: 'KeyPanel - Geri Bildirim Yanıtınız',
     text: text.trim(),
     html: html.trim()
