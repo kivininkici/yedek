@@ -333,6 +333,15 @@ Changelog:
 - Header padding azaltıldı (p-6'dan p-3'e), main content padding optimize edildi
 - Page header kaldırıldı, istatistik kartları direkt header altında konumlandırıldı
 - Kartlar ile tablo arası boşluk optimize edildi, kompakt ve kullanıcı dostu layout sağlandı
+- July 2, 2025: cPanel hosting migration tamamlandı
+- Tam PHP/MySQL stack'e dönüştürüldü, Node.js bağımlılığı kaldırıldı
+- hosting/ klasöründe production-ready dosyalar oluşturuldu
+- MySQL database schema ve setup script hazırlandı
+- Tüm API endpoint'leri PHP ile yeniden yazıldı
+- Frontend SPA (Single Page Application) vanilla JavaScript'e dönüştürüldü
+- .htaccess, SSL, güvenlik konfigürasyonları eklendi
+- Kapsamlı kurulum talimatları ve dokümantasyon hazırlandı
+- cPanel hosting ortamında %100 uyumlu production sistemi tamamlandı
 
 ## User Preferences
 
