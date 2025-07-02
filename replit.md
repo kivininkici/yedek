@@ -391,6 +391,7 @@ Changelog:
 - Login attempt logging sistemi matematik hatalarını da takip ediyor
 - Admin panel matematik doğrulama hatalarını ayrı kategoriler halinde gösteriyor
 - July 2, 2025: Final migration from Replit Agent to Replit environment başarıyla tamamlandı
+- July 2, 2025: User interface background design güncellendi - mavi tonlarda partikül efektleri eklendi
 - PostgreSQL database kuruldu ve tüm schema başarıyla push edildi
 - tsx dependency yüklendi ve server port 5000'de stable çalışıyor
 - Geri bildirim ve şikayet sistemi güncellendi - sadece kayıtlı kullanıcılar erişebiliyor

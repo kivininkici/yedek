@@ -402,9 +402,25 @@ export default function UserInterface() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
-      {/* Header */}
-      <div className="bg-slate-950/50 backdrop-blur-sm border-b border-slate-800">
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 relative overflow-hidden">
+      {/* Animated Background Particles */}
+      <div className="absolute inset-0">
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-500/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-blue-400/10 rounded-full blur-2xl animate-bounce"></div>
+      </div>
+      {/* Floating Particles */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-20 left-10 w-2 h-2 bg-blue-400 rounded-full animate-ping"></div>
+        <div className="absolute top-40 right-20 w-1 h-1 bg-cyan-400 rounded-full animate-ping delay-500"></div>
+        <div className="absolute bottom-32 left-1/3 w-3 h-3 bg-blue-300 rounded-full animate-ping delay-1000"></div>
+        <div className="absolute top-60 right-1/3 w-2 h-2 bg-cyan-300 rounded-full animate-ping delay-700"></div>
+        <div className="absolute bottom-20 right-10 w-1 h-1 bg-blue-500 rounded-full animate-ping delay-300"></div>
+      </div>
+      
+      <div className="relative z-10">
+        {/* Header */}
+        <div className="bg-blue-950/50 backdrop-blur-sm border-b border-blue-800/50">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -436,9 +452,9 @@ export default function UserInterface() {
             </div>
           </div>
         </div>
-      </div>
+        </div>
 
-      <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'create-order' | 'order-history')}>
             <TabsList className="grid w-full grid-cols-2 bg-slate-800/50 border-slate-700">
