@@ -135,7 +135,6 @@ export default function AdminLogin() {
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-cyan-950">
       {/* Admin Blue Cursor Effect */}
       <AdminCursorFollower />
-      
       {/* Enhanced Background Effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         {/* Large gradual orbs with smooth animations */}
@@ -223,10 +222,8 @@ export default function AdminLogin() {
           style={{ top: '90%', right: '40%' }}
         />
       </div>
-
       {/* Grid Pattern */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(14,165,233,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(14,165,233,0.1)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_110%)]"></div>
-
       <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
         <div className="w-full max-w-md">
           {/* Back Button */}
@@ -351,7 +348,7 @@ export default function AdminLogin() {
                       <div className="mx-auto w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center mb-4 shadow-lg shadow-red-500/25">
                         <Lock className="w-6 h-6 text-white" />
                       </div>
-                      <h3 className="text-xl font-semibold text-white mb-2">Satıcı seçin</h3>
+                      <h3 className="text-xl font-semibold text-white mb-2">Şifreyi Girin</h3>
                       <p className="text-slate-400 text-sm">
                         Lütfen ürün teslimati için satın alım yaptığınız satıcının adını yazın ve seçin.
                       </p>
