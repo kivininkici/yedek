@@ -665,6 +665,13 @@ export class DatabaseStorage implements IStorage {
     return updatedAdmin;
   }
 
+  async updateAdminPassword(username: string, hashedPassword: string): Promise<void> {
+    await db
+      .update(adminUsers)
+      .set({ password: hashedPassword })
+      .where(eq(adminUsers.username, username));
+  }
+
   async getAdminCount(): Promise<number> {
     const [result] = await db.select({ count: count() }).from(adminUsers);
     return result.count;

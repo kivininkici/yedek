@@ -19,7 +19,8 @@ import {
   BarChart3,
   DollarSign,
   Shield,
-  MessageCircle
+  MessageCircle,
+  Lock
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -34,7 +35,9 @@ const navigation = [
   { name: "Siparişler", href: "/admin/orders", icon: ShoppingCart },
   { name: "Kullanıcılar", href: "/admin/users", icon: Users },
   { name: "Geri Dönüşler", href: "/admin/feedback", icon: MessageCircle },
+  { name: "Şikayetler", href: "/admin/complaints", icon: MessageCircle },
   { name: "Giriş Denemeleri", href: "/admin/login-attempts", icon: Shield },
+  { name: "Şifre Yönetimi", href: "/admin/password-management", icon: Lock },
   { name: "Loglar", href: "/admin/logs", icon: FileText },
   { name: "Sipariş Sorgula", href: "/admin/order-search", icon: Search },
   { name: "Key İstatistikleri", href: "/admin/key-stats", icon: BarChart3 },

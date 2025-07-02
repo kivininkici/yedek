@@ -2419,6 +2419,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Global variable to store current admin password
+  let currentAdminPassword = "m;rf_oj78cMGbO+0)Ai8e@JAAq=C2Wl)6xoQ_K42mQivX1DjvJ";
+
+  // Admin password management routes
+  app.get("/api/admin/password-info", requireAdminAuth, async (req, res) => {
+    try {
+      res.json({ currentPassword: currentAdminPassword });
+    } catch (error) {
+      console.error("Error fetching password info:", error);
+      res.status(500).json({ message: "Şifre bilgisi alınamadı" });
+    }
+  });
+
+  app.post("/api/admin/change-password", requireAdminAuth, async (req, res) => {
+    try {
+      const { currentPassword, newPassword } = req.body;
+      
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({ message: "Mevcut şifre ve yeni şifre gerekli" });
+      }
+
+      if (newPassword.length < 8) {
+        return res.status(400).json({ message: "Yeni şifre en az 8 karakter olmalı" });
+      }
+
+      // Verify current password
+      if (currentPassword !== currentAdminPassword) {
+        return res.status(400).json({ message: "Mevcut şifre hatalı" });
+      }
+
+      // Hash new password
+      const hashedPassword = await hashPassword(newPassword);
+      
+      // Update admin password in database
+      await storage.updateAdminPassword('admin', hashedPassword);
+      
+      // Update the global password variable
+      currentAdminPassword = newPassword;
+      
+      res.json({ 
+        message: "Şifre başarıyla değiştirildi",
+        newPassword: newPassword
+      });
+    } catch (error) {
+      console.error("Error changing password:", error);
+      res.status(500).json({ message: "Şifre değiştirilemedi" });
+    }
+  });
+
   // PUBLIC API ROUTES - Key validation and order creation
 
   // Generate random order ID
