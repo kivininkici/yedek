@@ -123,7 +123,7 @@ export default function Landing() {
                 {!isAuthenticated && (
                   <Button 
                     onClick={() => setShowAuthModal(true)}
-                    className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                    className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
                   >
                     <LogIn className="w-4 h-4 mr-2" />
                     Giriş Yap
