@@ -5,38 +5,38 @@ import { config } from "dotenv";
 config();
 
 // Get security credentials from environment variables
-export const MASTER_PASSWORD = process.env.MASTER_PASSWORD || "5c2z6D1UicpYVvPBQkeoPy0OMsDgxAobfke1Hv5FoV9CwLhuxh";
+export const MASTER_PASSWORD = process.env.MASTER_PASSWORD!;
 
 export const ADMIN_CREDENTIALS = {
-  username: process.env.ADMIN_USERNAME || "admin",
-  password: process.env.ADMIN_PASSWORD || "admin123",
+  username: process.env.ADMIN_USERNAME!,
+  password: process.env.ADMIN_PASSWORD!,
 };
 
 // Build security questions array from environment variables
 export const SECURITY_QUESTIONS = [
   {
-    question: process.env.SECURITY_QUESTION_1 || "Kiwi'nin doğum tarihi nedir? (gg/aa/yyyy)",
-    answer: process.env.SECURITY_ANSWER_1 || "29/05/2020"
+    question: process.env.SECURITY_QUESTION_1!,
+    answer: process.env.SECURITY_ANSWER_1!
   },
   {
-    question: process.env.SECURITY_QUESTION_2 || "Annenizin adı nedir?",
-    answer: process.env.SECURITY_ANSWER_2 || "Halime"
+    question: process.env.SECURITY_QUESTION_2!,
+    answer: process.env.SECURITY_ANSWER_2!
   },
   {
-    question: process.env.SECURITY_QUESTION_3 || "Annenizin kızlık soyadı nedir?",
-    answer: process.env.SECURITY_ANSWER_3 || "Bahat"
+    question: process.env.SECURITY_QUESTION_3!,
+    answer: process.env.SECURITY_ANSWER_3!
   },
   {
-    question: process.env.SECURITY_QUESTION_4 || "Annenizin doğum tarihi nedir? (gg/aa/yyyy)",
-    answer: process.env.SECURITY_ANSWER_4 || "17/12/1978"
+    question: process.env.SECURITY_QUESTION_4!,
+    answer: process.env.SECURITY_ANSWER_4!
   },
   {
-    question: process.env.SECURITY_QUESTION_5 || "Babanızın adı nedir?",
-    answer: process.env.SECURITY_ANSWER_5 || "Muhammed"
+    question: process.env.SECURITY_QUESTION_5!,
+    answer: process.env.SECURITY_ANSWER_5!
   },
   {
-    question: process.env.SECURITY_QUESTION_6 || "Babanızın soyadı nedir?",
-    answer: process.env.SECURITY_ANSWER_6 || "Yazar"
+    question: process.env.SECURITY_QUESTION_6!,
+    answer: process.env.SECURITY_ANSWER_6!
   }
 ].filter(q => q.question && q.answer); // Filter out empty questions
 
