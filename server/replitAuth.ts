@@ -27,9 +27,10 @@ export function getSession() {
   const pgStore = connectPg(session);
   const sessionStore = new pgStore({
     conString: process.env.DATABASE_URL,
-    createTableIfMissing: false,
+    createTableIfMissing: false, // Use existing table from Drizzle schema
     ttl: sessionTtl,
     tableName: "sessions",
+    schemaName: "public" // Explicitly set schema
   });
   
   // Generate a secure session secret if not provided

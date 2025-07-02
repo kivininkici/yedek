@@ -19,8 +19,8 @@ app.use(
   session({
     store: new PgSession({
       pool: pool,
-      tableName: 'session',
-      createTableIfMissing: true,
+      tableName: 'sessions',
+      createTableIfMissing: false, // Use existing table from schema
     }),
     secret: process.env.SESSION_SECRET || "admin-secret-key-change-in-production",
     resave: false,
@@ -76,8 +76,12 @@ setupAdminAuth(app);
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
 
-    res.status(status).json({ message });
-    throw err;
+    // Only send response if headers haven't been sent yet
+    if (!res.headersSent) {
+      res.status(status).json({ message });
+    }
+    
+    console.error('Server error:', err);
   });
 
   // importantly only setup vite in development and after
