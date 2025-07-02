@@ -19,7 +19,12 @@ import {
   Package,
   ShoppingCart,
   Clock,
-  ExternalLink
+  ExternalLink,
+  MessageCircle,
+  Send,
+  Frown,
+  Meh,
+  Smile
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -90,6 +95,11 @@ export default function UserInterface() {
   const [activeTab, setActiveTab] = useState<'create-order' | 'order-history'>('create-order');
   const [orderProgress, setOrderProgress] = useState(0);
   const [isCreatingOrder, setIsCreatingOrder] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [satisfactionLevel, setSatisfactionLevel] = useState<string>("");
+  const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
 
   // Form configurations
   const keyForm = useForm<KeyValidationData>({
@@ -290,6 +300,52 @@ export default function UserInterface() {
     }, 3000);
   };
 
+  const handleFeedbackSubmit = async () => {
+    if (!feedbackMessage.trim()) {
+      alert("Lütfen geri bildirim mesajınızı yazın!");
+      return;
+    }
+    
+    if (!satisfactionLevel) {
+      alert("Lütfen memnuniyet düzeyinizi seçin!");
+      return;
+    }
+    
+    setIsSubmittingFeedback(true);
+    try {
+      const payload = {
+        userEmail: isAuthenticated ? "user@example.com" : "",
+        userName: isAuthenticated ? "Kullanıcı" : "Ziyaretçi",
+        message: feedbackMessage.trim(),
+        satisfactionLevel,
+      };
+      
+      const response = await fetch("/api/feedback", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      
+      if (response.ok) {
+        setFeedbackSubmitted(true);
+        setFeedbackMessage("");
+        setSatisfactionLevel("");
+        setTimeout(() => {
+          setShowFeedback(false);
+          setFeedbackSubmitted(false);
+        }, 2000);
+      } else {
+        throw new Error("Geri bildirim gönderilirken hata oluştu");
+      }
+    } catch (error) {
+      alert("Geri bildirim gönderilirken hata oluştu. Lütfen tekrar deneyin.");
+    } finally {
+      setIsSubmittingFeedback(false);
+    }
+  };
+
   const resetForm = () => {
     setCurrentStep('key-entry');
     setValidatedKey(null);
@@ -360,15 +416,24 @@ export default function UserInterface() {
                 <p className="text-slate-400">Sosyal Medya Servis Platformu</p>
               </div>
             </div>
-            {currentStep !== 'key-entry' && activeTab === 'create-order' && (
+            <div className="flex items-center space-x-3">
               <Button
-                variant="outline"
-                onClick={resetForm}
-                className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                onClick={() => setShowFeedback(true)}
+                className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
               >
-                Yeni Sipariş
+                <MessageCircle className="w-4 h-4 mr-2" />
+                Geri Bildirim
               </Button>
-            )}
+              {currentStep !== 'key-entry' && activeTab === 'create-order' && (
+                <Button
+                  variant="outline"
+                  onClick={resetForm}
+                  className="border-slate-600 text-slate-300 hover:bg-slate-700"
+                >
+                  Yeni Sipariş
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </div>

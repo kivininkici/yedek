@@ -56,7 +56,16 @@ export function FeedbackReminder({ onClose, userEmail, userName, orderId }: Feed
       console.log("Response data:", responseData);
 
       if (response.ok) {
-        console.log("Success! Setting submitted to true");
+        console.log("Success! Response data:", responseData);
+        
+        // Check if user should be redirected to complaints
+        if (responseData.redirectToComplaints) {
+          alert("Memnun olmadığınız için üzgünüz. Şikayet formuna yönlendiriliyorsunuz.");
+          onClose();
+          window.location.href = '/complaints';
+          return;
+        }
+        
         alert("Başarıyla Gönderildi! Teşekkür ederiz.");
         setSubmitted(true);
         setTimeout(() => {
@@ -64,7 +73,12 @@ export function FeedbackReminder({ onClose, userEmail, userName, orderId }: Feed
         }, 2000);
       } else {
         console.error("API returned error:", responseData);
-        alert("Geri bildirim gönderilirken hata oluştu!");
+        if (responseData.message && responseData.message.includes("Giriş yapılmamış")) {
+          alert("Geri bildirim göndermek için lütfen giriş yapın!");
+          window.location.href = '/auth';
+        } else {
+          alert("Geri bildirim gönderilirken hata oluştu!");
+        }
       }
     } catch (error) {
       console.error("Feedback submission error:", error);

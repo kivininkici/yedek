@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { KeyRound, Shield, Zap, Users, Star, TrendingUp, Activity, LogOut, User, ExternalLink, Search, ShoppingCart, Crown, Sparkles, CheckCircle } from "lucide-react";
+import { KeyRound, Shield, Zap, Users, Star, TrendingUp, Activity, LogOut, User, ExternalLink, Search, ShoppingCart, Crown, Sparkles, CheckCircle, Send, MessageCircle, Frown, Meh, Smile } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { UserCursorFollower } from "@/hooks/useMouseTracking";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 
 // Floating Particles Component
@@ -129,6 +129,57 @@ const FloatingParticles = () => {
 export default function Home() {
   const { user, isLoading: userLoading } = useAuth();
   const { admin } = useAdminAuth();
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [feedbackMessage, setFeedbackMessage] = useState("");
+  const [satisfactionLevel, setSatisfactionLevel] = useState<string>("");
+  const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
+
+  const handleFeedbackSubmit = async () => {
+    if (!feedbackMessage.trim()) {
+      alert("Lütfen geri bildirim mesajınızı yazın!");
+      return;
+    }
+    
+    if (!satisfactionLevel) {
+      alert("Lütfen memnuniyet düzeyinizi seçin!");
+      return;
+    }
+    
+    setIsSubmittingFeedback(true);
+    try {
+      const payload = {
+        userEmail: user?.email || "",
+        userName: user?.username || "Kullanıcı",
+        message: feedbackMessage.trim(),
+        satisfactionLevel,
+      };
+      
+      const response = await fetch("/api/feedback", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+      
+      if (response.ok) {
+        setFeedbackSubmitted(true);
+        setFeedbackMessage("");
+        setSatisfactionLevel("");
+        setTimeout(() => {
+          setShowFeedback(false);
+          setFeedbackSubmitted(false);
+        }, 2000);
+      } else {
+        throw new Error("Geri bildirim gönderilirken hata oluştu");
+      }
+    } catch (error) {
+      alert("Geri bildirim gönderilirken hata oluştu. Lütfen tekrar deneyin.");
+    } finally {
+      setIsSubmittingFeedback(false);
+    }
+  };
 
   if (userLoading) {
     return (
@@ -301,6 +352,19 @@ export default function Home() {
                 >
                   <ShoppingCart className="w-4 h-4" />
                   <span>Satın Al</span>
+                </Button>
+              </motion.div>
+              
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Button 
+                  onClick={() => setShowFeedback(true)}
+                  className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-semibold px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 flex items-center space-x-2"
+                >
+                  <MessageCircle className="w-4 h-4" />
+                  <span>Geri Bildirim</span>
                 </Button>
               </motion.div>
               
@@ -604,7 +668,154 @@ export default function Home() {
             </motion.div>
           ))}
         </motion.div>
+
+        {/* Feedback Section at bottom */}
+        <motion.div 
+          className="mt-16 text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, delay: 3.2 }}
+        >
+          <div className="bg-gradient-to-r from-slate-800/50 to-slate-700/50 border border-white/10 rounded-2xl p-8 backdrop-blur-sm">
+            <h4 className="text-2xl font-bold text-white mb-4">Hızlı Geri Bildirim</h4>
+            <p className="text-gray-300 mb-6">
+              KeyPanel deneyiminizle ilgili hızlı bir geri bildirim gönderin
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+              <input 
+                type="text" 
+                value={feedbackMessage}
+                onChange={(e) => setFeedbackMessage(e.target.value)}
+                placeholder="Geri bildiriminizi yazın..."
+                className="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-emerald-400/50 backdrop-blur-sm"
+                disabled={isSubmittingFeedback}
+              />
+              <Button 
+                onClick={() => setShowFeedback(true)}
+                disabled={!feedbackMessage.trim() || isSubmittingFeedback}
+                className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <Send className="w-4 h-4 mr-2" />
+                Gönder
+              </Button>
+            </div>
+          </div>
+        </motion.div>
       </main>
+
+      {/* Feedback Modal */}
+      <AnimatePresence>
+        {showFeedback && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+            onClick={() => !isSubmittingFeedback && !feedbackSubmitted && setShowFeedback(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.2 }}
+              className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-8 max-w-md w-full mx-4 border border-white/10 backdrop-blur-xl shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {!feedbackSubmitted ? (
+                <>
+                  <div className="text-center mb-6">
+                    <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <MessageCircle className="w-8 h-8 text-white" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mb-2">Hızlı Geri Bildirim</h3>
+                    <p className="text-gray-300">KeyPanel deneyiminizle ilgili geri bildirim gönderin</p>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-2">
+                        Geri bildiriminiz
+                      </label>
+                      <textarea
+                        value={feedbackMessage}
+                        onChange={(e) => setFeedbackMessage(e.target.value)}
+                        placeholder="Deneyiminizi bizimle paylaşın..."
+                        className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-emerald-400/50 backdrop-blur-sm resize-none h-24"
+                        disabled={isSubmittingFeedback}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-3">
+                        Memnuniyet düzeyiniz
+                      </label>
+                      <div className="flex justify-center space-x-4">
+                        {[
+                          { value: "unsatisfied", label: "Memnun Değilim", icon: Frown, color: "red" },
+                          { value: "neutral", label: "Normal", icon: Meh, color: "yellow" },
+                          { value: "satisfied", label: "Memnunum", icon: Smile, color: "green" }
+                        ].map((option) => (
+                          <motion.button
+                            key={option.value}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => setSatisfactionLevel(option.value)}
+                            className={`flex flex-col items-center p-3 rounded-xl border-2 transition-all ${
+                              satisfactionLevel === option.value 
+                                ? `border-${option.color}-400 bg-${option.color}-400/10` 
+                                : "border-white/20 bg-white/5 hover:bg-white/10"
+                            }`}
+                            disabled={isSubmittingFeedback}
+                          >
+                            <option.icon className={`w-6 h-6 mb-1 ${
+                              satisfactionLevel === option.value 
+                                ? `text-${option.color}-400` 
+                                : "text-gray-400"
+                            }`} />
+                            <span className={`text-xs ${
+                              satisfactionLevel === option.value 
+                                ? `text-${option.color}-400` 
+                                : "text-gray-400"
+                            }`}>
+                              {option.label}
+                            </span>
+                          </motion.button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex space-x-3 pt-4">
+                      <Button
+                        onClick={handleFeedbackSubmit}
+                        disabled={!feedbackMessage.trim() || !satisfactionLevel || isSubmittingFeedback}
+                        className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-semibold py-3 rounded-xl transition-all duration-300 disabled:opacity-50"
+                      >
+                        {isSubmittingFeedback ? "Gönderiliyor..." : "Gönder"}
+                      </Button>
+                      <Button
+                        onClick={() => setShowFeedback(false)}
+                        variant="outline"
+                        className="px-6 py-3 border-white/20 text-gray-300 hover:bg-white/10 rounded-xl"
+                        disabled={isSubmittingFeedback}
+                      >
+                        İptal
+                      </Button>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-white mb-2">Teşekkürler!</h3>
+                  <p className="text-gray-300">Geri bildiriminiz başarıyla gönderildi.</p>
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

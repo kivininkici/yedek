@@ -24,6 +24,8 @@ import AdminKeyStats from "@/pages/admin-key-stats";
 import ApiBalances from "@/pages/admin/api-balances";
 import LoginAttempts from "@/pages/admin/login-attempts";
 import AdminFeedback from "@/pages/admin/feedback";
+import AdminComplaints from "@/pages/admin/complaints";
+import Complaints from "@/pages/complaints";
 import HostingPreview from "@/pages/HostingPreview";
 import HostingDemo from "@/pages/HostingDemo";
 import { useAuth } from "@/hooks/useAuth";
@@ -73,6 +75,7 @@ function Router() {
       <Route path="/auth" component={Auth} />
       <Route path="/user" component={UserInterface} />
       <Route path="/order-search" component={OrderSearch} />
+      <Route path="/complaints" component={Complaints} />
       <Route path="/hosting-preview" component={HostingPreview} />
       <Route path="/hosting-demo" component={HostingDemo} />
       
@@ -124,6 +127,9 @@ function Router() {
       </Route>
       <Route path="/admin/feedback">
         {isAdminAuthenticated ? <AdminFeedback /> : <AdminLogin />}
+      </Route>
+      <Route path="/admin/complaints">
+        {isAdminAuthenticated ? <AdminComplaints /> : <AdminLogin />}
       </Route>
       
       {/* 404 fallback */}

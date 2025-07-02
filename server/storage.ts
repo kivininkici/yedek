@@ -31,7 +31,10 @@ import {
   type InsertLoginAttempt,
   userFeedback,
   type UserFeedback,
-  type InsertUserFeedback
+  type InsertUserFeedback,
+  complaints,
+  type Complaint,
+  type InsertComplaint
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, sql, and, isNull, isNotNull, count } from "drizzle-orm";
@@ -154,6 +157,15 @@ export interface IStorage {
   getFeedbackById(id: number): Promise<UserFeedback | undefined>;
   markFeedbackAsRead(id: number): Promise<void>;
   respondToFeedback(id: number, response: string): Promise<UserFeedback>;
+
+  // Complaint operations
+  createComplaint(complaint: InsertComplaint): Promise<Complaint>;
+  getAllComplaints(): Promise<Complaint[]>;
+  getUnreadComplaints(): Promise<Complaint[]>;
+  getComplaintById(id: number): Promise<Complaint | undefined>;
+  markComplaintAsRead(id: number): Promise<void>;
+  updateComplaintStatus(id: number, status: string, adminNotes?: string): Promise<void>;
+  respondToComplaint(id: number, response: string): Promise<Complaint>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -940,6 +952,76 @@ export class DatabaseStorage implements IStorage {
         isRead: true
       })
       .where(eq(userFeedback.id, id))
+      .returning();
+    return updated;
+  }
+
+  // Complaint operations
+  async createComplaint(complaint: InsertComplaint): Promise<Complaint> {
+    const [complaintRecord] = await db
+      .insert(complaints)
+      .values(complaint)
+      .returning();
+    return complaintRecord;
+  }
+
+  async getAllComplaints(): Promise<Complaint[]> {
+    return await db
+      .select()
+      .from(complaints)
+      .orderBy(desc(complaints.createdAt));
+  }
+
+  async getUnreadComplaints(): Promise<Complaint[]> {
+    return await db
+      .select()
+      .from(complaints)
+      .where(eq(complaints.isRead, false))
+      .orderBy(desc(complaints.createdAt));
+  }
+
+  async getComplaintById(id: number): Promise<Complaint | undefined> {
+    const [complaint] = await db
+      .select()
+      .from(complaints)
+      .where(eq(complaints.id, id));
+    return complaint;
+  }
+
+  async markComplaintAsRead(id: number): Promise<void> {
+    await db
+      .update(complaints)
+      .set({ isRead: true })
+      .where(eq(complaints.id, id));
+  }
+
+  async updateComplaintStatus(id: number, status: string, adminNotes?: string): Promise<void> {
+    const updateData: any = { status };
+    if (adminNotes) {
+      updateData.adminNotes = adminNotes;
+    }
+    
+    // Set resolved timestamp for resolved status
+    if (status === 'resolved') {
+      updateData.resolvedAt = new Date();
+    }
+
+    await db
+      .update(complaints)
+      .set(updateData)
+      .where(eq(complaints.id, id));
+  }
+
+  async respondToComplaint(id: number, response: string): Promise<Complaint> {
+    const [updated] = await db
+      .update(complaints)
+      .set({ 
+        adminResponse: response, 
+        respondedAt: new Date(),
+        isRead: true,
+        status: 'in_progress' // Update status to in progress when responded
+      })
+      .where(eq(complaints.id, id))
       .returning();
     return updated;
   }

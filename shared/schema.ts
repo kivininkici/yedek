@@ -176,6 +176,27 @@ export const userFeedback = pgTable("user_feedback", {
   respondedAt: timestamp("responded_at"),
 });
 
+// Complaints table for unsatisfied users
+export const complaints = pgTable("complaints", {
+  id: serial("id").primaryKey(),
+  userEmail: varchar("user_email", { length: 255 }),
+  userName: varchar("user_name", { length: 255 }),
+  orderId: varchar("order_id", { length: 50 }).notNull(), // Required order ID to access complaint form
+  subject: varchar("subject", { length: 255 }).notNull(),
+  message: text("message").notNull(),
+  category: varchar("category", { length: 50 }).notNull(), // 'service_quality', 'delivery_time', 'billing', 'other'
+  priority: varchar("priority", { length: 20 }).notNull().default("medium"), // 'low', 'medium', 'high', 'urgent'
+  status: varchar("status", { length: 20 }).notNull().default("open"), // 'open', 'in_progress', 'resolved', 'closed'
+  ipAddress: varchar("ip_address", { length: 45 }),
+  isRead: boolean("is_read").notNull().default(false),
+  adminResponse: text("admin_response"),
+  adminNotes: text("admin_notes"), // Internal admin notes
+  assignedAdmin: varchar("assigned_admin", { length: 100 }), // Admin username
+  createdAt: timestamp("created_at").defaultNow(),
+  respondedAt: timestamp("responded_at"),
+  resolvedAt: timestamp("resolved_at"),
+});
+
 // Schema exports
 export const insertKeySchema = createInsertSchema(keys).omit({
   id: true,
@@ -225,6 +246,17 @@ export const insertUserFeedbackSchema = createInsertSchema(userFeedback).omit({
   isRead: true,
 });
 
+export const insertComplaintSchema = createInsertSchema(complaints).omit({
+  id: true,
+  createdAt: true,
+  respondedAt: true,
+  resolvedAt: true,
+  isRead: true,
+  adminResponse: true,
+  adminNotes: true,
+  assignedAdmin: true,
+});
+
 export const insertAdminUserSchema = createInsertSchema(adminUsers).omit({
   id: true,
   createdAt: true,
@@ -268,3 +300,5 @@ export type InsertLoginAttempt = z.infer<typeof insertLoginAttemptSchema>;
 export type LoginAttempt = typeof loginAttempts.$inferSelect;
 export type InsertUserFeedback = z.infer<typeof insertUserFeedbackSchema>;
 export type UserFeedback = typeof userFeedback.$inferSelect;
+export type InsertComplaint = z.infer<typeof insertComplaintSchema>;
+export type Complaint = typeof complaints.$inferSelect;

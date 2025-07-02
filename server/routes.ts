@@ -6,7 +6,7 @@ import { db } from "./db";
 import { desc, eq, sql } from "drizzle-orm";
 import fs from 'fs';
 import path from 'path';
-import { sendFeedbackResponse } from './emailService';
+import { sendFeedbackResponse, sendComplaintResponse } from './emailService';
 
 // Using admin session-based authentication only
 import { insertKeySchema, insertServiceSchema, insertOrderSchema, insertApiSettingsSchema } from "@shared/schema";
@@ -3228,14 +3228,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // User Feedback API endpoints
-  app.post("/api/feedback", async (req, res) => {
+  // User Feedback API endpoints - Only for authenticated users
+  app.post("/api/feedback", requireUserAuth, async (req: any, res) => {
     try {
       const { userEmail, userName, orderId, message, satisfactionLevel } = req.body;
       const ipAddress = req.ip || req.connection.remoteAddress || 'unknown';
       
       if (!message || message.trim().length === 0) {
         return res.status(400).json({ message: "Geri bildirim mesajı gerekli" });
+      }
+
+      // If user selected "unsatisfied", redirect to complaints
+      if (satisfactionLevel === 'unsatisfied') {
+        return res.json({ 
+          redirectToComplaints: true,
+          message: "Memnun olmadığınız için üzgünüz. Şikayet formuna yönlendiriliyorsunuz."
+        });
       }
 
       const feedback = await storage.createUserFeedback({
@@ -3254,6 +3262,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error creating feedback:", error);
       res.status(500).json({ message: "Geri bildirim gönderilemedi" });
+    }
+  });
+
+  // Complaints API endpoints
+  app.post("/api/complaints", requireUserAuth, async (req: any, res) => {
+    try {
+      const { orderId, subject, message, category, priority } = req.body;
+      const ipAddress = req.ip || req.connection.remoteAddress || 'unknown';
+      
+      if (!orderId || !subject || !message || !category) {
+        return res.status(400).json({ message: "Tüm alanlar gerekli" });
+      }
+
+      // Verify that the user has at least one order
+      const userId = req.session.userId;
+      const userOrders = await storage.getUserOrders(userId);
+      
+      if (!userOrders || userOrders.length === 0) {
+        return res.status(403).json({ 
+          message: "Şikayet oluşturmak için en az bir siparişiniz olmalı" 
+        });
+      }
+
+      // Verify the provided order ID exists
+      const orderExists = await storage.getOrderByOrderId(orderId);
+      if (!orderExists) {
+        return res.status(404).json({ message: "Belirtilen sipariş bulunamadı" });
+      }
+
+      // Get user information from session
+      const user = await storage.getUser(userId);
+      const fullName = user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() : '';
+      
+      const complaint = await storage.createComplaint({
+        userEmail: user?.email || '',
+        userName: fullName || user?.email || 'Anonim',
+        orderId,
+        subject: subject.trim(),
+        message: message.trim(),
+        category,
+        priority: priority || 'medium',
+        ipAddress
+      });
+
+      res.json({ 
+        message: "Şikayetiniz başarıyla kaydedildi. En kısa sürede değerlendirilecektir.",
+        complaintId: complaint.id
+      });
+    } catch (error) {
+      console.error("Error creating complaint:", error);
+      res.status(500).json({ message: "Şikayet gönderilemedi" });
+    }
+  });
+
+  app.get("/api/user/orders/count", requireUserAuth, async (req: any, res) => {
+    try {
+      const userId = req.session.userId;
+      const userOrders = await storage.getUserOrders(userId);
+      res.json({ count: userOrders ? userOrders.length : 0 });
+    } catch (error) {
+      console.error("Error counting user orders:", error);
+      res.status(500).json({ message: "Sipariş sayısı alınamadı" });
     }
   });
 
@@ -3334,6 +3404,100 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error) {
       console.error("Error responding to feedback:", error);
+      res.status(500).json({ message: "Yanıt gönderilemedi" });
+    }
+  });
+
+  // Admin complaints routes
+  app.get("/api/admin/complaints", requireAdminAuth, async (req, res) => {
+    try {
+      const complaints = await storage.getAllComplaints();
+      res.json(complaints);
+    } catch (error) {
+      console.error("Error fetching complaints:", error);
+      res.status(500).json({ message: "Şikayetler alınamadı" });
+    }
+  });
+
+  app.get("/api/admin/complaints/unread", requireAdminAuth, async (req, res) => {
+    try {
+      const unreadComplaints = await storage.getUnreadComplaints();
+      res.json(unreadComplaints);
+    } catch (error) {
+      console.error("Error fetching unread complaints:", error);
+      res.status(500).json({ message: "Okunmamış şikayetler alınamadı" });
+    }
+  });
+
+  app.put("/api/admin/complaints/:id/read", requireAdminAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      await storage.markComplaintAsRead(parseInt(id));
+      res.json({ message: "Şikayet okundu olarak işaretlendi" });
+    } catch (error) {
+      console.error("Error marking complaint as read:", error);
+      res.status(500).json({ message: "Şikayet güncellenemedi" });
+    }
+  });
+
+  app.put("/api/admin/complaints/:id/status", requireAdminAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status, adminNotes } = req.body;
+      
+      await storage.updateComplaintStatus(parseInt(id), status, adminNotes);
+      res.json({ message: "Şikayet durumu güncellendi" });
+    } catch (error) {
+      console.error("Error updating complaint status:", error);
+      res.status(500).json({ message: "Şikayet durumu güncellenemedi" });
+    }
+  });
+
+  app.post("/api/admin/complaints/:id/respond", requireAdminAuth, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { response } = req.body;
+      
+      if (!response || response.trim().length === 0) {
+        return res.status(400).json({ message: "Yanıt mesajı gerekli" });
+      }
+
+      // Get original complaint before updating
+      const originalComplaint = await storage.getComplaintById(parseInt(id));
+      if (!originalComplaint) {
+        return res.status(404).json({ message: "Şikayet bulunamadı" });
+      }
+
+      const updatedComplaint = await storage.respondToComplaint(parseInt(id), response.trim());
+
+      // Send email if user provided email
+      if (originalComplaint.userEmail) {
+        try {
+          const emailSent = await sendComplaintResponse(
+            originalComplaint.userEmail,
+            originalComplaint.userName || 'Değerli Kullanıcımız',
+            originalComplaint.subject,
+            originalComplaint.message,
+            response.trim()
+          );
+          
+          if (emailSent) {
+            console.log(`Complaint response email sent to: ${originalComplaint.userEmail}`);
+          } else {
+            console.log(`Failed to send email to: ${originalComplaint.userEmail}`);
+          }
+        } catch (emailError) {
+          console.error("Email sending error:", emailError);
+          // Don't fail the request if email fails
+        }
+      }
+
+      res.json({ 
+        message: "Yanıt başarıyla gönderildi" + (originalComplaint.userEmail ? " ve e-posta ile bildirildi" : ""),
+        complaint: updatedComplaint
+      });
+    } catch (error) {
+      console.error("Error responding to complaint:", error);
       res.status(500).json({ message: "Yanıt gönderilemedi" });
     }
   });
