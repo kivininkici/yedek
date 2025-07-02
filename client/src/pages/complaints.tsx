@@ -85,7 +85,7 @@ export default function Complaints() {
 
   const submitComplaintMutation = useMutation({
     mutationFn: async (data: ComplaintFormData) => {
-      return await apiRequest("/api/complaints", "POST", data);
+      return await apiRequest("POST", "/api/complaints", data);
     },
     onSuccess: () => {
       setIsSubmitted(true);
