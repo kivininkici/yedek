@@ -18,7 +18,7 @@ export default function HostingPreview() {
             Bu sayfa, hosting klasöründe bulunan PHP tabanlı KeyPanel sisteminin özelliklerini göstermektedir. 
             cPanel hosting ortamına yüklendiğinde aynı özellikler ile çalışacaktır.
           </p>
-          <div className="flex gap-4">
+          <div className="flex gap-4 flex-wrap">
             <Link 
               href="/hosting-php-preview" 
               className="inline-block bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-colors font-semibold"
@@ -32,6 +32,12 @@ export default function HostingPreview() {
             >
               🔗 Yeni Sekmede Aç
             </a>
+            <Link 
+              href="/hosting-demo" 
+              className="inline-block bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-700 transition-colors font-semibold"
+            >
+              🚀 Canlı Demo
+            </Link>
           </div>
         </div>
 

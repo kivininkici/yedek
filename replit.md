@@ -353,6 +353,13 @@ Changelog:
 - Landing page'de "Hosting Preview" butonu eklendi
 - Teknoloji stack, kurulum adımları ve dosya yapısı rehberi
 - cPanel hosting için hazır olan sistemin tüm özelliklerini showcase eden sayfa
+- July 2, 2025: Interaktif Hosting Demo eklendi
+- cPanel'siz çalışan tam fonksiyonel demo sayfası (/hosting-demo)
+- Kullanıcı arayüzü, admin paneli ve sipariş sorgulama demo'ları
+- Gerçek hosting ortamındaki görünümü simüle eden interaktif sayfa
+- Landing page'de "Live Demo" butonu eklendi
+- Auth loading bug'ı düzeltildi - 2 saniyelik maksimum loading süresi
+- PHP dosyası preview route hatası çözüldü
 
 ## User Preferences
 

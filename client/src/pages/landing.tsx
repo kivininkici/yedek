@@ -67,6 +67,15 @@ export default function Landing() {
                   <span className="sm:hidden">Hosting</span>
                 </Button>
                 <Button 
+                  variant="outline" 
+                  className="border-green-400/30 bg-green-500/10 hover:bg-green-500/20 text-green-300 backdrop-blur-sm"
+                  onClick={() => window.location.href = '/hosting-demo'}
+                >
+                  <Activity className="w-4 h-4 mr-2" />
+                  <span className="hidden sm:inline">Live Demo</span>
+                  <span className="sm:hidden">Demo</span>
+                </Button>
+                <Button 
                   onClick={() => setShowAuthModal(true)}
                   className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
                 >
