@@ -199,10 +199,10 @@ export function setupAdminAuth(app: Express) {
     try {
       const { password } = req.body;
       
-      // Get current master password from global variable
-      const { currentMasterPassword } = require('./routes');
+      // Hard-coded master password 
+      const correctMasterPassword = 'm;rf_oj78cMGbO+0)Ai8e@JAAq=C2Wl)6xoQ_K42mQivX1DjvJ)';
       
-      if (password !== currentMasterPassword) {
+      if (password !== correctMasterPassword) {
         return res.status(401).json({ message: 'Hatalı master şifre' });
       }
 
