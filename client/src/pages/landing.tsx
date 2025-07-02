@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { KeyRound, Shield, Zap, Users, Star, CheckCircle, TrendingUp, Activity, LogIn, UserPlus, Crown, Sparkles, ShoppingCart } from "lucide-react";
+import { KeyRound, Shield, Zap, Users, Star, CheckCircle, TrendingUp, Activity, LogIn, UserPlus, Crown, Sparkles, ShoppingCart, MessageCircle, Send, Heart } from "lucide-react";
 import { useState } from "react";
 import { LandingCursorFollower } from "@/hooks/useMouseTracking";
 
@@ -226,6 +226,101 @@ export default function Landing() {
                   </p>
                 </CardContent>
               </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* Feedback Section */}
+        <section className="py-20 relative border-t border-white/10">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-400/30 rounded-full mb-8 backdrop-blur-sm">
+                <MessageCircle className="w-5 h-5 text-emerald-400 mr-2" />
+                <span className="text-sm font-medium text-white">GERİ BİLDİRİM</span>
+              </div>
+              <h3 className="text-5xl font-black mb-6 bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent">
+                Deneyiminizi Paylaşın
+              </h3>
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-12">
+                KeyPanel ile ilgili görüşleriniz bizim için çok değerli. Önerilerinizi ve deneyimlerinizi paylaşın.
+              </p>
+            </div>
+
+            <div className="max-w-4xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                <Card className="bg-gradient-to-br from-emerald-500/20 to-teal-500/20 border-emerald-400/30 hover:border-emerald-300/50 transition-all duration-300 hover:scale-105 backdrop-blur-sm">
+                  <CardHeader className="p-6 text-center">
+                    <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <Star className="w-8 h-8 text-white" />
+                    </div>
+                    <CardTitle className="text-xl font-bold text-white">Değerlendirme</CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-6 pt-0 text-center">
+                    <p className="text-gray-300 mb-4">Hizmetimizi 1-5 yıldız ile değerlendirin</p>
+                    <div className="flex justify-center space-x-1">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star key={star} className="w-6 h-6 text-yellow-400 fill-current hover:scale-110 transition-transform cursor-pointer" />
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border-blue-400/30 hover:border-blue-300/50 transition-all duration-300 hover:scale-105 backdrop-blur-sm">
+                  <CardHeader className="p-6 text-center">
+                    <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <MessageCircle className="w-8 h-8 text-white" />
+                    </div>
+                    <CardTitle className="text-xl font-bold text-white">Yorum</CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-6 pt-0 text-center">
+                    <p className="text-gray-300 mb-4">Deneyiminizi detaylı olarak paylaşın</p>
+                    <Button 
+                      variant="outline" 
+                      className="border-blue-400/50 bg-blue-500/10 hover:bg-blue-500/20 text-blue-300 hover:text-blue-200"
+                    >
+                      Yorum Yaz
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 border-purple-400/30 hover:border-purple-300/50 transition-all duration-300 hover:scale-105 backdrop-blur-sm">
+                  <CardHeader className="p-6 text-center">
+                    <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                      <Heart className="w-8 h-8 text-white" />
+                    </div>
+                    <CardTitle className="text-xl font-bold text-white">Öneri</CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-6 pt-0 text-center">
+                    <p className="text-gray-300 mb-4">Geliştirme önerilerinizi iletin</p>
+                    <Button 
+                      variant="outline" 
+                      className="border-purple-400/50 bg-purple-500/10 hover:bg-purple-500/20 text-purple-300 hover:text-purple-200"
+                    >
+                      Öneri Gönder
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="text-center">
+                <div className="bg-gradient-to-r from-slate-800/50 to-slate-700/50 border border-white/10 rounded-2xl p-8 backdrop-blur-sm">
+                  <h4 className="text-2xl font-bold text-white mb-4">Hızlı Geri Bildirim</h4>
+                  <p className="text-gray-300 mb-6">
+                    KeyPanel deneyiminizle ilgili hızlı bir geri bildirim gönderin
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                    <input 
+                      type="text" 
+                      placeholder="Geri bildiriminizi yazın..."
+                      className="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-emerald-400/50 backdrop-blur-sm"
+                    />
+                    <Button className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 hover:scale-105">
+                      <Send className="w-4 h-4 mr-2" />
+                      Gönder
+                    </Button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
