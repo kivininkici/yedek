@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -31,8 +32,24 @@ function Router() {
   const { isAuthenticated: isUserAuthenticated, isLoading: isUserLoading } = useAuth();
   const { isAuthenticated: isAdminAuthenticated, isLoading: isAdminLoading } = useAdminAuth();
 
-  // Show loading screen while auth checks are in progress
-  if (isUserLoading || isAdminLoading) {
+  // Show loading screen only for initial auth checks (max 2 seconds to prevent infinite loading)
+  const [showLoader, setShowLoader] = useState(true);
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowLoader(false);
+    }, 2000);
+    
+    // Hide loader early if auth checks complete
+    if (!isUserLoading && !isAdminLoading) {
+      setShowLoader(false);
+      clearTimeout(timer);
+    }
+    
+    return () => clearTimeout(timer);
+  }, [isUserLoading, isAdminLoading]);
+
+  if (showLoader && (isUserLoading || isAdminLoading)) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
         <div className="text-center">

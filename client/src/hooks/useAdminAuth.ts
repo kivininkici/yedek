@@ -22,7 +22,9 @@ export function useAdminAuth() {
     retry: false,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnReconnect: false,
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 15 * 60 * 1000, // 15 minutes
   });
 
   // If we got a 401 error, we're definitely not authenticated

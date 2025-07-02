@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { getQueryFn } from "@/lib/queryClient";
 
 interface User {
   id: number;
@@ -11,14 +12,17 @@ interface User {
 export function useAuth() {
   const { data: user, isLoading, error } = useQuery<User | undefined>({
     queryKey: ["/api/user"],
+    queryFn: getQueryFn({ on401: "returnNull" }),
     retry: false,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnReconnect: false,
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 15 * 60 * 1000, // 15 minutes
   });
 
   // If we got a 401 error, we're definitely not authenticated
-  const is401Error = error?.message?.includes("401");
+  const is401Error = error?.message?.includes("401") || error?.message?.includes("Giriş yapılmamış");
 
   return {
     user,
