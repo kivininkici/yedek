@@ -357,10 +357,10 @@ export default function UserInterface() {
   // Login required check
   if (!isLoading && !isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 flex items-center justify-center">
-        <Card className="w-full max-w-md bg-slate-800/50 border-slate-700">
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-blue-900 flex items-center justify-center">
+        <Card className="w-full max-w-md bg-blue-900/30 border-blue-700/50 backdrop-blur-sm">
           <CardHeader className="text-center">
-            <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
               <AlertCircle className="w-8 h-8 text-white" />
             </div>
             <CardTitle className="text-2xl text-white">Giriş Gerekli</CardTitle>
@@ -378,7 +378,7 @@ export default function UserInterface() {
             <Button 
               variant="outline"
               onClick={() => window.location.href = '/'}
-              className="w-full border-slate-600 text-slate-300 hover:bg-slate-700"
+              className="w-full border-blue-600/50 text-blue-200 hover:bg-blue-800/50"
             >
               Ana Sayfaya Dön
             </Button>
