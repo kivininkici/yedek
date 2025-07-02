@@ -52,7 +52,8 @@ export function FeedbackReminder({ onClose, userEmail, userName, orderId }: Feed
         console.log("Success! Setting submitted to true");
         setSubmitted(true);
         setTimeout(() => {
-          onClose();
+          // Redirect to admin feedback page
+          window.location.href = '/admin/feedback';
         }, 2000);
       } else {
         console.error("API returned error:", responseData);
