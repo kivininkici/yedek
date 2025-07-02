@@ -14,29 +14,19 @@ import {
   CheckCircle, 
   XCircle, 
   Clock,
-  Settings,
-  RotateCcw,
-  CheckCircle2,
-  Tag,
-  Calendar,
-  Link,
-  Sparkles,
-  Zap,
   ArrowLeft,
   Package,
-  Shield,
   Activity,
   Globe,
   Hash,
-  AlertTriangle,
-  CheckCircle as CheckIcon,
   Timer,
-  TrendingUp
+  TrendingUp,
+  Sparkles,
+  KeyRound,
+  Home
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { ThemeProvider } from "@/hooks/use-theme";
 
 const searchSchema = z.object({
   orderId: z.string().min(1, "Sipariş ID gerekli"),
@@ -69,6 +59,65 @@ interface OrderDetails {
     name: string;
   };
 }
+
+// Advanced Background Component
+const ModernBackground = () => {
+  return (
+    <div className="fixed inset-0 overflow-hidden pointer-events-none">
+      {/* Base Gradients */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900" />
+      <div className="absolute inset-0 bg-gradient-to-tr from-indigo-950/50 via-transparent to-cyan-950/30" />
+      
+      {/* Floating Orbs */}
+      <motion.div 
+        className="absolute w-[400px] h-[400px] rounded-full"
+        style={{
+          background: 'radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, rgba(147, 51, 234, 0.05) 40%, transparent 70%)',
+          filter: 'blur(40px)',
+        }}
+        animate={{
+          x: [0, 200, 0],
+          y: [0, -100, 0],
+          scale: [1, 1.2, 1],
+        }}
+        transition={{
+          duration: 20,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+        style={{ top: '20%', left: '10%' }}
+      />
+      
+      <motion.div 
+        className="absolute w-[300px] h-[300px] rounded-full"
+        style={{
+          background: 'radial-gradient(circle, rgba(236, 72, 153, 0.08) 0%, rgba(168, 85, 247, 0.04) 40%, transparent 70%)',
+          filter: 'blur(35px)',
+        }}
+        animate={{
+          x: [0, -150, 0],
+          y: [0, 120, 0],
+          scale: [1.2, 0.8, 1.2],
+        }}
+        transition={{
+          duration: 25,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+        style={{ top: '60%', right: '15%' }}
+      />
+
+      {/* Subtle Grid */}
+      <div 
+        className="absolute inset-0 opacity-[0.02]"
+        style={{
+          backgroundImage: `radial-gradient(circle at 50% 50%, white 1px, transparent 1px)`,
+          backgroundSize: '40px 40px',
+        }}
+      />
+    </div>
+  );
+};
 
 export default function OrderSearchPage() {
   const { toast } = useToast();
@@ -142,650 +191,382 @@ export default function OrderSearchPage() {
     searchOrderMutation.mutate(data);
   };
 
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'completed':
-        return 'Tamamlandı';
-      case 'failed':
-        return 'Başarısız';
-      case 'cancelled':
-        return 'İptal Edildi';
-      case 'processing':
-        return 'İşleniyor';
-      case 'pending':
-        return 'Beklemede';
-      case 'partial':
-        return 'Kısmi Tamamlandı';
-      case 'in_progress':
-        return 'Devam Ediyor';
-      default:
-        return 'Bilinmiyor';
-    }
-  };
-
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'completed':
         return (
-          <Badge className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 text-sm font-medium shadow-lg">
-            ✅ Tamamlandı
+          <Badge className="bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 text-sm font-semibold shadow-lg">
+            <CheckCircle className="w-4 h-4 mr-2" />
+            Tamamlandı
           </Badge>
         );
       case 'failed':
         return (
-          <Badge className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 text-sm font-medium shadow-lg">
-            ❌ Başarısız
+          <Badge className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 text-sm font-semibold shadow-lg">
+            <XCircle className="w-4 h-4 mr-2" />
+            Başarısız
           </Badge>
         );
       case 'cancelled':
         return (
-          <Badge className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 text-sm font-medium shadow-lg">
-            🚫 İptal Edildi
+          <Badge className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 text-sm font-semibold shadow-lg">
+            <XCircle className="w-4 h-4 mr-2" />
+            İptal Edildi
           </Badge>
         );
       case 'processing':
         return (
-          <Badge className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 text-sm font-medium shadow-lg animate-pulse">
-            ⚡ İşleniyor
+          <Badge className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 text-sm font-semibold shadow-lg animate-pulse">
+            <Activity className="w-4 h-4 mr-2" />
+            İşleniyor
           </Badge>
         );
       case 'in_progress':
         return (
-          <Badge className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 text-sm font-medium shadow-lg animate-pulse">
-            🔄 Devam Ediyor
+          <Badge className="bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 text-sm font-semibold shadow-lg animate-pulse">
+            <Timer className="w-4 h-4 mr-2" />
+            Devam Ediyor
           </Badge>
         );
       case 'pending':
         return (
-          <Badge className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 text-sm font-medium shadow-lg">
-            🕐 Sipariş Alındı
+          <Badge className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 text-sm font-semibold shadow-lg">
+            <Clock className="w-4 h-4 mr-2" />
+            Beklemede
           </Badge>
         );
       case 'partial':
         return (
-          <Badge className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 text-sm font-medium shadow-lg">
-            ⚡ Kısmi
+          <Badge className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 text-sm font-semibold shadow-lg">
+            <TrendingUp className="w-4 h-4 mr-2" />
+            Kısmi Tamamlandı
           </Badge>
         );
       default:
         return (
-          <Badge className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 text-sm font-medium shadow-lg">
-            ❓ Bilinmiyor
+          <Badge className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 text-sm font-semibold shadow-lg">
+            <Hash className="w-4 h-4 mr-2" />
+            Bilinmiyor
           </Badge>
         );
     }
   };
 
-  const getProgressSteps = (status: string) => {
-    const steps = [
-      { key: 'pending', label: 'Sipariş Alındı', icon: CheckCircle2 },
-      { key: 'processing', label: 'İşleniyor', icon: Settings },
-      { key: 'in_progress', label: 'Devam Ediyor', icon: RotateCcw },
-      { key: 'completed', label: 'Tamamlandı', icon: CheckCircle }
-    ];
-
-    return steps.map((step, index) => {
-      const isActive = 
-        (status === 'pending' && index === 0) ||
-        (status === 'processing' && index === 1) ||
-        (status === 'in_progress' && index === 2) ||
-        (status === 'completed' && index === 3) ||
-        (status === 'partial' && index === 2) ||
-        (status === 'failed' && index === 1) ||
-        (status === 'cancelled' && index === 1);
-
-      const isCompleted = 
-        (status === 'processing' && index === 0) ||
-        (status === 'in_progress' && index <= 1) ||
-        (status === 'completed' && index <= 2) ||
-        (status === 'partial' && index <= 1);
-
-      const isFailed = (status === 'failed' || status === 'cancelled') && index > 1;
-
-      return {
-        ...step,
-        isActive,
-        isCompleted,
-        isFailed
-      };
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleString('tr-TR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
     });
   };
 
-  // Progress Component with Enhanced Animations
-  const ProgressSteps = ({ order }: { order: OrderDetails }) => {
-    const steps = getProgressSteps(order.status);
-    const completedSteps = steps.filter(step => step.isCompleted).length;
-    const activeStepIndex = steps.findIndex(step => step.isActive);
-    
-    return (
-      <div className="w-full py-8">
-        <div className="relative flex items-center justify-between">
-          {/* Background Line */}
-          <div className="absolute top-1/2 left-0 right-0 h-2 bg-gray-200 dark:bg-gray-700 rounded-full transform -translate-y-1/2 z-0" />
-          
-          {/* Animated Progress Line */}
-          <motion.div
-            className="absolute top-1/2 left-0 h-2 bg-gradient-to-r from-blue-500 via-purple-500 to-green-500 rounded-full transform -translate-y-1/2 z-10"
-            initial={{ width: "0%" }}
-            animate={{ 
-              width: activeStepIndex >= 0 
-                ? `${((completedSteps + 0.5) / steps.length) * 100}%`
-                : `${(completedSteps / steps.length) * 100}%`
-            }}
-            transition={{ duration: 1.2, ease: "easeInOut" }}
-          />
-          
-          {/* Steps */}
-          {steps.map((step, index) => {
-            const Icon = step.icon;
-            return (
-              <div key={step.key} className="relative z-20 flex flex-col items-center">
-                {/* Step Circle */}
-                <motion.div
-                  className={`relative flex items-center justify-center w-12 h-12 rounded-full border-4 shadow-lg transition-all duration-500 ease-in-out ${
-                    step.isCompleted 
-                      ? 'bg-green-500 border-green-500 text-white shadow-green-200 dark:shadow-green-800' 
-                      : step.isActive 
-                        ? 'bg-blue-500 border-blue-500 text-white shadow-blue-200 dark:shadow-blue-800' 
-                        : step.isFailed
-                          ? 'bg-red-500 border-red-500 text-white shadow-red-200 dark:shadow-red-800'
-                          : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-400 dark:text-gray-500 shadow-gray-100 dark:shadow-gray-900'
-                  }`}
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ 
-                    scale: step.isActive ? 1.1 : 1,
-                    opacity: 1,
-                    rotateY: step.isCompleted ? 360 : 0
-                  }}
-                  transition={{ 
-                    duration: 0.6, 
-                    delay: index * 0.2,
-                    rotateY: { duration: 0.8, delay: step.isCompleted ? 0.3 : 0 }
-                  }}
-                >
-                  {/* Pulsing ring for active state */}
-                  {step.isActive && (
-                    <motion.div
-                      className="absolute inset-0 rounded-full border-4 border-blue-500"
-                      animate={{ 
-                        scale: [1, 1.3, 1],
-                        opacity: [0.7, 0, 0.7]
-                      }}
-                      transition={{ 
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: "easeInOut"
-                      }}
-                    />
-                  )}
-                  
-                  {/* Icon with animation */}
-                  <AnimatePresence mode="wait">
-                    {step.isCompleted ? (
-                      <motion.div
-                        key="check"
-                        initial={{ scale: 0, rotate: -180 }}
-                        animate={{ scale: 1, rotate: 0 }}
-                        exit={{ scale: 0, rotate: 180 }}
-                        transition={{ duration: 0.5 }}
-                      >
-                        <CheckCircle className="w-6 h-6" />
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="icon"
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        exit={{ scale: 0 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <Icon className={`w-6 h-6 ${step.isActive ? 'animate-spin' : ''}`} />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
-                
-                {/* Step Label */}
-                <motion.p
-                  className={`mt-4 text-sm font-medium text-center transition-colors duration-300 ${
-                    step.isCompleted ? 'text-green-600 dark:text-green-400' : 
-                    step.isActive ? 'text-blue-600 dark:text-blue-400' : 
-                    step.isFailed ? 'text-red-600 dark:text-red-400' : 'text-gray-500 dark:text-gray-400'
-                  }`}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: index * 0.1 + 0.3 }}
-                >
-                  {step.label}
-                </motion.p>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
-  };
-
   return (
-    <ThemeProvider>
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-100 dark:from-slate-900 dark:via-blue-900 dark:to-purple-900 transition-all duration-500 relative overflow-hidden">
-        {/* Animated Background Elements */}
-        <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <motion.div 
-            className="absolute -top-40 -right-40 w-80 h-80 bg-purple-300 dark:bg-purple-600 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-xl opacity-30"
-            animate={{ 
-              scale: [1, 1.2, 1],
-              rotate: [0, 180, 360],
-              x: [0, 50, 0],
-              y: [0, -50, 0]
-            }}
-            transition={{ duration: 20, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div 
-            className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-300 dark:bg-blue-600 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-xl opacity-30"
-            animate={{ 
-              scale: [1.2, 1, 1.2],
-              rotate: [360, 180, 0],
-              x: [0, -50, 0],
-              y: [0, 50, 0]
-            }}
-            transition={{ duration: 25, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div 
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-pink-300 dark:bg-pink-600 rounded-full mix-blend-multiply dark:mix-blend-screen filter blur-xl opacity-30"
-            animate={{ 
-              scale: [1, 1.3, 1],
-              rotate: [0, -180, -360]
-            }}
-            transition={{ duration: 30, repeat: Infinity, ease: "easeInOut" }}
-          />
-        </div>
-
-        {/* Header */}
-        <motion.div 
-          initial={{ y: -50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.6 }}
-          className="relative z-10 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl shadow-xl border-b border-gray-200/50 dark:border-gray-700/50"
-        >
-          <div className="max-w-7xl mx-auto px-6 py-8">
-            <div className="flex items-center justify-between">
+    <div className="min-h-screen text-white relative">
+      {/* Modern Background */}
+      <ModernBackground />
+      
+      {/* Header */}
+      <motion.header 
+        className="relative z-10 border-b border-white/10 backdrop-blur-2xl bg-black/20"
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8 }}
+      >
+        <div className="container mx-auto px-6 py-6">
+          <div className="flex items-center justify-between">
+            <motion.div 
+              className="flex items-center space-x-4"
+              initial={{ x: -50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
               <motion.div 
-                className="flex items-center space-x-6"
-                initial={{ x: -30, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.1 }}
+                className="w-12 h-12 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-2xl"
+                whileHover={{ scale: 1.05, rotate: 5 }}
               >
-                <div className="relative">
-                  <motion.div 
-                    className="w-16 h-16 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-3xl flex items-center justify-center shadow-2xl"
-                    whileHover={{ scale: 1.1, rotate: 5 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <Search className="w-8 h-8 text-white" />
-                  </motion.div>
-                  <motion.div 
-                    className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full flex items-center justify-center"
-                    animate={{ scale: [1, 1.2, 1] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                  >
-                    <Sparkles className="w-3 h-3 text-white" />
-                  </motion.div>
-                </div>
-                <div>
-                  <motion.h1 
-                    className="text-5xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.8, delay: 0.2 }}
-                  >
-                    Sipariş Takip Merkezi
-                  </motion.h1>
-                  <motion.p 
-                    className="text-slate-600 dark:text-slate-300 font-semibold text-xl mt-2"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 0.4 }}
-                  >
-                    Profesyonel sipariş takip sistemi ile gerçek zamanlı durum kontrolü
-                  </motion.p>
-                </div>
+                <Search className="w-6 h-6 text-white" />
               </motion.div>
-              <motion.div
-                className="flex items-center space-x-4"
-                initial={{ x: 30, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-              >
-                <Button
-                  variant="outline"
-                  onClick={() => window.location.href = '/'}
-                  className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border-gray-300 dark:border-gray-600 hover:bg-white/80 dark:hover:bg-gray-800/80"
-                >
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Ana Sayfa
-                </Button>
-                <ThemeToggle />
-              </motion.div>
-            </div>
-          </div>
-        </motion.div>
+              <div>
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                  Sipariş Takip
+                </h1>
+                <p className="text-white/60 text-sm">Sipariş durumunu anında sorgulayın</p>
+              </div>
+            </motion.div>
 
-        {/* Main Content */}
-        <div className="relative z-10 max-w-6xl mx-auto px-6 py-12 space-y-12">
-          {/* Search Form */}
+            <motion.div
+              initial={{ x: 50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.3 }}
+            >
+              <Button 
+                onClick={() => window.location.href = '/'}
+                variant="outline"
+                className="border-white/20 bg-white/10 hover:bg-white/20 text-white rounded-xl backdrop-blur-sm"
+              >
+                <Home className="w-4 h-4 mr-2" />
+                Ana Sayfa
+              </Button>
+            </motion.div>
+          </div>
+        </div>
+      </motion.header>
+
+      {/* Main Content */}
+      <main className="relative z-10 container mx-auto px-6 py-16">
+        <div className="max-w-2xl mx-auto">
+          {/* Search Section */}
           <motion.div
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="text-center mb-16"
           >
-            <Card className="border-0 shadow-2xl bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl hover:shadow-3xl transition-all duration-500 rounded-3xl overflow-hidden">
-              <div className="bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 h-2"></div>
-              <CardContent className="p-12">
-                <div className="text-center mb-10">
-                  <motion.h2 
-                    className="text-4xl font-black text-gray-900 dark:text-white mb-6 flex items-center justify-center"
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 0.4 }}
-                  >
-                    <motion.div
-                      className="mr-4 p-3 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl shadow-lg"
-                      animate={{ rotate: [0, 10, -10, 0] }}
-                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                    >
-                      <Zap className="w-10 h-10 text-white" />
-                    </motion.div>
-                    Profesyonel Sipariş Takip Sistemi
-                  </motion.h2>
-                  <motion.p 
-                    className="text-slate-600 dark:text-slate-300 text-xl max-w-3xl mx-auto font-semibold"
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 0.5 }}
-                  >
-                    Siparişinizin her aşamasını gerçek zamanlı olarak takip edin ve anlık güncellemeler alın
-                  </motion.p>
-                </div>
-                
-                <motion.form 
-                  onSubmit={searchForm.handleSubmit(onSearch)} 
-                  className="space-y-8"
-                  initial={{ y: 30, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.6, delay: 0.6 }}
+            <motion.div
+              className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full border border-white/20 backdrop-blur-sm mb-6"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              <Package className="w-4 h-4 text-blue-300 mr-2" />
+              <span className="text-white/90 text-sm font-medium">Anlık Sipariş Durumu</span>
+            </motion.div>
+
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">
+              <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                Sipariş Durumu Sorgula
+              </span>
+            </h1>
+            
+            <p className="text-xl text-white/70 mb-8">
+              Sipariş numaranızı girerek güncel durumu görüntüleyin
+            </p>
+
+            {/* Search Form */}
+            <form onSubmit={searchForm.handleSubmit(onSearch)} className="space-y-4">
+              <div className="relative">
+                <motion.div
+                  whileFocus={{ scale: 1.02 }}
+                  className="relative"
                 >
-                  <div className="relative max-w-2xl mx-auto">
-                    <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
-                      <Search className="h-7 w-7 text-slate-400" />
-                    </div>
-                    <motion.div
-                      className="relative"
-                      whileFocus={{ scale: 1.02 }}
-                      transition={{ duration: 0.3 }}
+                  <Input
+                    {...searchForm.register("orderId")}
+                    placeholder="Sipariş ID (örn: 458465)"
+                    className="w-full h-14 px-6 text-lg bg-black/30 border border-white/20 rounded-2xl backdrop-blur-sm text-white placeholder-white/50 focus:border-blue-400 focus:ring-2 focus:ring-blue-400/50 transition-all duration-300"
+                  />
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500/10 to-purple-500/10 pointer-events-none" />
+                </motion.div>
+              </div>
+              
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                <Button 
+                  type="submit" 
+                  disabled={isSearching}
+                  className="w-full h-14 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 text-white font-bold text-lg rounded-2xl shadow-2xl transition-all duration-300 disabled:opacity-50"
+                >
+                  {isSearching ? (
+                    <motion.div 
+                      className="flex items-center space-x-3"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
                     >
-                      <Input
-                        placeholder="Sipariş numaranızı girin (örn: 458485, ORD-123456)"
-                        className="h-24 pl-20 pr-8 text-2xl font-bold text-center border-4 border-slate-300 dark:border-slate-600 bg-gradient-to-r from-white to-blue-50 dark:from-gray-700 dark:to-blue-900 text-gray-900 dark:text-white placeholder-slate-500 focus:ring-8 focus:ring-blue-500/30 focus:border-blue-500 dark:focus:border-blue-400 rounded-3xl transition-all duration-500 hover:border-blue-400 dark:hover:border-blue-500 shadow-2xl"
-                        {...searchForm.register("orderId")}
-                        disabled={isSearching}
+                      <motion.div 
+                        className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full"
+                        animate={{ rotate: 360 }}
+                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                       />
-                      <motion.div
-                        className="absolute right-8 top-1/2 transform -translate-y-1/2 pointer-events-none"
-                        animate={{ 
-                          x: [0, 10, 0],
-                          opacity: [0.5, 1, 0.5]
-                        }}
-                        transition={{ duration: 2.5, repeat: Infinity }}
-                      >
-                        <Package className="w-8 h-8 text-blue-500" />
-                      </motion.div>
+                      <span>Aranıyor...</span>
                     </motion.div>
-                    {searchForm.formState.errors.orderId && (
-                      <motion.p 
-                        className="text-red-500 text-sm mt-3 ml-4"
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                      >
-                        {searchForm.formState.errors.orderId.message}
-                      </motion.p>
-                    )}
-                  </div>
-                  
-                  <motion.div className="flex justify-center">
-                    <Button 
-                      type="submit" 
-                      disabled={isSearching}
-                      className="h-20 px-16 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 hover:from-blue-600 hover:via-purple-600 hover:to-pink-600 text-white font-bold text-xl shadow-2xl hover:shadow-3xl rounded-2xl transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 transform-gpu"
-                    >
-                      {isSearching ? (
-                        <>
-                          <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                          >
-                            <RefreshCw className="w-7 h-7 mr-4" />
-                          </motion.div>
-                          Aranıyor...
-                        </>
-                      ) : (
-                        <>
-                          <Search className="w-7 h-7 mr-4" />
-                          Sipariş Sorgula
-                        </>
-                      )}
-                    </Button>
-                  </motion.div>
-                </motion.form>
-              </CardContent>
-            </Card>
+                  ) : (
+                    <div className="flex items-center space-x-3">
+                      <Search className="w-6 h-6" />
+                      <span>Sipariş Sorgula</span>
+                    </div>
+                  )}
+                </Button>
+              </motion.div>
+            </form>
           </motion.div>
 
-          {/* Order Details */}
-          <AnimatePresence>
+          {/* Order Results */}
+          <AnimatePresence mode="wait">
             {searchedOrder && (
               <motion.div
+                key="order-found"
                 initial={{ opacity: 0, y: 50, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -50, scale: 0.95 }}
-                transition={{ duration: 0.6 }}
+                transition={{ duration: 0.5 }}
               >
-                <Card className="border-0 shadow-2xl bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl hover:shadow-3xl transition-all duration-500 rounded-3xl overflow-hidden">
-                  <div className="bg-gradient-to-r from-emerald-500 via-blue-500 to-purple-500 h-2"></div>
-                  <CardContent className="p-12">
-                    <div className="space-y-10">
-                      {/* Order Header */}
-                      <motion.div 
-                        className="flex flex-col lg:flex-row lg:justify-between lg:items-start space-y-6 lg:space-y-0"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.5, delay: 0.2 }}
-                      >
-                        <div className="space-y-3">
-                          <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
-                            📦 Sipariş Detayları
-                          </h3>
-                          <p className="text-4xl font-mono font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                            #{searchedOrder.orderId}
-                          </p>
-                        </div>
-                        <div className="text-center lg:text-right space-y-3">
-                          <p className="text-sm text-gray-600 dark:text-gray-300 font-medium">Durum:</p>
-                          <motion.div
-                            whileHover={{ scale: 1.05 }}
-                            transition={{ duration: 0.2 }}
-                          >
-                            {getStatusBadge(searchedOrder.status)}
-                          </motion.div>
-                        </div>
-                      </motion.div>
-
-                      {/* Progress Steps */}
-                      <motion.div 
-                        className="my-12"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 0.4 }}
-                      >
-                        <ProgressSteps order={searchedOrder} />
-                      </motion.div>
-
-                      {/* Auto-refresh indicator */}
-                      {isAutoRefreshing && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          className="flex items-center justify-center space-x-3 text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4"
+                <Card className="bg-black/30 border border-white/20 backdrop-blur-xl rounded-3xl shadow-2xl overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-pink-500/5" />
+                  
+                  <CardHeader className="relative z-10 pb-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <motion.div 
+                          className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center shadow-xl"
+                          animate={{ scale: [1, 1.05, 1] }}
+                          transition={{ duration: 2, repeat: Infinity }}
                         >
-                          <motion.div
-                            animate={{ rotate: 360 }}
-                            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                          >
-                            <RefreshCw className="w-5 h-5" />
-                          </motion.div>
-                          <span className="font-medium">Otomatik güncelleme aktif</span>
-                          {lastUpdated && (
-                            <span className="text-sm text-gray-500 dark:text-gray-400">
-                              Son güncelleme: {lastUpdated.toLocaleTimeString('tr-TR')}
-                            </span>
-                          )}
+                          <Package className="w-8 h-8 text-white" />
                         </motion.div>
-                      )}
-
-                      {/* Order Details Grid */}
-                      <motion.div 
-                        className="grid grid-cols-1 lg:grid-cols-2 gap-8"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 0.6 }}
-                      >
-                        <div className="space-y-6">
-                          <motion.div 
-                            className="flex items-center p-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-2xl shadow-lg"
-                            whileHover={{ scale: 1.02 }}
-                            transition={{ duration: 0.2 }}
-                          >
-                            <Tag className="w-6 h-6 text-blue-600 dark:text-blue-400 mr-4" />
-                            <div>
-                              <p className="text-sm text-gray-600 dark:text-gray-300 font-medium">Kategori:</p>
-                              <p className="font-bold text-gray-900 dark:text-white text-lg">{searchedOrder.key.category}</p>
-                            </div>
-                          </motion.div>
-                          <motion.div 
-                            className="flex items-center p-6 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-2xl shadow-lg"
-                            whileHover={{ scale: 1.02 }}
-                            transition={{ duration: 0.2 }}
-                          >
-                            <Calendar className="w-6 h-6 text-green-600 dark:text-green-400 mr-4" />
-                            <div>
-                              <p className="text-sm text-gray-600 dark:text-gray-300 font-medium">Miktar:</p>
-                              <p className="font-bold text-gray-900 dark:text-white text-lg">{searchedOrder.quantity}</p>
-                            </div>
-                          </motion.div>
+                        <div>
+                          <CardTitle className="text-2xl font-bold text-white mb-2">
+                            Sipariş #{searchedOrder.orderId}
+                          </CardTitle>
+                          <div className="flex items-center space-x-3">
+                            {getStatusBadge(searchedOrder.status)}
+                            {isAutoRefreshing && (
+                              <motion.div 
+                                className="flex items-center text-blue-300 text-sm"
+                                animate={{ opacity: [0.5, 1, 0.5] }}
+                                transition={{ duration: 2, repeat: Infinity }}
+                              >
+                                <RefreshCw className="w-4 h-4 mr-1 animate-spin" />
+                                Otomatik güncelleniyor
+                              </motion.div>
+                            )}
+                          </div>
                         </div>
-                        <div className="space-y-6">
-                          <motion.div 
-                            className="flex items-center p-6 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl shadow-lg"
-                            whileHover={{ scale: 1.02 }}
-                            transition={{ duration: 0.2 }}
-                          >
-                            <Link className="w-6 h-6 text-purple-600 dark:text-purple-400 mr-4" />
-                            <div className="flex-1">
-                              <p className="text-sm text-gray-600 dark:text-gray-300 font-medium">Hedef URL:</p>
-                              <p className="font-bold text-gray-900 dark:text-white text-sm break-all">{searchedOrder.targetUrl}</p>
-                            </div>
-                          </motion.div>
-                          <motion.div 
-                            className="flex items-center p-6 bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 rounded-2xl shadow-lg"
-                            whileHover={{ scale: 1.02 }}
-                            transition={{ duration: 0.2 }}
-                          >
-                            <CheckCircle2 className="w-6 h-6 text-orange-600 dark:text-orange-400 mr-4" />
-                            <div>
-                              <p className="text-sm text-gray-600 dark:text-gray-300 font-medium">Anahtar:</p>
-                              <p className="font-bold text-gray-900 dark:text-white font-mono text-sm">{searchedOrder.key.value}</p>
-                            </div>
-                          </motion.div>
+                      </div>
+                    </div>
+                  </CardHeader>
+
+                  <CardContent className="relative z-10 space-y-6">
+                    {/* Order Details Grid */}
+                    <div className="grid md:grid-cols-2 gap-6">
+                      <motion.div 
+                        className="bg-white/5 rounded-2xl p-6 border border-white/10"
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.2 }}
+                      >
+                        <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+                          <Globe className="w-5 h-5 mr-2 text-blue-400" />
+                          Servis Bilgileri
+                        </h3>
+                        <div className="space-y-3">
+                          <div>
+                            <p className="text-white/60 text-sm">Platform</p>
+                            <p className="text-white font-medium">{searchedOrder.service.platform}</p>
+                          </div>
+                          <div>
+                            <p className="text-white/60 text-sm">Servis Adı</p>
+                            <p className="text-white font-medium">{searchedOrder.service.name}</p>
+                          </div>
+                          <div>
+                            <p className="text-white/60 text-sm">Miktar</p>
+                            <p className="text-white font-medium">{searchedOrder.quantity.toLocaleString()}</p>
+                          </div>
                         </div>
                       </motion.div>
 
-                      {/* Timestamp */}
                       <motion.div 
-                        className="text-center pt-6 border-t border-gray-200 dark:border-gray-700"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.5, delay: 0.8 }}
+                        className="bg-white/5 rounded-2xl p-6 border border-white/10"
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.3 }}
                       >
-                        <p className="text-lg text-gray-700 dark:text-gray-300">
-                          📅 Oluşturulma: <span className="font-bold text-blue-600 dark:text-blue-400">
-                            {searchedOrder.createdAt 
-                              ? new Date(searchedOrder.createdAt).toLocaleString('tr-TR', {
-                                  year: 'numeric',
-                                  month: 'long',
-                                  day: 'numeric',
-                                  hour: '2-digit',
-                                  minute: '2-digit'
-                                })
-                              : 'Bilinmiyor'
-                            }
-                          </span>
-                        </p>
-                      </motion.div>
-
-                      {/* Manual Refresh Button */}
-                      <motion.div 
-                        className="text-center"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ duration: 0.5, delay: 1 }}
-                      >
-                        <Button 
-                          onClick={() => searchOrderMutation.mutate({ orderId: searchedOrder.orderId })}
-                          disabled={searchOrderMutation.isPending}
-                          variant="outline"
-                          className="bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm border-blue-200 dark:border-blue-600 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-300 rounded-xl px-8 py-3"
-                        >
-                          <RefreshCw className={`w-5 h-5 mr-3 ${searchOrderMutation.isPending ? 'animate-spin' : ''}`} />
-                          Manuel Yenile
-                        </Button>
+                        <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+                          <KeyRound className="w-5 h-5 mr-2 text-purple-400" />
+                          Key Bilgileri
+                        </h3>
+                        <div className="space-y-3">
+                          <div>
+                            <p className="text-white/60 text-sm">Kategori</p>
+                            <p className="text-white font-medium">{searchedOrder.key.category}</p>
+                          </div>
+                          <div>
+                            <p className="text-white/60 text-sm">Key Adı</p>
+                            <p className="text-white font-medium">{searchedOrder.key.name}</p>
+                          </div>
+                          <div>
+                            <p className="text-white/60 text-sm">Hedef URL</p>
+                            <p className="text-white font-medium break-all text-sm">{searchedOrder.targetUrl}</p>
+                          </div>
+                        </div>
                       </motion.div>
                     </div>
+
+                    {/* Timeline */}
+                    <motion.div 
+                      className="bg-white/5 rounded-2xl p-6 border border-white/10"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.4 }}
+                    >
+                      <h3 className="text-lg font-semibold text-white mb-4 flex items-center">
+                        <Timer className="w-5 h-5 mr-2 text-emerald-400" />
+                        Zaman Çizelgesi
+                      </h3>
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center">
+                          <span className="text-white/60">Sipariş Oluşturulma</span>
+                          <span className="text-white font-medium">{formatDate(searchedOrder.createdAt)}</span>
+                        </div>
+                        {searchedOrder.completedAt && (
+                          <div className="flex justify-between items-center">
+                            <span className="text-white/60">Tamamlanma</span>
+                            <span className="text-white font-medium">{formatDate(searchedOrder.completedAt)}</span>
+                          </div>
+                        )}
+                        {lastUpdated && (
+                          <div className="flex justify-between items-center">
+                            <span className="text-white/60">Son Güncelleme</span>
+                            <span className="text-white font-medium">{formatDate(lastUpdated.toISOString())}</span>
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+
+                    {searchedOrder.message && (
+                      <motion.div 
+                        className="bg-blue-500/10 border border-blue-400/30 rounded-2xl p-6"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5 }}
+                      >
+                        <h3 className="text-lg font-semibold text-blue-300 mb-2 flex items-center">
+                          <Sparkles className="w-5 h-5 mr-2" />
+                          Mesaj
+                        </h3>
+                        <p className="text-white/80">{searchedOrder.message}</p>
+                      </motion.div>
+                    )}
                   </CardContent>
                 </Card>
               </motion.div>
             )}
-          </AnimatePresence>
 
-          {/* Order Not Found */}
-          <AnimatePresence>
             {orderNotFound && (
               <motion.div
+                key="order-not-found"
                 initial={{ opacity: 0, y: 50, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -50, scale: 0.95 }}
-                transition={{ duration: 0.6 }}
+                transition={{ duration: 0.5 }}
               >
-                <Card className="border-0 shadow-2xl bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-3xl overflow-hidden">
-                  <div className="bg-gradient-to-r from-red-500 to-pink-500 h-2"></div>
-                  <CardContent className="p-12 text-center">
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ duration: 0.5, type: "spring" }}
-                    >
-                      <XCircle className="w-24 h-24 text-red-500 mx-auto mb-6" />
-                    </motion.div>
-                    <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">❌ Sipariş Bulunamadı</h3>
-                    <p className="text-gray-600 dark:text-gray-300 text-lg max-w-md mx-auto">
-                      Girdiğiniz sipariş ID'si bulunamadı. Lütfen kontrol edip tekrar deneyin.
-                    </p>
-                  </CardContent>
+                <Card className="bg-red-500/10 border border-red-400/30 backdrop-blur-xl rounded-3xl p-8 text-center">
+                  <motion.div 
+                    className="w-20 h-20 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6"
+                    animate={{ scale: [1, 1.1, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    <XCircle className="w-10 h-10 text-red-400" />
+                  </motion.div>
+                  <h3 className="text-2xl font-bold text-red-300 mb-4">Sipariş Bulunamadı</h3>
+                  <p className="text-white/70 text-lg">
+                    Girdiğiniz sipariş ID'si sistemde kayıtlı değil. Lütfen tekrar kontrol edin.
+                  </p>
                 </Card>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
-      </div>
-    </ThemeProvider>
+      </main>
+    </div>
   );
 }
