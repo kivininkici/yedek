@@ -4,6 +4,8 @@ import { storage } from "./storage";
 import { setupAdminAuth, requireAdminAuth, hashPassword, comparePassword } from "./adminAuth";
 import { db } from "./db";
 import { desc, eq, sql } from "drizzle-orm";
+import fs from 'fs';
+import path from 'path';
 
 // Using admin session-based authentication only
 import { insertKeySchema, insertServiceSchema, insertOrderSchema, insertApiSettingsSchema } from "@shared/schema";
@@ -3135,16 +3137,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Hosting PHP preview route
   app.get("/hosting-php-preview", (req, res) => {
-    const fs = require('fs');
-    const path = require('path');
-    
     try {
       const phpFilePath = path.join(process.cwd(), 'hosting/public_html/index.php');
       const phpContent = fs.readFileSync(phpFilePath, 'utf8');
       
+      // Simple HTML escaping without complex regex
+      const escapedContent = phpContent
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+      
       res.setHeader('Content-Type', 'text/html; charset=utf-8');
-      res.send(`
-<!DOCTYPE html>
+      res.send(`<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
@@ -3180,11 +3184,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
             white-space: pre-wrap;
             font-size: 14px;
         }
-        .php-tag { color: #ff6b6b; }
-        .comment { color: #6c757d; }
-        .string { color: #ffc107; }
-        .keyword { color: #007bff; }
-        .variable { color: #28a745; }
         .back-btn {
             display: inline-block;
             background: #007bff;
@@ -3206,17 +3205,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         <a href="/" class="back-btn">← Ana Sayfaya Dön</a>
     </div>
     
-    <div class="code-block">${phpContent
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/(&lt;\?php)/g, '<span class="php-tag">$1</span>')
-      .replace(/(&lt;\?)/g, '<span class="php-tag">$1</span>')
-      .replace(/(\/\/.+)/g, '<span class="comment">$1</span>')
-      .replace(/(["'][^"']*["'])/g, '<span class="string">$1</span>')
-      .replace(/(\$\w+)/g, '<span class="variable">$1</span>')
-      .replace(/\b(function|class|if|else|while|for|foreach|return|echo|include|require|public|private|protected|static|const|var)\b/g, '<span class="keyword">$1</span>')
-    }</div>
+    <div class="code-block">${escapedContent}</div>
     
     <div style="background: #333; color: #fff; padding: 20px; margin-top: 20px; border-radius: 8px;">
         <h3>📋 Dosya Bilgileri:</h3>
@@ -3228,8 +3217,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         </ul>
     </div>
 </body>
-</html>
-      `);
+</html>`);
     } catch (error: any) {
       res.status(500).send(`
         <h1>Dosya Okuma Hatası</h1>
