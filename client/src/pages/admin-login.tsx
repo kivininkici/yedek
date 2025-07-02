@@ -32,10 +32,20 @@ export default function AdminLogin() {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<AdminLogin>({
     resolver: zodResolver(adminLoginSchema),
   });
+
+  // Set securityQuestion value when it changes
+  useEffect(() => {
+    if (securityQuestion && securityQuestion !== "Güvenlik sorusu yükleniyor...") {
+      setValue("securityQuestion", securityQuestion);
+    }
+  }, [securityQuestion, setValue]);
+
+
 
   // Rastgele güvenlik sorusu çek
   useEffect(() => {
@@ -128,12 +138,7 @@ export default function AdminLogin() {
   const onSubmit = (data: AdminLogin) => {
     setIsLoading(true);
     setIsSuccess(false);
-    // Include the current security question with the form data
-    const submitData = {
-      ...data,
-      securityQuestion: securityQuestion
-    };
-    loginMutation.mutate(submitData);
+    loginMutation.mutate(data);
   };
 
   return (
@@ -482,6 +487,13 @@ export default function AdminLogin() {
                         </motion.p>
                       )}
                     </div>
+
+                    {/* Hidden field for securityQuestion */}
+                    <input
+                      type="hidden"
+                      value={securityQuestion}
+                      {...register("securityQuestion")}
+                    />
 
                     <div className="space-y-2">
                       <Label htmlFor="securityAnswer" className="text-slate-300 text-sm font-medium">
