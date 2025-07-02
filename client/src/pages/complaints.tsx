@@ -59,7 +59,7 @@ export default function Complaints() {
       const response = await fetch(`/api/orders/search/${orderIdInput.trim()}`);
       const data = await response.json();
       
-      if (response.ok && data.order) {
+      if (response.ok && data.orderId) {
         setAccessGranted(true);
         form.setValue("orderId", orderIdInput.trim());
         toast({
