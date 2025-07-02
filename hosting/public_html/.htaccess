@@ -1,25 +1,32 @@
-# KeyPanel .htaccess - cPanel Hosting Uyumlu
-# Türkçe: Apache web sunucusu yapılandırma dosyası
+# KeyPanel - Web Hosting Uyumlu .htaccess Konfigürasyonu
 
-# PHP ayarları
-php_value upload_max_filesize 10M
-php_value post_max_size 10M
-php_value max_execution_time 300
-php_value memory_limit 256M
-php_flag display_errors Off
-php_flag log_errors On
+# Enable Apache mod_rewrite
+RewriteEngine On
 
-# Güvenlik başlıkları
+# Set default directory index
+DirectoryIndex index.html
+
+# Security headers
 <IfModule mod_headers.c>
+    # Prevent MIME type sniffing
     Header always set X-Content-Type-Options nosniff
-    Header always set X-Frame-Options DENY
+    
+    # Enable XSS protection
     Header always set X-XSS-Protection "1; mode=block"
+    
+    # Prevent clickjacking
+    Header always set X-Frame-Options SAMEORIGIN
+    
+    # Referrer policy
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
-    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+    
+    # Content Security Policy
+    Header always set Content-Security-Policy "default-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com https://fonts.gstatic.com https://unpkg.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;"
 </IfModule>
 
-# GZIP sıkıştırma
+# Compression
 <IfModule mod_deflate.c>
+    # Compress HTML, CSS, JavaScript
     AddOutputFilterByType DEFLATE text/plain
     AddOutputFilterByType DEFLATE text/html
     AddOutputFilterByType DEFLATE text/xml
@@ -31,57 +38,82 @@ php_flag log_errors On
     AddOutputFilterByType DEFLATE application/x-javascript
 </IfModule>
 
-# Cache kontrolü
+# Cache Control
 <IfModule mod_expires.c>
     ExpiresActive On
-    ExpiresByType text/css "access plus 1 month"
-    ExpiresByType application/javascript "access plus 1 month"
-    ExpiresByType image/png "access plus 1 year"
-    ExpiresByType image/jpg "access plus 1 year"
-    ExpiresByType image/jpeg "access plus 1 year"
-    ExpiresByType image/gif "access plus 1 year"
-    ExpiresByType image/svg+xml "access plus 1 year"
+    
+    # Cache HTML files for 1 hour
+    ExpiresByType text/html "access plus 1 hour"
+    
+    # Cache CSS and JS files for 1 week
+    ExpiresByType text/css "access plus 1 week"
+    ExpiresByType application/javascript "access plus 1 week"
+    ExpiresByType application/x-javascript "access plus 1 week"
+    
+    # Cache images for 1 month
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType image/x-icon "access plus 1 month"
+    
+    # Cache fonts for 1 year
     ExpiresByType font/woff "access plus 1 year"
     ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType application/font-woff "access plus 1 year"
+    ExpiresByType application/font-woff2 "access plus 1 year"
 </IfModule>
 
-# URL Rewriting - React Router için
-RewriteEngine On
+# Remove server signature
+ServerSignature Off
 
-# API istekleri için özel yönlendirme
-RewriteCond %{REQUEST_URI} ^/api/
-RewriteRule ^api/(.*)$ api/index.php [QSA,L]
+# Hide PHP version
+<IfModule mod_headers.c>
+    Header unset X-Powered-By
+</IfModule>
 
-# Static dosyalar için direktif
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_URI} !\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$
-
-# Tüm diğer istekleri ana index.php'ye yönlendir
-RewriteRule ^(.*)$ index.php [QSA,L]
-
-# Dosya uzantısı gizleme
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^([^\.]+)$ $1.php [NC,L]
-
-# Directory browsing'i devre dışı bırak
-Options -Indexes
-
-# Hassas dosyalara erişimi engelle
-<FilesMatch "\.(htaccess|htpasswd|ini|log|sh|inc|bak)$">
-    Order Allow,Deny
+# Prevent access to sensitive files
+<Files ".htaccess">
+    Order allow,deny
     Deny from all
-</FilesMatch>
+</Files>
 
-# PHP dosyalarını doğrudan erişime karşı koru (sadece API hariç)
-<FilesMatch "\.php$">
-    <RequireAll>
-        Require all granted
-    </RequireAll>
-</FilesMatch>
+<Files "*.log">
+    Order allow,deny
+    Deny from all
+</Files>
 
-# Error pages
-ErrorDocument 404 /index.php
-ErrorDocument 403 /index.php
-ErrorDocument 500 /index.php
+# Custom error pages
+ErrorDocument 404 /404.html
+ErrorDocument 403 /403.html
+ErrorDocument 500 /500.html
+
+# Force HTTPS (uncomment if SSL is available)
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# WWW redirect (choose one - www or non-www)
+# Force www:
+# RewriteCond %{HTTP_HOST} !^www\. [NC]
+# RewriteRule ^(.*)$ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Force non-www:
+# RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+# RewriteRule ^(.*)$ https://%1%{REQUEST_URI} [L,R=301]
+
+# Browser caching with proper headers
+<IfModule mod_headers.c>
+    <FilesMatch "\.(css|js|png|jpg|jpeg|gif|ico|svg)$">
+        Header set Cache-Control "public, max-age=31536000"
+    </FilesMatch>
+    
+    <FilesMatch "\.(html|htm)$">
+        Header set Cache-Control "public, max-age=3600"
+    </FilesMatch>
+</IfModule>
+
+# Prevent hotlinking (uncomment and modify domain as needed)
+# RewriteCond %{HTTP_REFERER} !^$
+# RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?yourdomain.com [NC]
+# RewriteRule \.(jpg|jpeg|png|gif|css|js)$ - [F]

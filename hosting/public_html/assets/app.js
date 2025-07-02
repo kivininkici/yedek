@@ -1,1173 +1,1063 @@
-// KeyPanel - cPanel Hosting Uyumlu JavaScript
-// Türkçe: Ana uygulama JavaScript dosyası
+// KeyPanel - Main Application JavaScript
+// Web Hosting Uyumlu Statik Versiyon
 
-// App state
-let appState = {
-    currentUser: null,
-    isLoggedIn: false,
-    isAdmin: false,
-    currentPage: 'home',
-    loading: false,
-    error: null
-};
+// Global Variables
+let currentUser = null;
+let isAdmin = false;
+let currentPage = 'home';
 
-// API helper functions
-const api = {
-    baseUrl: window.APP_CONFIG.apiUrl,
+// Sample Data (gerçek uygulamada API'den gelecek)
+const sampleKeys = [
+    { id: 1, value: 'DEMO-KEY-123456', category: 'Instagram', maxQuantity: 1000, isUsed: false, createdAt: '2025-07-02' },
+    { id: 2, value: 'DEMO-KEY-789012', category: 'YouTube', maxQuantity: 500, isUsed: true, createdAt: '2025-07-01' },
+    { id: 3, value: 'DEMO-KEY-345678', category: 'TikTok', maxQuantity: 2000, isUsed: false, createdAt: '2025-06-30' }
+];
+
+const sampleServices = [
+    { id: 1, name: 'Instagram Takipçi', category: 'Instagram', price: 5.0, minQuantity: 10, maxQuantity: 10000 },
+    { id: 2, name: 'Instagram Beğeni', category: 'Instagram', price: 2.5, minQuantity: 10, maxQuantity: 5000 },
+    { id: 3, name: 'YouTube Görüntüleme', category: 'YouTube', price: 8.0, minQuantity: 100, maxQuantity: 50000 },
+    { id: 4, name: 'TikTok Takipçi', category: 'TikTok', price: 4.0, minQuantity: 10, maxQuantity: 15000 }
+];
+
+const sampleOrders = [
+    { id: 'ORD-123456', service: 'Instagram Takipçi', quantity: 500, targetUrl: 'https://instagram.com/demo', status: 'Tamamlandı', createdAt: '2025-07-02', key: 'DEMO-KEY-123456' },
+    { id: 'ORD-789012', service: 'YouTube Görüntüleme', quantity: 1000, targetUrl: 'https://youtube.com/watch?v=demo', status: 'İşlemde', createdAt: '2025-07-01', key: 'DEMO-KEY-789012' }
+];
+
+const sampleUsers = [
+    { id: 1, username: 'admin', email: 'admin@example.com', role: 'admin', createdAt: '2025-06-01' },
+    { id: 2, username: 'user1', email: 'user1@example.com', role: 'user', createdAt: '2025-06-15' }
+];
+
+// Initialization
+document.addEventListener('DOMContentLoaded', function() {
+    // Load saved session
+    loadSession();
     
-    async request(endpoint, options = {}) {
-        const url = `${this.baseUrl}${endpoint}`;
-        const config = {
-            credentials: 'same-origin',
-            headers: {
-                'Content-Type': 'application/json',
-                ...options.headers
-            },
-            ...options
-        };
+    // Show initial page
+    showPage('home');
+    
+    // Set up navigation
+    updateNavigation();
+});
+
+// Session Management
+function loadSession() {
+    const savedUser = localStorage.getItem('keypanel_user');
+    if (savedUser) {
+        currentUser = JSON.parse(savedUser);
+        isAdmin = currentUser.role === 'admin';
+    }
+}
+
+function saveSession(user) {
+    currentUser = user;
+    isAdmin = user.role === 'admin';
+    localStorage.setItem('keypanel_user', JSON.stringify(user));
+    updateNavigation();
+}
+
+function logout() {
+    currentUser = null;
+    isAdmin = false;
+    localStorage.removeItem('keypanel_user');
+    updateNavigation();
+    showPage('home');
+    showAlert('Başarıyla çıkış yapıldı!', 'success');
+}
+
+// Navigation Management
+function updateNavigation() {
+    const loginSection = document.getElementById('nav-login-section');
+    const adminSection = document.getElementById('nav-admin-section');
+    const logoutSection = document.getElementById('nav-logout-section');
+    
+    if (currentUser) {
+        loginSection.classList.add('d-none');
+        logoutSection.classList.remove('d-none');
         
-        if (config.body && typeof config.body === 'object') {
-            config.body = JSON.stringify(config.body);
+        if (isAdmin) {
+            adminSection.classList.remove('d-none');
+        } else {
+            adminSection.classList.add('d-none');
         }
-        
-        try {
-            const response = await fetch(url, config);
-            const data = await response.json();
-            
-            if (!response.ok) {
-                throw new Error(data.message || 'API hatası');
-            }
-            
-            return data;
-        } catch (error) {
-            console.error('API Error:', error);
-            throw error;
-        }
-    },
-    
-    get(endpoint) {
-        return this.request(endpoint, { method: 'GET' });
-    },
-    
-    post(endpoint, data) {
-        return this.request(endpoint, { method: 'POST', body: data });
-    },
-    
-    put(endpoint, data) {
-        return this.request(endpoint, { method: 'PUT', body: data });
-    },
-    
-    delete(endpoint) {
-        return this.request(endpoint, { method: 'DELETE' });
+    } else {
+        loginSection.classList.remove('d-none');
+        adminSection.classList.add('d-none');
+        logoutSection.classList.add('d-none');
     }
-};
-
-// Utility functions
-function showLoading() {
-    const loadingEl = document.querySelector('.loading-overlay');
-    if (loadingEl) {
-        loadingEl.style.display = 'flex';
-    }
-}
-
-function hideLoading() {
-    const loadingEl = document.querySelector('.loading-overlay');
-    if (loadingEl) {
-        loadingEl.style.display = 'none';
-    }
-}
-
-function showAlert(message, type = 'info') {
-    const alertContainer = document.getElementById('alert-container');
-    if (!alertContainer) return;
     
-    const alertEl = document.createElement('div');
-    alertEl.className = `alert alert-${type} fade-in`;
-    alertEl.innerHTML = `
-        <span>${message}</span>
-        <button onclick="this.parentElement.remove()" class="btn btn-sm" style="margin-left: auto;">✕</button>
-    `;
-    alertEl.style.display = 'flex';
-    alertEl.style.alignItems = 'center';
-    
-    alertContainer.appendChild(alertEl);
-    
-    // Auto remove after 5 seconds
-    setTimeout(() => {
-        if (alertEl.parentElement) {
-            alertEl.remove();
-        }
-    }, 5000);
-}
-
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('tr-TR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
+    // Update active nav item
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.remove('active');
     });
+    
+    const activeNav = document.getElementById(`nav-${currentPage}`);
+    if (activeNav) {
+        activeNav.classList.add('active');
+    }
 }
 
-// Router
-const router = {
-    routes: {
-        '': 'home',
-        'home': 'home',
-        'auth': 'auth',
-        'admin': 'adminLogin',
-        'user': 'userInterface',
-        'order-search': 'orderSearch',
-        'admin/dashboard': 'adminDashboard',
-        'admin/keys': 'adminKeys',
-        'admin/services': 'adminServices',
-        'admin/users': 'adminUsers'
-    },
+// Page Management
+function showPage(page) {
+    currentPage = page;
+    updateNavigation();
     
-    init() {
-        window.addEventListener('hashchange', () => this.handleRoute());
-        this.handleRoute();
-    },
+    const content = document.getElementById('main-content');
+    content.innerHTML = '';
+    content.className = 'py-4 fade-in';
     
-    navigate(path) {
-        window.location.hash = path;
-    },
-    
-    handleRoute() {
-        const hash = window.location.hash.slice(1);
-        const route = this.routes[hash] || 'home';
-        appState.currentPage = route;
-        this.render(route);
-    },
-    
-    render(page) {
-        const app = document.getElementById('root');
-        app.innerHTML = this.getPageHTML(page);
-        this.bindEvents(page);
-    },
-    
-    getPageHTML(page) {
-        switch (page) {
-            case 'home':
-                return this.getHomeHTML();
-            case 'auth':
-                return this.getAuthHTML();
-            case 'adminLogin':
-                return this.getAdminLoginHTML();
-            case 'userInterface':
-                return this.getUserInterfaceHTML();
-            case 'orderSearch':
-                return this.getOrderSearchHTML();
-            case 'adminDashboard':
-                return this.getAdminDashboardHTML();
-            case 'adminKeys':
-                return this.getAdminKeysHTML();
-            case 'adminServices':
-                return this.getAdminServicesHTML();
-            case 'adminUsers':
-                return this.getAdminUsersHTML();
-            default:
-                return this.getHomeHTML();
-        }
-    },
-    
-    getHomeHTML() {
-        return `
-            <div class="min-h-screen bg-gray-50">
-                <!-- Navigation -->
-                <nav class="nav">
-                    <div class="container flex justify-between items-center">
-                        <h1 class="text-xl font-bold text-primary">KeyPanel</h1>
-                        <div class="flex gap-4">
-                            <a href="#order-search" class="nav-link">Sipariş Sorgula</a>
-                            ${appState.isLoggedIn ? `
-                                <a href="#user" class="nav-link">Kullanıcı Paneli</a>
-                                ${appState.isAdmin ? '<a href="#admin/dashboard" class="nav-link">Admin Panel</a>' : ''}
-                                <button onclick="handleLogout()" class="btn btn-secondary btn-sm">Çıkış</button>
-                            ` : `
-                                <a href="#auth" class="nav-link">Giriş Yap</a>
-                                <a href="#admin" class="nav-link">Admin Girişi</a>
-                            `}
-                        </div>
-                    </div>
-                </nav>
-                
-                <!-- Hero Section -->
-                <div class="container py-16">
-                    <div class="text-center max-w-4xl mx-auto">
-                        <h1 class="text-4xl font-bold text-gray-900 mb-6">
-                            KeyPanel - Anahtar Yönetim Sistemi
+    switch (page) {
+        case 'home':
+            showHomePage();
+            break;
+        case 'user':
+            showUserPage();
+            break;
+        case 'order-search':
+            showOrderSearchPage();
+            break;
+        case 'login':
+            showLoginPage();
+            break;
+        case 'dashboard':
+            if (isAdmin) showDashboardPage();
+            else showPage('login');
+            break;
+        case 'keys':
+            if (isAdmin) showKeysPage();
+            else showPage('login');
+            break;
+        case 'services':
+            if (isAdmin) showServicesPage();
+            else showPage('login');
+            break;
+        case 'users':
+            if (isAdmin) showUsersPage();
+            else showPage('login');
+            break;
+        case 'orders':
+            if (isAdmin) showOrdersPage();
+            else showPage('login');
+            break;
+        default:
+            show404Page();
+    }
+}
+
+// Home Page
+function showHomePage() {
+    document.getElementById('main-content').innerHTML = `
+        <div class="hero-section">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <h1 class="hero-title">
+                            <i class="fas fa-key me-3"></i>KeyPanel
                         </h1>
-                        <p class="text-xl text-gray-600 mb-8">
-                            Sosyal medya servisleri için güvenli ve kolay anahtar yönetimi. 
-                            Admin paneli ve kullanıcı dostu arayüz ile kapsamlı kontrol.
+                        <p class="hero-subtitle">
+                            Sosyal medya servisleri için güvenli anahtar yönetim sistemi. 
+                            Tek kullanımlık anahtarlar ile güvenli sipariş yönetimi.
                         </p>
-                        <div class="flex gap-4 justify-center">
-                            <a href="#auth" class="btn btn-primary btn-lg">Key Kullan</a>
-                            <a href="#order-search" class="btn btn-secondary btn-lg">Sipariş Sorgula</a>
+                        <div class="d-flex gap-3 flex-wrap">
+                            <button class="btn btn-light btn-lg" onclick="showPage('user')">
+                                <i class="fas fa-user me-2"></i>Key Kullan
+                            </button>
+                            <button class="btn btn-outline-light btn-lg" onclick="showPage('order-search')">
+                                <i class="fas fa-search me-2"></i>Sipariş Sorgula
+                            </button>
                         </div>
                     </div>
-                    
-                    <!-- Features -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <div class="text-primary text-3xl mb-4">🔐</div>
-                                <h3 class="text-lg font-semibold mb-2">Güvenli Key Yönetimi</h3>
-                                <p class="text-gray-600">Tek kullanımlık anahtarlar ile güvenli işlem yapın.</p>
+                    <div class="col-lg-4 text-center">
+                        <i class="fas fa-shield-alt" style="font-size: 8rem; opacity: 0.3;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <div class="card feature-card">
+                        <div class="card-body">
+                            <div class="feature-icon">
+                                <i class="fas fa-key"></i>
                             </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <div class="text-primary text-3xl mb-4">⚡</div>
-                                <h3 class="text-lg font-semibold mb-2">Hızlı İşlem</h3>
-                                <p class="text-gray-600">Anında doğrulama ve hızlı sipariş işleme.</p>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-body text-center">
-                                <div class="text-primary text-3xl mb-4">📊</div>
-                                <h3 class="text-lg font-semibold mb-2">Detaylı Takip</h3>
-                                <p class="text-gray-600">Siparişlerinizi gerçek zamanlı takip edin.</p>
-                            </div>
+                            <h5 class="card-title">Güvenli Key Sistemi</h5>
+                            <p class="card-text">
+                                Tek kullanımlık anahtarlar ile maksimum güvenlik. 
+                                Her key sadece bir kez kullanılabilir.
+                            </p>
                         </div>
                     </div>
-                    
-                    <!-- Feedback Section -->
-                    <div class="mt-16">
-                        <div class="card max-w-2xl mx-auto">
-                            <div class="card-header">
-                                <h3 class="text-xl font-semibold text-center">Geri Bildirim</h3>
-                                <p class="text-gray-600 text-center mt-2">Görüş ve önerileriniz bizim için değerli</p>
+                </div>
+                
+                <div class="col-lg-4 mb-4">
+                    <div class="card feature-card">
+                        <div class="card-body">
+                            <div class="feature-icon">
+                                <i class="fas fa-cogs"></i>
                             </div>
-                            <div class="card-body">
-                                <form id="feedback-form">
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                        <div>
-                                            <label class="form-label">Adınız</label>
-                                            <input type="text" name="firstName" class="form-input" required>
-                                        </div>
-                                        <div>
-                                            <label class="form-label">Soyadınız</label>
-                                            <input type="text" name="lastName" class="form-input" required>
-                                        </div>
-                                    </div>
+                            <h5 class="card-title">Çoklu Servis Desteği</h5>
+                            <p class="card-text">
+                                Instagram, YouTube, TikTok ve daha fazla platform 
+                                için geniş servis yelpazesi.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4 mb-4">
+                    <div class="card feature-card">
+                        <div class="card-body">
+                            <div class="feature-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h5 class="card-title">Anlık Takip</h5>
+                            <p class="card-text">
+                                Siparişlerinizi anlık olarak takip edin. 
+                                Gerçek zamanlı durum güncellemeleri.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mt-5">
+                <div class="col-12 text-center">
+                    <h3 class="mb-4">Sistem İstatistikleri</h3>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="stats-card">
+                        <div class="stats-number">${sampleKeys.length}</div>
+                        <div class="stats-label">Toplam Key</div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="stats-card">
+                        <div class="stats-number">${sampleServices.length}</div>
+                        <div class="stats-label">Aktif Servis</div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="stats-card">
+                        <div class="stats-number">${sampleOrders.length}</div>
+                        <div class="stats-label">Toplam Sipariş</div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="stats-card">
+                        <div class="stats-number">${sampleUsers.length}</div>
+                        <div class="stats-label">Kayıtlı Kullanıcı</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// User Page
+function showUserPage() {
+    document.getElementById('main-content').innerHTML = `
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="mb-0">
+                                <i class="fas fa-key me-2"></i>Key Doğrulama ve Servis Seçimi
+                            </h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
                                     <div class="mb-4">
-                                        <label class="form-label">E-posta Adresiniz</label>
-                                        <input type="email" name="email" class="form-input" required>
+                                        <label for="keyInput" class="form-label">Key Değeri</label>
+                                        <input type="text" class="form-control" id="keyInput" 
+                                               placeholder="Örn: DEMO-KEY-123456" 
+                                               onchange="validateKey()">
+                                        <div class="form-text">Key değerinizi yukarıdaki alana girin</div>
                                     </div>
-                                    <div class="mb-6">
-                                        <label class="form-label">Mesajınız</label>
-                                        <textarea name="message" class="form-input" rows="5" required 
-                                                  placeholder="Görüş, öneri veya sorunlarınızı bizimle paylaşın..."></textarea>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary w-full">
-                                        <span class="feedback-btn-text">Gönder</span>
-                                        <span class="feedback-spinner hidden">Gönderiliyor...</span>
+                                    
+                                    <button class="btn btn-primary w-100" onclick="validateKey()">
+                                        <i class="fas fa-check me-2"></i>Key'i Doğrula
                                     </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Alert Container -->
-                <div id="alert-container" class="fixed top-4 right-4 z-50" style="max-width: 400px;"></div>
-            </div>
-        `;
-    },
-    
-    getAuthHTML() {
-        return `
-            <div class="min-h-screen bg-gray-50 flex items-center justify-center">
-                <div class="card" style="width: 400px;">
-                    <div class="card-header">
-                        <h2 class="text-xl font-semibold text-center">Kullanıcı Girişi</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="flex mb-6 bg-gray-100 rounded-lg p-1">
-                            <button class="auth-tab flex-1 py-2 px-4 rounded-md transition active" data-tab="login">
-                                Giriş Yap
-                            </button>
-                            <button class="auth-tab flex-1 py-2 px-4 rounded-md transition" data-tab="register">
-                                Kayıt Ol
-                            </button>
-                        </div>
-                        
-                        <!-- Login Form -->
-                        <form id="login-form" class="auth-form">
-                            <div class="mb-4">
-                                <label class="form-label">Kullanıcı Adı</label>
-                                <input type="text" name="username" class="form-input" required>
-                            </div>
-                            <div class="mb-6">
-                                <label class="form-label">Şifre</label>
-                                <input type="password" name="password" class="form-input" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-full">Giriş Yap</button>
-                        </form>
-                        
-                        <!-- Register Form -->
-                        <form id="register-form" class="auth-form hidden">
-                            <div class="mb-4">
-                                <label class="form-label">Kullanıcı Adı</label>
-                                <input type="text" name="username" class="form-input" required>
-                            </div>
-                            <div class="mb-4">
-                                <label class="form-label">E-posta</label>
-                                <input type="email" name="email" class="form-input" required>
-                            </div>
-                            <div class="mb-4">
-                                <label class="form-label">Şifre</label>
-                                <input type="password" name="password" class="form-input" required>
-                            </div>
-                            <div class="mb-6">
-                                <label class="form-label">Şifre Tekrar</label>
-                                <input type="password" name="confirmPassword" class="form-input" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-full">Kayıt Ol</button>
-                        </form>
-                        
-                        <div class="text-center mt-4">
-                            <a href="#" class="text-gray-600 hover:text-primary">Ana Sayfaya Dön</a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Alert Container -->
-                <div id="alert-container" class="fixed top-4 right-4 z-50"></div>
-            </div>
-        `;
-    },
-    
-    getAdminLoginHTML() {
-        return `
-            <div class="min-h-screen bg-gray-50 flex items-center justify-center">
-                <div class="card" style="width: 400px;">
-                    <div class="card-header">
-                        <h2 class="text-xl font-semibold text-center">Admin Girişi</h2>
-                    </div>
-                    <div class="card-body">
-                        <form id="admin-login-form">
-                            <div class="mb-4">
-                                <label class="form-label">Admin Kullanıcı Adı</label>
-                                <input type="text" name="username" class="form-input" required>
-                            </div>
-                            <div class="mb-4">
-                                <label class="form-label">Şifre</label>
-                                <input type="password" name="password" class="form-input" required>
-                            </div>
-                            <div class="mb-6">
-                                <label class="form-label">Güvenlik Sorusu Cevabı</label>
-                                <input type="text" name="securityAnswer" class="form-input" required 
-                                       placeholder="Güvenlik sorusu cevabını girin">
-                                <small class="text-gray-500 text-xs mt-1 block">
-                                    Güvenlik sorusu: Admin bilgilerinizden birini girin
-                                </small>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-full">Admin Girişi</button>
-                        </form>
-                        
-                        <div class="text-center mt-4">
-                            <a href="#" class="text-gray-600 hover:text-primary">Ana Sayfaya Dön</a>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Alert Container -->
-                <div id="alert-container" class="fixed top-4 right-4 z-50"></div>
-            </div>
-        `;
-    },
-    
-    getOrderSearchHTML() {
-        return `
-            <div class="min-h-screen bg-gray-50">
-                <nav class="nav">
-                    <div class="container flex justify-between items-center">
-                        <a href="#" class="text-xl font-bold text-primary">KeyPanel</a>
-                        <a href="#" class="nav-link">Ana Sayfaya Dön</a>
-                    </div>
-                </nav>
-                
-                <div class="container py-8">
-                    <div class="max-w-2xl mx-auto">
-                        <div class="card">
-                            <div class="card-header">
-                                <h2 class="text-xl font-semibold">Sipariş Sorgulama</h2>
-                            </div>
-                            <div class="card-body">
-                                <form id="order-search-form" class="mb-6">
-                                    <div class="flex gap-3">
-                                        <input type="text" name="orderId" class="form-input" 
-                                               placeholder="Sipariş ID'sini girin (örn: KEY123456789)" required>
-                                        <button type="submit" class="btn btn-primary">Sorgula</button>
-                                    </div>
-                                </form>
+                                </div>
                                 
-                                <div id="order-result" class="hidden">
-                                    <!-- Sipariş sonucu buraya gelecek -->
+                                <div class="col-md-6">
+                                    <div id="keyValidationResult"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                <!-- Alert Container -->
-                <div id="alert-container" class="fixed top-4 right-4 z-50"></div>
-            </div>
-        `;
-    },
-    
-    getUserInterfaceHTML() {
-        return `
-            <div class="min-h-screen bg-gray-50">
-                <nav class="nav">
-                    <div class="container flex justify-between items-center">
-                        <a href="#" class="text-xl font-bold text-primary">KeyPanel</a>
-                        <div class="flex items-center gap-4">
-                            <span class="text-gray-600">Hoş geldin, ${appState.currentUser?.username || 'Kullanıcı'}</span>
-                            <button onclick="handleLogout()" class="btn btn-secondary btn-sm">Çıkış</button>
+                    
+                    <div class="card mt-4 d-none" id="serviceSelectionCard">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-cogs me-2"></i>Servis Seçimi
+                            </h5>
                         </div>
-                    </div>
-                </nav>
-                
-                <div class="container py-8">
-                    <div class="max-w-4xl mx-auto">
-                        <h1 class="text-2xl font-bold mb-8">Key Kullanım Paneli</h1>
-                        
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                            <!-- Key Doğrulama -->
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="text-lg font-semibold">Key Doğrulama</h3>
-                                </div>
-                                <div class="card-body">
-                                    <form id="validate-key-form">
-                                        <div class="mb-4">
-                                            <label class="form-label">Key Değeri</label>
-                                            <input type="text" name="keyValue" class="form-input" 
-                                                   placeholder="Key değerini girin" required>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary w-full">Doğrula</button>
-                                    </form>
-                                    
-                                    <div id="key-validation-result" class="mt-4 hidden">
-                                        <!-- Doğrulama sonucu buraya gelecek -->
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="card-body">
+                            <div id="servicesList"></div>
                             
-                            <!-- Servis Seçimi -->
-                            <div class="card">
-                                <div class="card-header">
-                                    <h3 class="text-lg font-semibold">Servis Seçimi</h3>
+                            <div class="row mt-4 d-none" id="orderForm">
+                                <div class="col-md-6">
+                                    <label for="targetUrl" class="form-label">Hedef URL</label>
+                                    <input type="url" class="form-control" id="targetUrl" 
+                                           placeholder="https://instagram.com/username">
                                 </div>
-                                <div class="card-body">
-                                    <form id="use-key-form" class="hidden">
-                                        <div class="mb-4">
-                                            <label class="form-label">Seçilen Key</label>
-                                            <input type="text" id="selected-key" class="form-input" readonly>
-                                        </div>
-                                        <div class="mb-4">
-                                            <label class="form-label">Servis</label>
-                                            <select name="serviceId" class="form-input" required>
-                                                <option value="">Servis seçin</option>
-                                            </select>
-                                        </div>
-                                        <div class="mb-4">
-                                            <label class="form-label">Miktar</label>
-                                            <input type="number" name="quantity" class="form-input" min="1" required>
-                                        </div>
-                                        <div class="mb-4">
-                                            <label class="form-label">Hedef URL (opsiyonel)</label>
-                                            <input type="url" name="targetUrl" class="form-input" 
-                                                   placeholder="https://example.com/profile">
-                                        </div>
-                                        <button type="submit" class="btn btn-success w-full">Key Kullan</button>
-                                    </form>
-                                    
-                                    <div class="text-center text-gray-500" id="service-placeholder">
-                                        Önce bir key doğrulayın
-                                    </div>
+                                <div class="col-md-6">
+                                    <label for="quantity" class="form-label">Miktar</label>
+                                    <input type="number" class="form-control" id="quantity" 
+                                           placeholder="100" min="1">
+                                </div>
+                                <div class="col-12 mt-3">
+                                    <button class="btn btn-success w-100" onclick="createOrder()">
+                                        <i class="fas fa-shopping-cart me-2"></i>Siparişi Oluştur
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Alert Container -->
-                <div id="alert-container" class="fixed top-4 right-4 z-50"></div>
             </div>
-        `;
-    },
-    
-    getAdminDashboardHTML() {
-        if (!appState.isAdmin) {
-            router.navigate('admin');
-            return '';
-        }
-        
-        return `
-            <div class="min-h-screen bg-gray-50">
-                ${this.getAdminNavHTML()}
-                
-                <div class="container py-8">
-                    <h1 class="text-2xl font-bold mb-8">Admin Dashboard</h1>
-                    
-                    <div id="dashboard-content">
-                        <div class="text-center py-8">
-                            <div class="spinner mx-auto mb-4"></div>
-                            <p class="text-gray-600">Dashboard yükleniyor...</p>
+        </div>
+    `;
+}
+
+// Order Search Page
+function showOrderSearchPage() {
+    document.getElementById('main-content').innerHTML = `
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="mb-0">
+                                <i class="fas fa-search me-2"></i>Sipariş Durumu Sorgulama
+                            </h4>
                         </div>
-                    </div>
-                </div>
-                
-                <!-- Alert Container -->
-                <div id="alert-container" class="fixed top-4 right-4 z-50"></div>
-            </div>
-        `;
-    },
-    
-    getAdminNavHTML() {
-        return `
-            <nav class="nav border-b">
-                <div class="container">
-                    <div class="flex justify-between items-center">
-                        <a href="#admin/dashboard" class="text-xl font-bold text-primary">KeyPanel Admin</a>
-                        <div class="flex items-center gap-4">
-                            <a href="#admin/dashboard" class="nav-link">Dashboard</a>
-                            <a href="#admin/keys" class="nav-link">Key Yönetimi</a>
-                            <a href="#admin/services" class="nav-link">Servisler</a>
-                            <a href="#admin/users" class="nav-link">Kullanıcılar</a>
-                            <span class="text-gray-600">Admin: ${appState.currentUser?.username || 'Admin'}</span>
-                            <button onclick="handleLogout()" class="btn btn-secondary btn-sm">Çıkış</button>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <label for="orderIdInput" class="form-label">Sipariş ID</label>
+                                    <input type="text" class="form-control" id="orderIdInput" 
+                                           placeholder="ORD-123456">
+                                </div>
+                                <div class="col-md-4 d-flex align-items-end">
+                                    <button class="btn btn-primary w-100" onclick="searchOrder()">
+                                        <i class="fas fa-search me-2"></i>Sorgula
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </nav>
-        `;
-    },
-    
-    getAdminKeysHTML() {
-        if (!appState.isAdmin) {
-            router.navigate('admin');
-            return '';
-        }
-        
-        return `
-            <div class="min-h-screen bg-gray-50">
-                ${this.getAdminNavHTML()}
-                
-                <div class="container py-8">
-                    <div class="flex justify-between items-center mb-8">
-                        <h1 class="text-2xl font-bold">Key Yönetimi</h1>
-                        <button onclick="showCreateKeyModal()" class="btn btn-primary">Yeni Key Oluştur</button>
                     </div>
                     
-                    <div id="keys-content">
-                        <div class="text-center py-8">
-                            <div class="spinner mx-auto mb-4"></div>
-                            <p class="text-gray-600">Key'ler yükleniyor...</p>
-                        </div>
-                    </div>
+                    <div id="orderSearchResult" class="mt-4"></div>
                 </div>
-                
-                <!-- Create Key Modal -->
-                <div id="create-key-modal" class="modal-overlay hidden">
-                    <div class="modal">
-                        <div class="modal-header">
-                            <h3 class="text-lg font-semibold">Yeni Key Oluştur</h3>
-                            <button onclick="hideCreateKeyModal()" class="text-gray-500 hover:text-gray-700">✕</button>
+            </div>
+        </div>
+    `;
+}
+
+// Login Page
+function showLoginPage() {
+    document.getElementById('main-content').innerHTML = `
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6 col-lg-4">
+                    <div class="card">
+                        <div class="card-header text-center">
+                            <h4 class="mb-0">
+                                <i class="fas fa-sign-in-alt me-2"></i>Admin Giriş
+                            </h4>
                         </div>
-                        <div class="modal-body">
-                            <form id="create-key-form">
-                                <div class="mb-4">
-                                    <label class="form-label">Key Değeri</label>
-                                    <input type="text" name="value" class="form-input" required>
+                        <div class="card-body">
+                            <form onsubmit="return handleLogin(event)">
+                                <div class="mb-3">
+                                    <label for="username" class="form-label">Kullanıcı Adı</label>
+                                    <input type="text" class="form-control" id="username" 
+                                           required value="admin">
                                 </div>
-                                <div class="mb-4">
-                                    <label class="form-label">Kategori</label>
-                                    <select name="category" class="form-input" required>
-                                        <option value="Instagram">Instagram</option>
-                                        <option value="YouTube">YouTube</option>
-                                        <option value="Twitter">Twitter</option>
-                                        <option value="Facebook">Facebook</option>
-                                        <option value="TikTok">TikTok</option>
-                                        <option value="Genel">Genel</option>
-                                    </select>
+                                
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Şifre</label>
+                                    <input type="password" class="form-control" id="password" 
+                                           required value="admin123">
                                 </div>
-                                <div class="mb-4">
-                                    <label class="form-label">Servis</label>
-                                    <select name="serviceId" class="form-input" required>
-                                        <option value="">Servis seçin</option>
-                                    </select>
-                                </div>
-                                <div class="mb-4">
-                                    <label class="form-label">Maksimum Kullanım</label>
-                                    <input type="number" name="maxQuantity" class="form-input" min="1" value="1" required>
-                                </div>
-                                <div class="mb-4">
-                                    <label class="form-label">Açıklama (opsiyonel)</label>
-                                    <textarea name="description" class="form-input" rows="3"></textarea>
-                                </div>
+                                
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Giriş Yap
+                                </button>
                             </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button onclick="hideCreateKeyModal()" class="btn btn-secondary">İptal</button>
-                            <button onclick="createKey()" class="btn btn-primary">Oluştur</button>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Alert Container -->
-                <div id="alert-container" class="fixed top-4 right-4 z-50"></div>
-            </div>
-        `;
-    },
-    
-    bindEvents(page) {
-        switch (page) {
-            case 'home':
-                this.bindHomeEvents();
-                break;
-            case 'auth':
-                this.bindAuthEvents();
-                break;
-            case 'adminLogin':
-                this.bindAdminLoginEvents();
-                break;
-            case 'orderSearch':
-                this.bindOrderSearchEvents();
-                break;
-            case 'userInterface':
-                this.bindUserInterfaceEvents();
-                break;
-            case 'adminDashboard':
-                this.loadDashboardData();
-                break;
-            case 'adminKeys':
-                this.loadKeysData();
-                break;
-        }
-    },
-    
-    bindHomeEvents() {
-        // Feedback form event
-        const feedbackForm = document.getElementById('feedback-form');
-        if (feedbackForm) {
-            feedbackForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const formData = new FormData(e.target);
-                const data = Object.fromEntries(formData);
-                
-                // Show loading state
-                const btnText = document.querySelector('.feedback-btn-text');
-                const spinner = document.querySelector('.feedback-spinner');
-                btnText.classList.add('hidden');
-                spinner.classList.remove('hidden');
-                
-                try {
-                    const response = await api.post('/feedback/send', data);
-                    showAlert('Mesajınız başarıyla gönderildi! Teşekkür ederiz.', 'success');
-                    feedbackForm.reset();
-                } catch (error) {
-                    showAlert(error.message || 'Mesaj gönderilirken hata oluştu.', 'danger');
-                } finally {
-                    // Reset button state
-                    btnText.classList.remove('hidden');
-                    spinner.classList.add('hidden');
-                }
-            });
-        }
-    },
-    
-    bindAuthEvents() {
-        // Tab switching
-        document.querySelectorAll('.auth-tab').forEach(tab => {
-            tab.addEventListener('click', (e) => {
-                const tabName = e.target.dataset.tab;
-                
-                // Update active tab
-                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-                e.target.classList.add('active');
-                
-                // Show/hide forms
-                document.querySelectorAll('.auth-form').forEach(form => {
-                    form.classList.add('hidden');
-                });
-                document.getElementById(`${tabName}-form`).classList.remove('hidden');
-            });
-        });
-        
-        // Login form
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData);
-            
-            try {
-                showLoading();
-                const response = await api.post('/auth/login', data);
-                appState.currentUser = response.data.user;
-                appState.isLoggedIn = true;
-                appState.isAdmin = response.data.user.role === 'admin';
-                
-                showAlert('Giriş başarılı! Kullanıcı paneline yönlendiriliyorsunuz...', 'success');
-                setTimeout(() => router.navigate('user'), 1000);
-            } catch (error) {
-                showAlert(error.message, 'danger');
-            } finally {
-                hideLoading();
-            }
-        });
-        
-        // Register form
-        document.getElementById('register-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData);
-            
-            if (data.password !== data.confirmPassword) {
-                showAlert('Şifreler eşleşmiyor', 'danger');
-                return;
-            }
-            
-            try {
-                showLoading();
-                const response = await api.post('/auth/register', data);
-                appState.currentUser = response.data.user;
-                appState.isLoggedIn = true;
-                appState.isAdmin = false;
-                
-                showAlert('Kayıt başarılı! Kullanıcı paneline yönlendiriliyorsunuz...', 'success');
-                setTimeout(() => router.navigate('user'), 1000);
-            } catch (error) {
-                showAlert(error.message, 'danger');
-            } finally {
-                hideLoading();
-            }
-        });
-    },
-    
-    bindAdminLoginEvents() {
-        document.getElementById('admin-login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData);
-            
-            try {
-                showLoading();
-                const response = await api.post('/admin/login', data);
-                appState.currentUser = response.data.admin;
-                appState.isLoggedIn = true;
-                appState.isAdmin = true;
-                
-                showAlert('Admin girişi başarılı! Dashboard\'a yönlendiriliyorsunuz...', 'success');
-                setTimeout(() => router.navigate('admin/dashboard'), 1000);
-            } catch (error) {
-                showAlert(error.message, 'danger');
-            } finally {
-                hideLoading();
-            }
-        });
-    },
-    
-    bindOrderSearchEvents() {
-        document.getElementById('order-search-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const orderId = formData.get('orderId');
-            
-            try {
-                showLoading();
-                const response = await api.get(`/orders/search/${orderId}`);
-                this.displayOrderResult(response.data.order);
-            } catch (error) {
-                showAlert(error.message, 'danger');
-                document.getElementById('order-result').classList.add('hidden');
-            } finally {
-                hideLoading();
-            }
-        });
-    },
-    
-    bindUserInterfaceEvents() {
-        // Key validation
-        document.getElementById('validate-key-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const keyValue = formData.get('keyValue');
-            
-            try {
-                showLoading();
-                const response = await api.get(`/keys/validate?value=${encodeURIComponent(keyValue)}`);
-                this.displayKeyValidation(response.data.key);
-                await this.loadServices();
-            } catch (error) {
-                showAlert(error.message, 'danger');
-                document.getElementById('key-validation-result').classList.add('hidden');
-                document.getElementById('use-key-form').classList.add('hidden');
-            } finally {
-                hideLoading();
-            }
-        });
-        
-        // Use key
-        document.getElementById('use-key-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const data = Object.fromEntries(formData);
-            data.keyValue = document.getElementById('selected-key').value;
-            
-            try {
-                showLoading();
-                const response = await api.post('/keys/use', data);
-                showAlert(`Sipariş başarıyla oluşturuldu! Sipariş ID: ${response.data.order.order_id}`, 'success');
-                
-                // Reset forms
-                document.getElementById('validate-key-form').reset();
-                document.getElementById('use-key-form').reset();
-                document.getElementById('key-validation-result').classList.add('hidden');
-                document.getElementById('use-key-form').classList.add('hidden');
-                document.getElementById('service-placeholder').style.display = 'block';
-            } catch (error) {
-                showAlert(error.message, 'danger');
-            } finally {
-                hideLoading();
-            }
-        });
-    },
-    
-    displayOrderResult(order) {
-        const resultDiv = document.getElementById('order-result');
-        const statusColors = {
-            'pending': 'warning',
-            'processing': 'info',
-            'completed': 'success',
-            'partial': 'warning',
-            'cancelled': 'danger',
-            'error': 'danger'
-        };
-        
-        resultDiv.innerHTML = `
-            <div class="border rounded-lg p-4 bg-white">
-                <h4 class="font-semibold mb-3">Sipariş Detayları</h4>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <strong>Sipariş ID:</strong> ${order.order_id}
-                    </div>
-                    <div>
-                        <strong>Durum:</strong> 
-                        <span class="badge badge-${statusColors[order.status] || 'secondary'}">
-                            ${order.status_description}
-                        </span>
-                    </div>
-                    <div>
-                        <strong>Servis:</strong> ${order.service_info.name}
-                    </div>
-                    <div>
-                        <strong>Miktar:</strong> ${order.quantity}
-                    </div>
-                    <div>
-                        <strong>Oluşturma Tarihi:</strong> ${order.created_at}
-                    </div>
-                    ${order.completed_at ? `
-                        <div>
-                            <strong>Tamamlanma Tarihi:</strong> ${order.completed_at}
-                        </div>
-                    ` : ''}
-                    ${order.target_url ? `
-                        <div class="md:col-span-2">
-                            <strong>Hedef URL:</strong> 
-                            <a href="${order.target_url}" target="_blank" class="text-primary hover:underline">
-                                ${order.target_url}
-                            </a>
-                        </div>
-                    ` : ''}
-                </div>
-            </div>
-        `;
-        resultDiv.classList.remove('hidden');
-    },
-    
-    displayKeyValidation(key) {
-        const resultDiv = document.getElementById('key-validation-result');
-        resultDiv.innerHTML = `
-            <div class="border rounded-lg p-4 bg-green-50 border-green-200">
-                <h4 class="font-semibold text-green-800 mb-2">✓ Key Geçerli</h4>
-                <div class="text-sm text-green-700">
-                    <p><strong>Kategori:</strong> ${key.category}</p>
-                    <p><strong>Kalan Kullanım:</strong> ${key.remaining_uses}/${key.max_quantity}</p>
-                    <p><strong>Bağlı Servis:</strong> ${key.service_name}</p>
-                </div>
-            </div>
-        `;
-        resultDiv.classList.remove('hidden');
-        
-        // Update use key form
-        document.getElementById('selected-key').value = key.value;
-        document.getElementById('use-key-form').classList.remove('hidden');
-        document.getElementById('service-placeholder').style.display = 'none';
-    },
-    
-    async loadServices() {
-        try {
-            const response = await api.get('/services/active');
-            const serviceSelect = document.querySelector('#use-key-form select[name="serviceId"]');
-            
-            serviceSelect.innerHTML = '<option value="">Servis seçin</option>';
-            response.data.forEach(service => {
-                const option = document.createElement('option');
-                option.value = service.id;
-                option.textContent = `${service.name} - ${service.price} TL`;
-                serviceSelect.appendChild(option);
-            });
-        } catch (error) {
-            showAlert('Servisler yüklenirken hata oluştu', 'danger');
-        }
-    },
-    
-    async loadDashboardData() {
-        try {
-            const response = await api.get('/admin/dashboard');
-            const content = document.getElementById('dashboard-content');
-            
-            content.innerHTML = `
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <div class="text-2xl font-bold text-primary">${response.data.stats.totalKeys}</div>
-                            <div class="text-gray-600">Toplam Key</div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <div class="text-2xl font-bold text-success">${response.data.stats.unusedKeys}</div>
-                            <div class="text-gray-600">Kullanılmamış Key</div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <div class="text-2xl font-bold text-info">${response.data.stats.activeServices}</div>
-                            <div class="text-gray-600">Aktif Servis</div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-body text-center">
-                            <div class="text-2xl font-bold text-warning">${response.data.stats.totalOrders}</div>
-                            <div class="text-gray-600">Toplam Sipariş</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="font-semibold">Son Key'ler</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="space-y-3">
-                                ${response.data.recentKeys.map(key => `
-                                    <div class="flex justify-between items-center">
-                                        <div>
-                                            <div class="font-medium">${key.value}</div>
-                                            <div class="text-sm text-gray-500">${key.service_name || 'Servis seçilmemiş'}</div>
-                                        </div>
-                                        <span class="badge badge-${key.used_quantity >= key.max_quantity ? 'danger' : 'success'}">
-                                            ${key.used_quantity >= key.max_quantity ? 'Tükendi' : 'Aktif'}
-                                        </span>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="font-semibold">Son Siparişler</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="space-y-3">
-                                ${response.data.recentOrders.map(order => `
-                                    <div class="flex justify-between items-center">
-                                        <div>
-                                            <div class="font-medium">${order.order_id}</div>
-                                            <div class="text-sm text-gray-500">${order.service_name || 'Bilinmeyen'}</div>
-                                        </div>
-                                        <span class="badge badge-${order.status === 'completed' ? 'success' : 'warning'}">
-                                            ${order.status}
-                                        </span>
-                                    </div>
-                                `).join('')}
+                            
+                            <div class="mt-3 text-center">
+                                <small class="text-muted">Demo: admin / admin123</small>
                             </div>
                         </div>
                     </div>
                 </div>
-            `;
-        } catch (error) {
-            document.getElementById('dashboard-content').innerHTML = `
-                <div class="text-center py-8">
-                    <p class="text-red-600">Dashboard yüklenirken hata oluştu: ${error.message}</p>
-                </div>
-            `;
-        }
-    },
+            </div>
+        </div>
+    `;
+}
+
+// Dashboard Page
+function showDashboardPage() {
+    const totalKeys = sampleKeys.length;
+    const usedKeys = sampleKeys.filter(k => k.isUsed).length;
+    const activeKeys = totalKeys - usedKeys;
     
-    async loadKeysData() {
-        try {
-            const response = await api.get('/admin/keys');
-            const content = document.getElementById('keys-content');
+    document.getElementById('main-content').innerHTML = `
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard</h2>
+                <div class="text-muted">Hoş geldiniz, ${currentUser.username}</div>
+            </div>
             
-            content.innerHTML = `
-                <div class="card">
-                    <div class="card-body">
-                        <div class="overflow-auto">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Key Değeri</th>
-                                        <th>Kategori</th>
-                                        <th>Servis</th>
-                                        <th>Kullanım</th>
-                                        <th>Durum</th>
-                                        <th>Oluşturma</th>
-                                        <th>İşlemler</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${response.data.map(key => `
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4>${totalKeys}</h4>
+                                    <p class="mb-0">Toplam Key</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-key fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4>${activeKeys}</h4>
+                                    <p class="mb-0">Aktif Key</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-check-circle fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4>${sampleServices.length}</h4>
+                                    <p class="mb-0">Toplam Servis</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-cogs fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4>${sampleOrders.length}</h4>
+                                    <p class="mb-0">Toplam Sipariş</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-shopping-cart fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Son Key'ler</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
                                         <tr>
-                                            <td class="font-mono">${key.value}</td>
-                                            <td>${key.category}</td>
-                                            <td>${key.service_name || 'Atanmamış'}</td>
-                                            <td>${key.used_quantity}/${key.max_quantity}</td>
-                                            <td>
-                                                <span class="badge badge-${key.used_quantity >= key.max_quantity ? 'danger' : 'success'}">
-                                                    ${key.used_quantity >= key.max_quantity ? 'Tükendi' : 'Aktif'}
-                                                </span>
-                                            </td>
-                                            <td>${formatDate(key.created_at)}</td>
-                                            <td>
-                                                <button onclick="deleteKey(${key.id})" class="btn btn-danger btn-sm">Sil</button>
-                                            </td>
+                                            <th>Key</th>
+                                            <th>Kategori</th>
+                                            <th>Durum</th>
                                         </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        ${sampleKeys.slice(0, 5).map(key => `
+                                            <tr>
+                                                <td><code>${key.value}</code></td>
+                                                <td><span class="badge bg-secondary">${key.category}</span></td>
+                                                <td>
+                                                    <span class="badge ${key.isUsed ? 'bg-danger' : 'bg-success'}">
+                                                        ${key.isUsed ? 'Kullanıldı' : 'Aktif'}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
-            `;
-            
-            // Load services for create key modal
-            await this.loadServicesForKeyCreation();
-        } catch (error) {
-            document.getElementById('keys-content').innerHTML = `
-                <div class="text-center py-8">
-                    <p class="text-red-600">Key'ler yüklenirken hata oluştu: ${error.message}</p>
+                
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Son Siparişler</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Sipariş ID</th>
+                                            <th>Servis</th>
+                                            <th>Durum</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${sampleOrders.map(order => `
+                                            <tr>
+                                                <td><code>${order.id}</code></td>
+                                                <td>${order.service}</td>
+                                                <td>
+                                                    <span class="badge ${order.status === 'Tamamlandı' ? 'bg-success' : 'bg-warning'}">
+                                                        ${order.status}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            `;
-        }
-    },
-    
-    async loadServicesForKeyCreation() {
-        try {
-            const response = await api.get('/admin/services');
-            const serviceSelect = document.querySelector('#create-key-form select[name="serviceId"]');
+            </div>
+        </div>
+    `;
+}
+
+// Keys Management Page
+function showKeysPage() {
+    document.getElementById('main-content').innerHTML = `
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-key me-2"></i>Key Yönetimi</h2>
+                <button class="btn btn-primary" onclick="showCreateKeyModal()">
+                    <i class="fas fa-plus me-2"></i>Yeni Key Oluştur
+                </button>
+            </div>
             
-            serviceSelect.innerHTML = '<option value="">Servis seçin</option>';
-            response.data.forEach(service => {
-                const option = document.createElement('option');
-                option.value = service.id;
-                option.textContent = `${service.name} - ${service.price} TL`;
-                serviceSelect.appendChild(option);
-            });
-        } catch (error) {
-            console.error('Servisler yüklenirken hata:', error);
-        }
-    }
-};
-
-// Global functions
-async function handleLogout() {
-    try {
-        await api.delete('/auth/logout');
-        appState.currentUser = null;
-        appState.isLoggedIn = false;
-        appState.isAdmin = false;
-        showAlert('Çıkış yapıldı', 'success');
-        router.navigate('');
-    } catch (error) {
-        showAlert('Çıkış yapılırken hata oluştu', 'danger');
-    }
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Key Değeri</th>
+                                    <th>Kategori</th>
+                                    <th>Maksimum Miktar</th>
+                                    <th>Durum</th>
+                                    <th>Oluşturulma</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${sampleKeys.map(key => `
+                                    <tr>
+                                        <td>${key.id}</td>
+                                        <td><code>${key.value}</code></td>
+                                        <td><span class="badge bg-secondary">${key.category}</span></td>
+                                        <td>${key.maxQuantity.toLocaleString()}</td>
+                                        <td>
+                                            <span class="badge ${key.isUsed ? 'bg-danger' : 'bg-success'}">
+                                                ${key.isUsed ? 'Kullanıldı' : 'Aktif'}
+                                            </span>
+                                        </td>
+                                        <td>${key.createdAt}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary" onclick="editKey(${key.id})">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" onclick="deleteKey(${key.id})">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
 }
 
-function showCreateKeyModal() {
-    document.getElementById('create-key-modal').classList.remove('hidden');
+// Services Management Page
+function showServicesPage() {
+    document.getElementById('main-content').innerHTML = `
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-cogs me-2"></i>Servis Yönetimi</h2>
+                <button class="btn btn-primary" onclick="showCreateServiceModal()">
+                    <i class="fas fa-plus me-2"></i>Yeni Servis Ekle
+                </button>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Servis Adı</th>
+                                    <th>Kategori</th>
+                                    <th>Fiyat</th>
+                                    <th>Min-Max Miktar</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${sampleServices.map(service => `
+                                    <tr>
+                                        <td>${service.id}</td>
+                                        <td>${service.name}</td>
+                                        <td><span class="badge bg-secondary">${service.category}</span></td>
+                                        <td><strong>₺${service.price.toFixed(2)}</strong></td>
+                                        <td>${service.minQuantity} - ${service.maxQuantity.toLocaleString()}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary" onclick="editService(${service.id})">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" onclick="deleteService(${service.id})">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
 }
 
-function hideCreateKeyModal() {
-    document.getElementById('create-key-modal').classList.add('hidden');
-    document.getElementById('create-key-form').reset();
+// Users Management Page
+function showUsersPage() {
+    document.getElementById('main-content').innerHTML = `
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-users me-2"></i>Kullanıcı Yönetimi</h2>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Kullanıcı Adı</th>
+                                    <th>E-posta</th>
+                                    <th>Rol</th>
+                                    <th>Kayıt Tarihi</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${sampleUsers.map(user => `
+                                    <tr>
+                                        <td>${user.id}</td>
+                                        <td>${user.username}</td>
+                                        <td>${user.email}</td>
+                                        <td>
+                                            <span class="badge ${user.role === 'admin' ? 'bg-danger' : 'bg-primary'}">
+                                                ${user.role === 'admin' ? 'Admin' : 'Kullanıcı'}
+                                            </span>
+                                        </td>
+                                        <td>${user.createdAt}</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary" onclick="editUser(${user.id})">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            ${user.id !== 1 ? `
+                                                <button class="btn btn-sm btn-outline-danger" onclick="deleteUser(${user.id})">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            ` : ''}
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
 }
 
-async function createKey() {
-    const form = document.getElementById('create-key-form');
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData);
+// Orders Management Page
+function showOrdersPage() {
+    document.getElementById('main-content').innerHTML = `
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-shopping-cart me-2"></i>Sipariş Yönetimi</h2>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Sipariş ID</th>
+                                    <th>Servis</th>
+                                    <th>Miktar</th>
+                                    <th>Hedef URL</th>
+                                    <th>Durum</th>
+                                    <th>Tarih</th>
+                                    <th>Key</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${sampleOrders.map(order => `
+                                    <tr>
+                                        <td><code>${order.id}</code></td>
+                                        <td>${order.service}</td>
+                                        <td>${order.quantity.toLocaleString()}</td>
+                                        <td><a href="${order.targetUrl}" target="_blank" class="text-truncate d-inline-block" style="max-width: 200px;">${order.targetUrl}</a></td>
+                                        <td>
+                                            <span class="badge ${order.status === 'Tamamlandı' ? 'bg-success' : 'bg-warning'}">
+                                                ${order.status}
+                                            </span>
+                                        </td>
+                                        <td>${order.createdAt}</td>
+                                        <td><code>${order.key}</code></td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// 404 Page
+function show404Page() {
+    document.getElementById('main-content').innerHTML = `
+        <div class="container text-center">
+            <div class="py-5">
+                <i class="fas fa-exclamation-triangle fa-5x text-warning mb-4"></i>
+                <h1 class="display-4">404 - Sayfa Bulunamadı</h1>
+                <p class="lead">Aradığınız sayfa mevcut değil.</p>
+                <button class="btn btn-primary" onclick="showPage('home')">
+                    <i class="fas fa-home me-2"></i>Ana Sayfaya Dön
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+// Event Handlers
+function handleLogin(event) {
+    event.preventDefault();
     
-    try {
-        await api.post('/admin/keys', data);
-        showAlert('Key başarıyla oluşturuldu', 'success');
-        hideCreateKeyModal();
-        router.loadKeysData(); // Reload keys
-    } catch (error) {
-        showAlert(error.message, 'danger');
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    
+    // Demo login validation
+    if (username === 'admin' && password === 'admin123') {
+        const adminUser = sampleUsers.find(u => u.username === 'admin');
+        saveSession(adminUser);
+        showPage('dashboard');
+        showAlert('Başarıyla giriş yapıldı!', 'success');
+    } else {
+        showAlert('Geçersiz kullanıcı adı veya şifre!', 'error');
     }
+    
+    return false;
 }
 
-async function deleteKey(keyId) {
-    if (!confirm('Bu key\'i silmek istediğinizden emin misiniz?')) {
+function validateKey() {
+    const keyValue = document.getElementById('keyInput').value.trim();
+    const resultDiv = document.getElementById('keyValidationResult');
+    
+    if (!keyValue) {
+        resultDiv.innerHTML = '<div class="alert alert-warning">Lütfen bir key değeri girin</div>';
         return;
     }
     
-    try {
-        await api.delete(`/admin/keys/${keyId}`);
-        showAlert('Key başarıyla silindi', 'success');
-        router.loadKeysData(); // Reload keys
-    } catch (error) {
-        showAlert(error.message, 'danger');
+    // Demo key validation
+    const foundKey = sampleKeys.find(k => k.value === keyValue);
+    
+    if (foundKey) {
+        if (foundKey.isUsed) {
+            resultDiv.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fas fa-times-circle me-2"></i>
+                    <strong>Key Kullanıldı!</strong><br>
+                    Bu key daha önce kullanılmış.
+                </div>
+            `;
+        } else {
+            resultDiv.innerHTML = `
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <strong>Key Doğrulandı!</strong><br>
+                    <strong>Kategori:</strong> ${foundKey.category}<br>
+                    <strong>Maksimum Miktar:</strong> ${foundKey.maxQuantity.toLocaleString()}<br>
+                    <strong>Durum:</strong> Aktif
+                </div>
+            `;
+            
+            // Show services for this category
+            showServicesForCategory(foundKey.category);
+        }
+    } else {
+        resultDiv.innerHTML = `
+            <div class="alert alert-danger">
+                <i class="fas fa-times-circle me-2"></i>
+                <strong>Geçersiz Key!</strong><br>
+                Bu key sistemde bulunamadı.
+            </div>
+        `;
     }
 }
 
-// Check auth status on load
-async function checkAuthStatus() {
-    try {
-        const userResponse = await api.get('/user').catch(() => null);
-        if (userResponse?.data?.user) {
-            appState.currentUser = userResponse.data.user;
-            appState.isLoggedIn = true;
-            appState.isAdmin = false;
-            return;
-        }
+function showServicesForCategory(category) {
+    const serviceCard = document.getElementById('serviceSelectionCard');
+    const servicesList = document.getElementById('servicesList');
+    
+    const categoryServices = sampleServices.filter(s => s.category === category);
+    
+    servicesList.innerHTML = categoryServices.map(service => `
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h6 class="card-title mb-1">${service.name}</h6>
+                        <p class="card-text text-muted mb-0">
+                            ${service.minQuantity} - ${service.maxQuantity.toLocaleString()} adet
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="h5 text-primary mb-1">₺${service.price.toFixed(2)}</div>
+                        <button class="btn btn-sm btn-primary" onclick="selectService(${service.id})">
+                            Seç
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+    
+    serviceCard.classList.remove('d-none');
+}
+
+function selectService(serviceId) {
+    const service = sampleServices.find(s => s.id === serviceId);
+    
+    // Update quantity input constraints
+    const quantityInput = document.getElementById('quantity');
+    quantityInput.min = service.minQuantity;
+    quantityInput.max = service.maxQuantity;
+    quantityInput.placeholder = `${service.minQuantity} - ${service.maxQuantity.toLocaleString()}`;
+    
+    // Show order form
+    document.getElementById('orderForm').classList.remove('d-none');
+    
+    // Store selected service
+    window.selectedService = service;
+    
+    showAlert(`${service.name} seçildi. Sipariş detaylarını doldurun.`, 'info');
+}
+
+function createOrder() {
+    const keyValue = document.getElementById('keyInput').value.trim();
+    const targetUrl = document.getElementById('targetUrl').value.trim();
+    const quantity = parseInt(document.getElementById('quantity').value);
+    
+    if (!keyValue || !targetUrl || !quantity || !window.selectedService) {
+        showAlert('Lütfen tüm alanları doldurun!', 'error');
+        return;
+    }
+    
+    // Generate order ID
+    const orderId = 'ORD-' + Math.random().toString(36).substr(2, 6).toUpperCase();
+    
+    // Create order
+    const newOrder = {
+        id: orderId,
+        service: window.selectedService.name,
+        quantity: quantity,
+        targetUrl: targetUrl,
+        status: 'İşlemde',
+        createdAt: new Date().toISOString().split('T')[0],
+        key: keyValue
+    };
+    
+    sampleOrders.unshift(newOrder);
+    
+    // Mark key as used
+    const keyIndex = sampleKeys.findIndex(k => k.value === keyValue);
+    if (keyIndex !== -1) {
+        sampleKeys[keyIndex].isUsed = true;
+    }
+    
+    showAlert(`Sipariş oluşturuldu! Sipariş ID: ${orderId}`, 'success');
+    
+    // Reset form
+    document.getElementById('keyInput').value = '';
+    document.getElementById('targetUrl').value = '';
+    document.getElementById('quantity').value = '';
+    document.getElementById('keyValidationResult').innerHTML = '';
+    document.getElementById('serviceSelectionCard').classList.add('d-none');
+    document.getElementById('orderForm').classList.add('d-none');
+}
+
+function searchOrder() {
+    const orderId = document.getElementById('orderIdInput').value.trim();
+    const resultDiv = document.getElementById('orderSearchResult');
+    
+    if (!orderId) {
+        resultDiv.innerHTML = '<div class="alert alert-warning">Lütfen sipariş ID girin</div>';
+        return;
+    }
+    
+    const order = sampleOrders.find(o => o.id === orderId);
+    
+    if (order) {
+        const progressPercent = order.status === 'Tamamlandı' ? 100 : 65;
         
-        const adminResponse = await api.get('/admin/me').catch(() => null);
-        if (adminResponse?.data?.admin) {
-            appState.currentUser = adminResponse.data.admin;
-            appState.isLoggedIn = true;
-            appState.isAdmin = true;
-            return;
-        }
-    } catch (error) {
-        console.log('No active session');
+        resultDiv.innerHTML = `
+            <div class="card">
+                <div class="card-header d-flex justify-content-between">
+                    <h5 class="mb-0">Sipariş Detayları</h5>
+                    <span class="badge ${order.status === 'Tamamlandı' ? 'bg-success' : 'bg-warning'}">
+                        ${order.status}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Sipariş ID:</strong> ${order.id}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Tarih:</strong> ${order.createdAt}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Servis:</strong> ${order.service}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Miktar:</strong> ${order.quantity.toLocaleString()}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Hedef URL:</strong><br>
+                        <a href="${order.targetUrl}" target="_blank">${order.targetUrl}</a>
+                    </div>
+                    <div class="mb-3">
+                        <strong>Kullanılan Key:</strong> <code>${order.key}</code>
+                    </div>
+                    <div class="mb-3">
+                        <strong>İlerleme:</strong>
+                        <div class="progress mt-2">
+                            <div class="progress-bar" style="width: ${progressPercent}%"></div>
+                        </div>
+                        <small class="text-muted">${progressPercent}% tamamlandı</small>
+                    </div>
+                    ${order.status === 'Tamamlandı' ? `
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>
+                            Sipariş başarıyla tamamlandı!
+                        </div>
+                    ` : `
+                        <div class="alert alert-info">
+                            <i class="fas fa-clock me-2"></i>
+                            Sipariş işleniyor. Lütfen bekleyin...
+                        </div>
+                    `}
+                </div>
+            </div>
+        `;
+    } else {
+        resultDiv.innerHTML = `
+            <div class="alert alert-danger">
+                <i class="fas fa-times-circle me-2"></i>
+                <strong>Sipariş Bulunamadı!</strong><br>
+                Girdiğiniz sipariş ID sistemde bulunamadı.
+            </div>
+        `;
     }
 }
 
-// Initialize app
-document.addEventListener('DOMContentLoaded', async () => {
-    await checkAuthStatus();
-    router.init();
-});
+// Helper Functions
+function showAlert(message, type = 'info') {
+    Swal.fire({
+        title: type === 'success' ? 'Başarılı!' : type === 'error' ? 'Hata!' : 'Bilgi',
+        text: message,
+        icon: type === 'error' ? 'error' : type === 'success' ? 'success' : 'info',
+        confirmButtonText: 'Tamam'
+    });
+}
+
+// Placeholder functions for admin actions
+function showCreateKeyModal() {
+    showAlert('Key oluşturma özelliği demo sürümünde aktif değil', 'info');
+}
+
+function showCreateServiceModal() {
+    showAlert('Servis ekleme özelliği demo sürümünde aktif değil', 'info');
+}
+
+function editKey(id) {
+    showAlert('Key düzenleme özelliği demo sürümünde aktif değil', 'info');
+}
+
+function deleteKey(id) {
+    showAlert('Key silme özelliği demo sürümünde aktif değil', 'info');
+}
+
+function editService(id) {
+    showAlert('Servis düzenleme özelliği demo sürümünde aktif değil', 'info');
+}
+
+function deleteService(id) {
+    showAlert('Servis silme özelliği demo sürümünde aktif değil', 'info');
+}
+
+function editUser(id) {
+    showAlert('Kullanıcı düzenleme özelliği demo sürümünde aktif değil', 'info');
+}
+
+function deleteUser(id) {
+    showAlert('Kullanıcı silme özelliği demo sürümünde aktif değil', 'info');
+}

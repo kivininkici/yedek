@@ -1,279 +1,222 @@
-# KeyPanel - cPanel Hosting Kurulum Talimatları
+# KeyPanel - Web Hosting Kurulum Talimatları
 
-## Türkçe Kurulum Rehberi
+## Genel Bakış
 
-Bu kılavuz KeyPanel uygulamasını cPanel hosting ortamına nasıl kuracağınızı adım adım anlatır.
+KeyPanel artık tamamen statik HTML/CSS/JavaScript ile çalışacak şekilde yeniden tasarlandı. PHP, MySQL ve sunucu bağımlılıkları kaldırıldı. Bu versiyon herhangi bir web hosting firmasında çalışır.
 
----
+## ✅ Avantajlar
 
-## 📋 Gereksinimler
+- **Kolay Kurulum**: Sadece dosyaları yükleyin
+- **Düşük Maliyet**: Basit web hosting yeterli  
+- **Hızlı**: Sunucu işlemi yok, direkt browser'da çalışır
+- **Güvenli**: Statik dosyalar, güvenlik riski minimal
 
-### Hosting Gereksinimleri
-- **PHP**: 7.4 veya üzeri (8.0+ önerilir)
-- **MySQL**: 5.7 veya üzeri / MariaDB 10.2+
-- **Apache**: mod_rewrite etkin
-- **SSL Sertifikası**: HTTPS desteği (Let's Encrypt ücretsiz)
-- **Disk Alanı**: Minimum 100MB
-- **RAM**: Minimum 256MB PHP memory limit
-
-### cPanel Özellikleri
-- File Manager erişimi
-- MySQL Database wizard
-- Subdomain yönetimi (opsiyonel)
-
----
-
-## 🚀 Kurulum Adımları
-
-### 1. Dosyaları Yükleme
-
-#### 1.1 cPanel File Manager'a Giriş
-1. cPanel'e giriş yapın
-2. **File Manager**'ı açın
-3. `public_html` klasörüne gidin
-
-#### 1.2 Dosyaları Upload Etme
-1. `hosting/public_html` klasöründeki tüm dosyaları seçin
-2. ZIP olarak sıkıştırın: `keypanel_files.zip`
-3. cPanel File Manager'da **Upload** butonuna tıklayın
-4. ZIP dosyasını yükleyin
-5. Yüklendikten sonra **Extract** ile açın
-6. Dosyalar doğru yerlere yerleştiğinden emin olun:
-   ```
-   public_html/
-   ├── index.php
-   ├── .htaccess
-   ├── api/
-   ├── assets/
-   └── ...
-   ```
-
-### 2. MySQL Veritabanı Kurulumu
-
-#### 2.1 Veritabanı Oluşturma
-1. cPanel'de **MySQL Database Wizard**'ı açın
-2. **Veritabanı Adı**: `keypanel_db` (veya istediğiniz ad)
-3. **Next** butonuna tıklayın
-
-#### 2.2 Kullanıcı Oluşturma
-1. **Kullanıcı Adı**: `keypanel_user` (veya istediğiniz ad)
-2. **Güçlü bir şifre** oluşturun (en az 12 karakter)
-3. **Create User** butonuna tıklayın
-
-#### 2.3 Yetkilendirme
-1. Kullanıcıya **ALL PRIVILEGES** verin
-2. **Next** butonuna tıklayın
-
-#### 2.4 Database Script'ini Çalıştırma
-1. cPanel'de **phpMyAdmin**'i açın
-2. Oluşturduğunuz veritabanını seçin
-3. **SQL** sekmesine gidin
-4. `hosting/database_setup.sql` dosyasının içeriğini kopyalayın
-5. SQL alanına yapıştırıp **Go** butonuna tıklayın
-
-### 3. Konfigürasyon
-
-#### 3.1 Database Ayarları
-1. `public_html/api/config/database.php` dosyasını açın
-2. Aşağıdaki değerleri güncelleyin:
-   ```php
-   define('DB_HOST', 'localhost'); // Genellikle localhost
-   define('DB_NAME', 'cpanel_kullanici_keypanel_db'); // cPanel format: kullanici_veritabani
-   define('DB_USER', 'cpanel_kullanici_keypanel_user'); // cPanel format: kullanici_dbuser
-   define('DB_PASS', 'veritabani_sifreniz'); // Oluşturduğunuz şifre
-   ```
-
-#### 3.2 Dosya İzinleri (Gerekirse)
-```bash
-# API klasörü yazılabilir olmalı
-chmod 755 public_html/api/
-chmod 644 public_html/api/config/database.php
-```
-
-### 4. Admin Hesabı Kurulumu
-
-#### 4.1 Varsayılan Admin
-- **Kullanıcı Adı**: `admin`
-- **Şifre**: `admin123`
-- **Güvenlik Soruları**: Kiwi doğum tarihi (29/05/2020), Anne adı (Halime), vb.
-
-#### 4.2 Güvenlik (ÖNEMLİ!)
-1. İlk girişten sonra mutlaka admin şifresini değiştirin
-2. phpMyAdmin'de admin tablosunu açın:
-   ```sql
-   UPDATE admin_users SET password_hash = '$2y$10$YeniHashDeğeriniz' WHERE username = 'admin';
-   ```
-
-### 5. SSL ve Güvenlik
-
-#### 5.1 SSL Sertifikası
-1. cPanel'de **SSL/TLS** bölümüne gidin
-2. **Let's Encrypt** ile ücretsiz SSL kurun
-3. **Force HTTPS Redirect** özelliğini aktifleştirin
-
-#### 5.2 Güvenlik Ayarları
-1. `.htaccess` dosyasında güvenlik başlıkları kontrol edin
-2. `php.ini` ayarlarını kontrol edin (gerekirse)
-3. Hassas dosyalara erişimi engelleyin
-
----
-
-## 🔧 Test ve Doğrulama
-
-### 1. Temel Test
-1. Tarayıcıda sitenizi açın: `https://yourdomain.com`
-2. Ana sayfa yüklenmeli
-3. "Sipariş Sorgula" linkine tıklayın - çalışmalı
-
-### 2. API Testi
-1. `https://yourdomain.com/api/services/active` adresini açın
-2. JSON yanıt dönmeli (boş array olabilir)
-
-### 3. Admin Panel Testi
-1. `https://yourdomain.com#admin` adresine gidin
-2. Varsayılan bilgilerle giriş yapın
-3. Dashboard açılmalı
-
-### 4. Database Bağlantı Testi
-1. Admin panelde "Kullanıcılar" sayfasını açın
-2. Veriler görünmeli (boş olabilir)
-
----
-
-## 🔑 İlk Kullanım
-
-### 1. API Ayarları
-1. Admin panelde **API Ayarları** bölümüne gidin
-2. MedyaBayim veya ResellerProvider API bilgilerinizi ekleyin:
-   - **API URL**: `https://medyabayim.com/api/v2`
-   - **API Key**: Gerçek API anahtarınız
-   - **Aktif**: Evet
-
-### 2. Servis Import
-1. **Servisler** sayfasına gidin
-2. **Servisleri API'den Çek** butonuna tıklayın
-3. Servisler otomatik import edilecek
-
-### 3. İlk Key Oluşturma
-1. **Key Yönetimi** sayfasına gidin
-2. **Yeni Key Oluştur** butonuna tıklayın
-3. Key bilgilerini doldurun
-4. Servis seçin ve kaydedin
-
-### 4. Kullanıcı Testi
-1. Ana sayfada **Key Kullan** butonuna tıklayın
-2. Kayıt olun veya giriş yapın
-3. Oluşturduğunuz key'i test edin
-
----
-
-## 📂 Dosya Yapısı
+## 📁 Dosya Yapısı
 
 ```
 public_html/
-├── index.php                 # Ana sayfa
-├── .htaccess                 # Apache yapılandırması
-├── api/                      # Backend API
-│   ├── index.php            # API gateway
-│   ├── config/
-│   │   └── database.php     # Database ayarları
-│   ├── includes/
-│   │   └── functions.php    # Yardımcı fonksiyonlar
-│   └── routes/              # API endpoint'leri
-│       ├── admin.php
-│       ├── auth.php
-│       ├── keys.php
-│       ├── orders.php
-│       ├── services.php
-│       └── user.php
-└── assets/                  # Frontend dosyaları
-    ├── index.css           # Ana stil dosyası
-    ├── app.js              # Ana JavaScript
-    └── favicon.svg         # Site ikonu
+├── index.html          # Ana sayfa (SPA - Single Page Application)
+├── .htaccess          # Apache konfigürasyonu ve güvenlik
+├── 404.html           # Hata sayfası
+├── assets/
+│   ├── style.css      # Bootstrap + özel CSS
+│   └── app.js         # Tüm JavaScript fonksiyonları
+└── README.md          # Detaylı dokümantasyon
 ```
 
----
+## 🚀 Kurulum Adımları
 
-## ⚠️ Güvenlik Notları
+### 1. Hosting Seçimi
 
-### Kritik Güvenlik Ayarları
-1. **Database şifrelerini güçlü tutun**
-2. **Admin şifresini mutlaka değiştirin**
-3. **SSL sertifikası kullanın**
-4. **Dosya izinlerini kontrol edin**
-5. **Güncellemeleri takip edin**
+**Önerilen Hosting Firmaları:**
+- **Türkiye**: Turhost (₺5-15/ay), Hosting.com.tr, Hostinger
+- **Global**: Hostinger (₺3-8/ay), SiteGround, Bluehost
 
-### Yedekleme
-1. **Düzenli veritabanı yedekleri** alın
-2. **Dosya yedeklerini** unutmayın
-3. **API anahtarlarını** güvenli saklayın
+**Minimum Gereksinimler:**
+- Disk alanı: 50 MB (çok fazla)
+- Bant genişliği: 1 GB/ay
+- Apache/Nginx web server
+- .htaccess desteği
 
----
+### 2. Domain Bağlama
+
+1. **Domain satın alın** (örn: keypanel.com)
+2. **DNS ayarlarını** hosting firmasına yönlendirin
+3. **SSL sertifikası** aktif edin (çoğu hosting ücretsiz veriyor)
+
+### 3. Dosya Yükleme
+
+1. **cPanel/FTP** ile giriş yapın
+2. `public_html/` klasörünü bulun
+3. **Tüm dosyaları** bu klasöre yükleyin:
+   ```bash
+   public_html/
+   ├── index.html
+   ├── .htaccess
+   ├── 404.html
+   └── assets/
+   ```
+
+### 4. Test Etme
+
+1. **Ana sayfa**: `https://yourdomain.com`
+2. **Admin giriş**: Kullanıcı `admin`, Şifre `admin123`
+3. **Demo key**: `DEMO-KEY-123456` test edin
+
+## 🔧 Konfigürasyon
+
+### .htaccess Ayarları
+
+Dosya otomatik yapılandırılmış, isteğe bağlı değişiklikler:
+
+```apache
+# HTTPS zorunlu yapmak için (SSL varsa)
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# www zorunlu yapmak için
+RewriteCond %{HTTP_HOST} !^www\. [NC]
+RewriteRule ^(.*)$ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+```
+
+### Özelleştirme
+
+**CSS renkleri değiştirmek** (assets/style.css):
+```css
+:root {
+    --primary-color: #0d6efd;    /* Ana mavi renk */
+    --success-color: #198754;    /* Yeşil renk */
+    --danger-color: #dc3545;     /* Kırmızı renk */
+}
+```
+
+**Demo verileri değiştirmek** (assets/app.js):
+```javascript
+const sampleKeys = [
+    { id: 1, value: 'YOUR-KEY-123456', category: 'Instagram', maxQuantity: 1000, isUsed: false }
+];
+```
+
+## 🔐 Güvenlik
+
+### Otomatik Korumatlar
+- **XSS koruması**: Cross-site scripting engelleme
+- **Clickjacking koruması**: iframe içine alma engelleme  
+- **MIME sniffing engelleme**: Dosya türü saldırıları engelleme
+- **Güvenli headers**: Security headers otomatik ekleniyor
+
+### Manuel Ayarlar
+1. **Admin şifresi değiştirin** (app.js dosyasında)
+2. **Demo verileri silin** production'da
+3. **SSL zorunlu yapın** .htaccess'te
+
+## 📊 Demo Veriler
+
+### Test Hesapları
+- **Admin**: admin / admin123
+- **Key'ler**: DEMO-KEY-123456, DEMO-KEY-789012
+
+### Demo İçerik
+- 3 adet demo key (Instagram, YouTube, TikTok)
+- 4 adet demo servis
+- 2 adet demo sipariş
+- 2 adet demo kullanıcı
+
+## 🚨 Önemli Notlar
+
+### Production'da Yapılacaklar
+
+1. **Demo verileri silin**:
+   ```javascript
+   const sampleKeys = [];      // Boş bırakın
+   const sampleServices = [];  // Boş bırakın  
+   const sampleOrders = [];    // Boş bırakın
+   ```
+
+2. **Admin şifre değiştirin**:
+   ```javascript
+   if (username === 'admin' && password === 'YENİ_ŞİFRE') {
+   ```
+
+3. **Demo alert'leri kaldırın**:
+   ```javascript
+   // Bu satırları silin/yorumlayın
+   showAlert('Demo sürümünde aktif değil', 'info');
+   ```
+
+### Sınırlamalar
+
+- **Veri kalıcılığı yok**: Browser refresh'te veriler gidiyor
+- **Gerçek API yok**: Sadece frontend demo
+- **Çoklu kullanıcı yok**: Tek browser session
+
+## 🔄 Güncellemeler
+
+### Versiyon Geçmişi
+- **v1.0.0**: İlk statik versiyon
+- **v0.9.x**: PHP/MySQL versiyonu (eski)
+
+### Gelecek Güncellemeler
+- **Backend entegrasyonu**: İsteğe bağlı API sistemi
+- **Database desteği**: Kalıcı veri saklama
+- **Çoklu kullanıcı**: Gerçek authentication sistemi
 
 ## 🆘 Sorun Giderme
 
-### Yaygın Sorunlar
+### Yaygın Problemler
 
-#### 1. "500 Internal Server Error"
-- **Sebep**: PHP hataları, .htaccess sorunları
-- **Çözüm**: Error log'larını kontrol edin
-- **Log Konumu**: cPanel > Error Logs
+1. **Sayfa açılmıyor**
+   - Domain DNS ayarlarını kontrol edin
+   - SSL sertifikası kontrolü yapın
 
-#### 2. Database Bağlantı Hatası
-- **Sebep**: Yanlış DB bilgileri
-- **Çözüm**: `database.php` dosyasındaki bilgileri kontrol edin
-- **Format**: cPanel genellikle `kullanici_veritabani` formatı kullanır
+2. **CSS/JS yüklenmiyor**
+   - CDN bağlantıları kontrol edin
+   - Browser cache temizleyin
 
-#### 3. API Çalışmıyor
-- **Sebep**: mod_rewrite kapalı, .htaccess sorunları
-- **Çözüm**: Hosting sağlayıcınızla iletişime geçin
+3. **Admin paneli çalışmıyor**
+   - JavaScript console'da hata bakın
+   - LocalStorage desteği var mı kontrol edin
 
-#### 4. CSS/JS Yüklenmiyor
-- **Sebep**: Dosya yolları, izin sorunları
-- **Çözüm**: assets klasörü izinlerini kontrol edin
+4. **.htaccess çalışmıyor**
+   - Hosting Apache kullanıyor mu kontrol edin
+   - mod_rewrite aktif mi kontrol edin
 
-### Log Kontrolü
-```bash
-# PHP Error Log
-tail -f /home/kullanici/public_html/error_log
+### Hata Mesajları
 
-# Apache Error Log (hosting sağlayıcıya bağlı)
-```
+- **404 hatası**: `404.html` sayfası otomatik gösterilir
+- **JavaScript hataları**: Browser console'da detayları görün
+- **CSS görünmüyor**: CDN linklerini kontrol edin
 
----
+## 💰 Maliyet Hesabı
+
+### Basit Hosting (Önerilen)
+- **Domain**: ₺50-100/yıl (.com.tr)
+- **Hosting**: ₺60-180/yıl (5-15₺/ay)
+- **SSL**: ₺0 (çoğu hosting ücretsiz)
+- **Toplam**: ₺110-280/yıl
+
+### Premium Hosting
+- **Domain**: ₺100-200/yıl (.com)
+- **Hosting**: ₺200-500/yıl
+- **SSL**: ₺0-100/yıl
+- **Toplam**: ₺300-800/yıl
 
 ## 📞 Destek
 
-### Hosting Desteği Gereken Durumlar
-- mod_rewrite aktifleştirme
-- PHP memory limit artırma
-- SSL sertifika kurulumu
-- Database izin sorunları
+### Hosting Firması Desteği
+- Dosya yükleme sorunları
+- Domain yönlendirme
+- SSL sertifikası
 
-### Self-Help Kaynakları
-- cPanel dokümantasyonu
-- PHP manual
-- MySQL referansı
-
----
-
-## 🔄 Güncelleme
-
-### Manuel Güncelleme
-1. Yeni dosyaları yedek klasöre kopyalayın
-2. Mevcut dosyaları yedekleyin
-3. Yeni dosyaları upload edin
-4. Database değişikliklerini uygulayın
-5. Test edin
-
-### Yedekleme Öncesi
-```sql
--- Database backup
-mysqldump -u kullanici -p veritabani > keypanel_backup.sql
-```
+### Teknik Destek
+- Kod değişiklikleri
+- Özelleştirme talepleri
+- Hata düzeltmeleri
 
 ---
 
-✅ **Kurulum tamamlandığında KeyPanel sistemi production seviyesinde çalışacaktır!**
+**Kurulum tamamlandığında sisteminiz hazır!**  
+Basit, hızlı ve güvenli web hosting çözümü.
 
-🚀 **İyi kullanımlar!**
+**Son Güncelleme**: 2 Temmuz 2025  
+**Versiyon**: 1.0.0 - Statik Web Hosting Uyumlu
