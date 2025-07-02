@@ -234,6 +234,43 @@ const router = {
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Feedback Section -->
+                    <div class="mt-16">
+                        <div class="card max-w-2xl mx-auto">
+                            <div class="card-header">
+                                <h3 class="text-xl font-semibold text-center">Geri Bildirim</h3>
+                                <p class="text-gray-600 text-center mt-2">Görüş ve önerileriniz bizim için değerli</p>
+                            </div>
+                            <div class="card-body">
+                                <form id="feedback-form">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        <div>
+                                            <label class="form-label">Adınız</label>
+                                            <input type="text" name="firstName" class="form-input" required>
+                                        </div>
+                                        <div>
+                                            <label class="form-label">Soyadınız</label>
+                                            <input type="text" name="lastName" class="form-input" required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <label class="form-label">E-posta Adresiniz</label>
+                                        <input type="email" name="email" class="form-input" required>
+                                    </div>
+                                    <div class="mb-6">
+                                        <label class="form-label">Mesajınız</label>
+                                        <textarea name="message" class="form-input" rows="5" required 
+                                                  placeholder="Görüş, öneri veya sorunlarınızı bizimle paylaşın..."></textarea>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-full">
+                                        <span class="feedback-btn-text">Gönder</span>
+                                        <span class="feedback-spinner hidden">Gönderiliyor...</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Alert Container -->
@@ -593,6 +630,9 @@ const router = {
     
     bindEvents(page) {
         switch (page) {
+            case 'home':
+                this.bindHomeEvents();
+                break;
             case 'auth':
                 this.bindAuthEvents();
                 break;
@@ -611,6 +651,36 @@ const router = {
             case 'adminKeys':
                 this.loadKeysData();
                 break;
+        }
+    },
+    
+    bindHomeEvents() {
+        // Feedback form event
+        const feedbackForm = document.getElementById('feedback-form');
+        if (feedbackForm) {
+            feedbackForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const data = Object.fromEntries(formData);
+                
+                // Show loading state
+                const btnText = document.querySelector('.feedback-btn-text');
+                const spinner = document.querySelector('.feedback-spinner');
+                btnText.classList.add('hidden');
+                spinner.classList.remove('hidden');
+                
+                try {
+                    const response = await api.post('/feedback/send', data);
+                    showAlert('Mesajınız başarıyla gönderildi! Teşekkür ederiz.', 'success');
+                    feedbackForm.reset();
+                } catch (error) {
+                    showAlert(error.message || 'Mesaj gönderilirken hata oluştu.', 'danger');
+                } finally {
+                    // Reset button state
+                    btnText.classList.remove('hidden');
+                    spinner.classList.add('hidden');
+                }
+            });
         }
     },
     

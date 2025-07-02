@@ -65,6 +65,9 @@ switch ($method) {
                 case 'api-balances':
                     getApiBalances();
                     break;
+                case 'feedback':
+                    getFeedbackList();
+                    break;
                 default:
                     errorResponse('Geçersiz admin GET endpoint', 404);
             }
@@ -85,6 +88,9 @@ switch ($method) {
                     break;
                 case 'services':
                     updateService($path_parts[2], $input);
+                    break;
+                case 'feedback':
+                    updateFeedback($path_parts[2], $input);
                     break;
                 default:
                     errorResponse('Geçersiz admin PUT endpoint', 404);
@@ -394,5 +400,84 @@ function getLoginAttempts() {
     }
 }
 
-// Diğer fonksiyonlar (updateUserRole, deleteKey, getAllServices, vb.) burada devam edecek...
+function getFeedbackList() {
+    try {
+        $db = getDB();
+        
+        $feedbacks = $db->fetchAll("
+            SELECT * FROM feedback 
+            ORDER BY created_at DESC 
+            LIMIT 100
+        ");
+        
+        // İstatistikler
+        $stats = [
+            'total' => count($feedbacks),
+            'unread' => count(array_filter($feedbacks, fn($f) => !$f['is_read'])),
+            'read' => count(array_filter($feedbacks, fn($f) => $f['is_read']))
+        ];
+        
+        successResponse([
+            'feedbacks' => $feedbacks,
+            'stats' => $stats
+        ]);
+        
+    } catch (Exception $e) {
+        errorResponse('Geri bildirimler alınırken hata: ' . $e->getMessage(), 500);
+    }
+}
+
+function updateFeedback($feedbackId, $data) {
+    try {
+        $db = getDB();
+        
+        $feedback = $db->fetchOne("SELECT * FROM feedback WHERE id = ?", [$feedbackId]);
+        if (!$feedback) {
+            errorResponse('Geri bildirim bulunamadı');
+        }
+        
+        $updateFields = [];
+        $updateValues = [];
+        
+        if (isset($data['is_read'])) {
+            $updateFields[] = 'is_read = ?';
+            $updateValues[] = (int)$data['is_read'];
+        }
+        
+        if (isset($data['admin_notes'])) {
+            $updateFields[] = 'admin_notes = ?';
+            $updateValues[] = sanitizeInput($data['admin_notes']);
+        }
+        
+        if (empty($updateFields)) {
+            errorResponse('Güncellenecek veri belirtilmedi');
+        }
+        
+        $updateFields[] = 'updated_at = NOW()';
+        $updateValues[] = $feedbackId;
+        
+        $sql = "UPDATE feedback SET " . implode(', ', $updateFields) . " WHERE id = ?";
+        $db->execute($sql, $updateValues);
+        
+        logActivity($_SESSION['admin_id'], 'update_feedback', "Geri bildirim güncellendi: #{$feedbackId}");
+        
+        successResponse(['message' => 'Geri bildirim başarıyla güncellendi']);
+        
+    } catch (Exception $e) {
+        errorResponse('Geri bildirim güncelleme hatası: ' . $e->getMessage(), 500);
+    }
+}
+
+// Admin nav için feedback sayısını almak
+function getUnreadFeedbackCount() {
+    try {
+        $db = getDB();
+        $count = $db->fetchOne("SELECT COUNT(*) as count FROM feedback WHERE is_read = 0")['count'];
+        return $count;
+    } catch (Exception $e) {
+        return 0;
+    }
+}
+
+// updateUserRole, deleteKey, getAllServices gibi diğer fonksiyonlar burada devam edebilir...
 ?>

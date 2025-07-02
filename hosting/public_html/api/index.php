@@ -65,6 +65,10 @@ try {
             require_once 'routes/auth.php';
             break;
             
+        case 'feedback':
+            require_once 'routes/feedback.php';
+            break;
+            
         default:
             http_response_code(404);
             echo json_encode([
