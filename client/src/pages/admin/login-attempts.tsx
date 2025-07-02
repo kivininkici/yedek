@@ -123,8 +123,14 @@ export default function LoginAttempts() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       <Sidebar />
       <div className="lg:ml-64">
-        <Header title="Giriş Denemeleri" description="Admin panel giriş güvenlik logları" />
         <main className="px-4 py-2">
+          {/* Page Title - Above Header */}
+          <div className="mb-4">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 via-cyan-400 to-green-400 bg-clip-text text-transparent">
+              Giriş Denemeleri
+            </h1>
+            <p className="text-slate-400 mt-1 text-lg">Admin panel giriş güvenlik logları</p>
+          </div>
           {/* Statistics Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <StatsCard
