@@ -570,23 +570,29 @@ export default function UsersPage() {
                             className="w-20"
                             onClick={async () => {
                               try {
-                                // Direct login API call
+                                // Direct login API call with credentials
                                 const response = await fetch('/api/auth/auto-login', {
                                   method: 'POST',
-                                  headers: { 'Content-Type': 'application/json' },
+                                  headers: { 
+                                    'Content-Type': 'application/json',
+                                  },
+                                  credentials: 'include', // Include cookies for session
                                   body: JSON.stringify({ userId: user.id })
                                 });
                                 
                                 if (response.ok) {
+                                  // Refresh the page to load new session
                                   window.location.href = '/';
                                 } else {
+                                  const error = await response.json();
                                   toast({
                                     title: "Hata",
-                                    description: "Giriş yapılamadı",
+                                    description: error.message || "Giriş yapılamadı",
                                     variant: "destructive"
                                   });
                                 }
                               } catch (error) {
+                                console.error('Auto-login error:', error);
                                 toast({
                                   title: "Hata", 
                                   description: "Giriş yapılamadı",

@@ -361,7 +361,7 @@ export default function AdminLogin() {
 
                     <div className="space-y-2">
                       <Label htmlFor="masterPassword" className="text-slate-300 text-sm font-medium">
-                        Satıcı adı girin
+                        Güvenlik Şifresini Girin
                       </Label>
                       <div className="relative">
                         <Input
@@ -397,7 +397,7 @@ export default function AdminLogin() {
                       ) : (
                         <>
                           <Unlock className="w-4 h-4 mr-2" />
-                          Teslimat sayfasına git 📝
+                          Şifreyi Doğrula
                         </>
                       )}
                     </Button>
