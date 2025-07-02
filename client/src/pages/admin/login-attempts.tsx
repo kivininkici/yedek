@@ -30,7 +30,7 @@ interface LoginAttempt {
   id: number;
   ipAddress: string;
   username?: string;
-  attemptType: 'success' | 'failed_password' | 'failed_security' | 'blocked';
+  attemptType: 'success' | 'failed_password' | 'failed_security' | 'blocked' | 'failed_math' | 'failed_math_register';
   userAgent?: string;
   createdAt: string;
 }
@@ -52,6 +52,18 @@ const attemptTypeConfig = {
     label: 'Güvenlik Sorusu Hatası',
     color: 'bg-orange-500',
     icon: AlertTriangle,
+    variant: 'secondary' as const
+  },
+  failed_math: {
+    label: 'Matematik Doğrulama Hatası (Giriş)',
+    color: 'bg-purple-500',
+    icon: Monitor,
+    variant: 'secondary' as const
+  },
+  failed_math_register: {
+    label: 'Matematik Doğrulama Hatası (Kayıt)',
+    color: 'bg-indigo-500',
+    icon: Monitor,
     variant: 'secondary' as const
   },
   blocked: {
@@ -97,7 +109,7 @@ export default function LoginAttempts() {
 
   const successfulAttempts = loginAttempts.filter(attempt => attempt.attemptType === 'success').length;
   const failedAttempts = loginAttempts.filter(attempt => 
-    ['failed_password', 'failed_security'].includes(attempt.attemptType)
+    ['failed_password', 'failed_security', 'failed_math', 'failed_math_register'].includes(attempt.attemptType)
   ).length;
   const blockedAttempts = loginAttempts.filter(attempt => attempt.attemptType === 'blocked').length;
   const uniqueIPs = new Set(loginAttempts.map(attempt => attempt.ipAddress)).size;

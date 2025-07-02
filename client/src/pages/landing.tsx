@@ -4,12 +4,14 @@ import { KeyRound, Shield, Zap, Users, Star, CheckCircle, TrendingUp, Activity, 
 import { useState } from "react";
 import { LandingCursorFollower } from "@/hooks/useMouseTracking";
 import { FeedbackReminder } from "@/components/FeedbackReminder";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Landing() {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
+  const { user, isAuthenticated } = useAuth();
 
   const handleFeedbackSubmit = async () => {
     if (!feedbackMessage.trim()) {
@@ -97,21 +99,25 @@ export default function Landing() {
                 </Button>
 
                 
-                <Button 
-                  onClick={() => setShowFeedback(true)}
-                  className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold px-4 md:px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-                >
-                  <MessageCircle className="w-4 h-4 mr-2" />
-                  <span className="hidden sm:inline">Geri Bildirim</span>
-                  <span className="sm:hidden">Feedback</span>
-                </Button>
-                <Button 
-                  onClick={() => setShowAuthModal(true)}
-                  className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
-                >
-                  <LogIn className="w-4 h-4 mr-2" />
-                  Giriş Yap
-                </Button>
+                {!isAuthenticated && (
+                  <Button 
+                    onClick={() => setShowFeedback(true)}
+                    className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold px-4 md:px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                  >
+                    <MessageCircle className="w-4 h-4 mr-2" />
+                    <span className="hidden sm:inline">Geri Bildirim</span>
+                    <span className="sm:hidden">Feedback</span>
+                  </Button>
+                )}
+                {!isAuthenticated && (
+                  <Button 
+                    onClick={() => setShowAuthModal(true)}
+                    className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
+                  >
+                    <LogIn className="w-4 h-4 mr-2" />
+                    Giriş Yap
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -276,7 +282,8 @@ export default function Landing() {
           </div>
         </section>
 
-        {/* Feedback Section */}
+        {/* Feedback Section - Only show for non-authenticated users */}
+        {!isAuthenticated && (
         <section className="py-20 relative border-t border-white/10">
           <div className="container mx-auto px-4">
             <div className="text-center mb-16">
@@ -377,6 +384,7 @@ export default function Landing() {
             </div>
           </div>
         </section>
+        )}
 
         {/* Footer */}
         <footer className="border-t border-white/10 bg-black/20 py-12">

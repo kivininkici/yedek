@@ -28,6 +28,7 @@ import { UserCursorFollower } from "@/hooks/useMouseTracking";
 const loginSchema = z.object({
   username: z.string().min(3, "Kullanıcı adı en az 3 karakter olmalı"),
   password: z.string().min(6, "Şifre en az 6 karakter olmalı"),
+  mathAnswer: z.string().min(1, "Matematik sorusunu cevaplayın"),
 });
 
 const registerSchema = z.object({
@@ -35,6 +36,7 @@ const registerSchema = z.object({
   email: z.string().email("Geçerli bir e-posta adresi giriniz"),
   password: z.string().min(6, "Şifre en az 6 karakter olmalı"),
   confirmPassword: z.string().min(6, "Şifre tekrarı gereklidir"),
+  mathAnswer: z.string().min(1, "Matematik sorusunu cevaplayın"),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Şifreler eşleşmiyor",
   path: ["confirmPassword"],
@@ -125,6 +127,28 @@ const FloatingParticles = () => {
   );
 };
 
+// Math verification helper functions
+const generateMathQuestion = () => {
+  const num1 = Math.floor(Math.random() * 20) + 1;
+  const num2 = Math.floor(Math.random() * 20) + 1;
+  const operations = ['+', '-'];
+  const operation = operations[Math.floor(Math.random() * operations.length)];
+  
+  let question, answer;
+  if (operation === '+') {
+    question = `${num1} + ${num2}`;
+    answer = num1 + num2;
+  } else {
+    // Make sure subtraction doesn't result in negative numbers
+    const larger = Math.max(num1, num2);
+    const smaller = Math.min(num1, num2);
+    question = `${larger} - ${smaller}`;
+    answer = larger - smaller;
+  }
+  
+  return { question, answer };
+};
+
 export default function Auth() {
   const [isLoginLoading, setIsLoginLoading] = useState(false);
   const [isRegisterLoading, setIsRegisterLoading] = useState(false);
@@ -136,6 +160,8 @@ export default function Auth() {
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [showRegisterPassword, setShowRegisterPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loginMathQuestion, setLoginMathQuestion] = useState(generateMathQuestion());
+  const [registerMathQuestion, setRegisterMathQuestion] = useState(generateMathQuestion());
   const { toast } = useToast();
 
   const loginForm = useForm<LoginData>({
@@ -143,6 +169,7 @@ export default function Auth() {
     defaultValues: {
       username: "",
       password: "",
+      mathAnswer: "",
     },
   });
 
@@ -153,6 +180,7 @@ export default function Auth() {
       email: "",
       password: "",
       confirmPassword: "",
+      mathAnswer: "",
     },
   });
 
@@ -219,6 +247,38 @@ export default function Auth() {
   });
 
   const onLoginSubmit = async (data: LoginData) => {
+    // Verify math answer first
+    if (parseInt(data.mathAnswer) !== loginMathQuestion.answer) {
+      toast({
+        title: "Matematik Doğrulama Hatası",
+        description: "Matematik sorusuna verilen cevap yanlış.",
+        variant: "destructive",
+      });
+      
+      // Generate new math question and log failed attempt
+      const newQuestion = generateMathQuestion();
+      setLoginMathQuestion(newQuestion);
+      loginForm.setValue("mathAnswer", "");
+      
+      // Log failed math verification attempt
+      try {
+        await fetch("/api/admin/login-attempts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ipAddress: "unknown",
+            username: data.username,
+            attemptType: "failed_math",
+            userAgent: navigator.userAgent || "",
+          }),
+        });
+      } catch (error) {
+        console.error("Failed to log math verification attempt:", error);
+      }
+      
+      return;
+    }
+
     setIsLoginLoading(true);
     
     // Progress animation
@@ -240,6 +300,38 @@ export default function Auth() {
   };
 
   const onRegisterSubmit = async (data: RegisterData) => {
+    // Verify math answer first
+    if (parseInt(data.mathAnswer) !== registerMathQuestion.answer) {
+      toast({
+        title: "Matematik Doğrulama Hatası",
+        description: "Matematik sorusuna verilen cevap yanlış.",
+        variant: "destructive",
+      });
+      
+      // Generate new math question and log failed attempt
+      const newQuestion = generateMathQuestion();
+      setRegisterMathQuestion(newQuestion);
+      registerForm.setValue("mathAnswer", "");
+      
+      // Log failed math verification attempt
+      try {
+        await fetch("/api/admin/login-attempts", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ipAddress: "unknown",
+            username: data.username,
+            attemptType: "failed_math_register",
+            userAgent: navigator.userAgent || "",
+          }),
+        });
+      } catch (error) {
+        console.error("Failed to log math verification attempt:", error);
+      }
+      
+      return;
+    }
+
     setIsRegisterLoading(true);
     
     // Progress animation  
@@ -558,6 +650,27 @@ export default function Auth() {
                               )}
                             </div>
 
+                            {/* Math Verification Field */}
+                            <div className="space-y-3">
+                              <Label htmlFor="login-math" className="text-slate-300 text-sm">
+                                Matematik Doğrulama: {loginMathQuestion.question} = ?
+                              </Label>
+                              <div className="relative">
+                                <Input
+                                  id="login-math"
+                                  type="number"
+                                  placeholder="Sonucu yazın"
+                                  className="bg-slate-700/50 border-slate-600 text-slate-50 placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent h-12 rounded-xl transition-all duration-300"
+                                  {...loginForm.register("mathAnswer")}
+                                />
+                              </div>
+                              {loginForm.formState.errors.mathAnswer && (
+                                <p className="text-red-400 text-sm ml-1">
+                                  {loginForm.formState.errors.mathAnswer.message}
+                                </p>
+                              )}
+                            </div>
+
                             <motion.div
                               whileHover={{ scale: 1.02 }}
                               whileTap={{ scale: 0.98 }}
@@ -800,6 +913,27 @@ export default function Auth() {
                               {registerForm.formState.errors.confirmPassword && (
                                 <p className="text-red-400 text-sm ml-1">
                                   {registerForm.formState.errors.confirmPassword.message}
+                                </p>
+                              )}
+                            </div>
+
+                            {/* Math Verification Field */}
+                            <div className="space-y-3">
+                              <Label htmlFor="register-math" className="text-slate-300 text-sm">
+                                Matematik Doğrulama: {registerMathQuestion.question} = ?
+                              </Label>
+                              <div className="relative">
+                                <Input
+                                  id="register-math"
+                                  type="number"
+                                  placeholder="Sonucu yazın"
+                                  className="bg-slate-700/50 border-slate-600 text-slate-50 placeholder-slate-400 focus:ring-2 focus:ring-purple-500 focus:border-transparent h-12 rounded-xl transition-all duration-300"
+                                  {...registerForm.register("mathAnswer")}
+                                />
+                              </div>
+                              {registerForm.formState.errors.mathAnswer && (
+                                <p className="text-red-400 text-sm ml-1">
+                                  {registerForm.formState.errors.mathAnswer.message}
                                 </p>
                               )}
                             </div>
