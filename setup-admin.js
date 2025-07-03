@@ -7,7 +7,7 @@
 
 import http from 'http';
 
-const MASTER_PASSWORD = '5c2z6D1UicpYVvPBQkeoPy0OMsDgxAobfke1Hv5FoV9CwLhuxh';
+const MASTER_PASSWORD = 'm;rf_oj78cMGbO+0)Ai8e@JAAq=C2Wl)6xoQ_K42mQivX1DjvJ)';
 const ADMIN_DATA = {
   username: 'admin',
   password: '123456',
