@@ -200,8 +200,8 @@ export default function Sidebar({ className }: SidebarProps) {
         <div className="flex items-center justify-between">
           <motion.div
             className="flex items-center space-x-3"
-            whileHover={{ scale: 1.01 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
+            whileHover={{ scale: 1.005 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
           >
             <div className="relative">
               <div className="w-10 h-10 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25">
@@ -210,10 +210,10 @@ export default function Sidebar({ className }: SidebarProps) {
               <motion.div
                 className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-slate-900"
                 animate={{
-                  scale: [1, 1.1, 1],
-                  opacity: [1, 0.9, 1]
+                  scale: [1, 1.05, 1],
+                  opacity: [1, 0.95, 1]
                 }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               />
             </div>
             <AnimatePresence>
