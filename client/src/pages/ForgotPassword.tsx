@@ -1,31 +1,37 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { ArrowLeft, Mail, CheckCircle } from 'lucide-react';
-import { Link } from 'wouter';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ArrowLeft, Mail, CheckCircle } from "lucide-react";
+import { Link } from "wouter";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function ForgotPassword() {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError('');
-    setMessage('');
+    setError("");
+    setMessage("");
 
     try {
-      const response = await fetch('/api/auth/forgot-password', {
-        method: 'POST',
+      const response = await fetch("/api/auth/forgot-password", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ email }),
       });
@@ -36,10 +42,10 @@ export default function ForgotPassword() {
         setMessage(data.message);
         setIsSuccess(true);
       } else {
-        setError(data.message || 'Bir hata oluştu');
+        setError(data.message || "Bir hata oluştu");
       }
     } catch (error) {
-      setError('Bağlantı hatası. Lütfen tekrar deneyin.');
+      setError("Bağlantı hatası. Lütfen tekrar deneyin.");
     } finally {
       setIsLoading(false);
     }
@@ -85,13 +91,16 @@ export default function ForgotPassword() {
                     className="space-y-4"
                   >
                     <div className="space-y-2">
-                      <Label htmlFor="email" className="text-sm font-medium text-gray-700">
+                      <Label
+                        htmlFor="email"
+                        className="text-sm font-medium text-gray-700"
+                      >
                         E-posta Adresi
                       </Label>
                       <Input
                         id="email"
                         type="email"
-                        placeholder="admin@smmkiwi.com"
+                        placeholder="mailiniz@mail.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
@@ -116,11 +125,15 @@ export default function ForgotPassword() {
                       {isLoading ? (
                         <motion.div
                           animate={{ rotate: 360 }}
-                          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                          transition={{
+                            duration: 1,
+                            repeat: Infinity,
+                            ease: "linear",
+                          }}
                           className="w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"
                         />
                       ) : null}
-                      {isLoading ? 'Gönderiliyor...' : 'Sıfırlama Linki Gönder'}
+                      {isLoading ? "Gönderiliyor..." : "Sıfırlama Linki Gönder"}
                     </Button>
                   </motion.form>
                 ) : (
@@ -144,14 +157,10 @@ export default function ForgotPassword() {
                   </motion.div>
                 )}
               </AnimatePresence>
-
-              
             </CardContent>
           </Card>
         </motion.div>
       </div>
-
-
     </div>
   );
 }
