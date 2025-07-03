@@ -536,6 +536,26 @@ export default function Auth() {
                                 </div>
                               )}
                             </Button>
+
+                            {/* Forgot Password Button - Red Box */}
+                            <motion.div
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: 0.3, duration: 0.5 }}
+                              className="flex justify-center mt-6"
+                            >
+                              <Link href="/forgot-password">
+                                <motion.div
+                                  whileHover={{ scale: 1.05, y: -2 }}
+                                  whileTap={{ scale: 0.95 }}
+                                  className="inline-block px-6 py-3 bg-red-600 hover:bg-red-700 rounded-xl border-2 border-red-500 shadow-lg shadow-red-500/25 backdrop-blur-sm transition-all duration-300 cursor-pointer"
+                                >
+                                  <span className="text-white font-medium text-sm">
+                                    Şifremi Unuttum
+                                  </span>
+                                </motion.div>
+                              </Link>
+                            </motion.div>
                           </form>
                         </Form>
                       </motion.div>
