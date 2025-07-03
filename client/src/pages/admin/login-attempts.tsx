@@ -137,26 +137,19 @@ export default function LoginAttempts() {
       <Sidebar />
       <div className="lg:ml-64">
         <main className="p-4">
-          {/* Header */}
-          <div className="mb-6">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-400 via-cyan-400 to-green-400 bg-clip-text text-transparent">
-              Giriş Denemeleri
-            </h1>
-            <p className="text-slate-400 mt-2">Admin panel giriş güvenlik logları</p>
-          </div>
-
-          {/* Login Attempts Table - Top Priority */}
+          {/* Login Attempts Table - Immediately at Top */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
             className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-lg mb-6"
           >
-            <div className="p-6 border-b border-slate-200 dark:border-slate-700">
-              <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                <Clock className="w-5 h-5" />
-                Son Giriş Denemeleri
-              </h2>
+            <div className="p-4 border-b border-slate-200 dark:border-slate-700">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-cyan-400 to-green-400 bg-clip-text text-transparent flex items-center gap-2">
+                <Clock className="w-6 h-6 text-blue-500" />
+                Giriş Denemeleri
+              </h1>
+              <p className="text-slate-500 text-sm mt-1">Admin panel giriş güvenlik logları</p>
             </div>
             
             <div className="p-6">
@@ -213,8 +206,10 @@ export default function LoginAttempts() {
           </motion.div>
 
           {/* Statistics Cards - Bottom */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <motion.div
+          <div className="mt-8">
+            <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-4">İstatistikler</h2>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: 0.1 }}
@@ -273,6 +268,7 @@ export default function LoginAttempts() {
                 <MapPin className="w-6 h-6 text-blue-500" />
               </div>
             </motion.div>
+            </div>
           </div>
         </main>
       </div>
