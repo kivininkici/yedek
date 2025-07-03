@@ -293,7 +293,7 @@ export default function Auth() {
       });
 
       setTimeout(() => {
-        window.location.href = "/user";
+        window.location.href = "/";
       }, 2000);
     },
     onError: (error: Error) => {
@@ -329,7 +329,7 @@ export default function Auth() {
       });
 
       setTimeout(() => {
-        window.location.href = "/user";
+        window.location.href = "/";
       }, 2000);
     },
     onError: (error: Error) => {

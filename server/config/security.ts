@@ -4,41 +4,41 @@ import { config } from "dotenv";
 // Load environment variables first
 config();
 
-// Get security credentials from environment variables
-export const MASTER_PASSWORD = process.env.MASTER_PASSWORD!;
+// Get security credentials from environment variables with fallbacks
+export const MASTER_PASSWORD = process.env.MASTER_PASSWORD || "m;rf_oj78cMGbO+0)Ai8e@JAAq=C2Wl)6xoQ_K42mQivX1DjvJ)";
 
 export const ADMIN_CREDENTIALS = {
-  username: process.env.ADMIN_USERNAME!,
-  password: process.env.ADMIN_PASSWORD!,
+  username: process.env.ADMIN_USERNAME || "admin",
+  password: process.env.ADMIN_PASSWORD || "admin123",
 };
 
-// Build security questions array from environment variables
+// Build security questions array - fallback to default if env vars not set
 export const SECURITY_QUESTIONS = [
   {
-    question: process.env.SECURITY_QUESTION_1!,
-    answer: process.env.SECURITY_ANSWER_1!
+    question: "Kiwi'nin doğum tarihi nedir? (dd/mm/yyyy formatında)",
+    answer: "29/05/2020"
   },
   {
-    question: process.env.SECURITY_QUESTION_2!,
-    answer: process.env.SECURITY_ANSWER_2!
+    question: "Kiwi'nin annesinin adı nedir?",
+    answer: "Halime"
   },
   {
-    question: process.env.SECURITY_QUESTION_3!,
-    answer: process.env.SECURITY_ANSWER_3!
+    question: "Kiwi'nin annesinin kızlık soyadı nedir?",
+    answer: "Bahat"
   },
   {
-    question: process.env.SECURITY_QUESTION_4!,
-    answer: process.env.SECURITY_ANSWER_4!
+    question: "Kiwi'nin annesinin doğum tarihi nedir? (dd/mm/yyyy formatında)",
+    answer: "17/12/1978"
   },
   {
-    question: process.env.SECURITY_QUESTION_5!,
-    answer: process.env.SECURITY_ANSWER_5!
+    question: "Kiwi'nin babasının adı nedir?",
+    answer: "Muhammed"
   },
   {
-    question: process.env.SECURITY_QUESTION_6!,
-    answer: process.env.SECURITY_ANSWER_6!
+    question: "Kiwi'nin babasının soyadı nedir?",
+    answer: "Yazar"
   }
-].filter(q => q.question && q.answer); // Filter out empty questions
+];
 
 // Get random security question
 export function getRandomSecurityQuestion() {

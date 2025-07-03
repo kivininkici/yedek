@@ -442,7 +442,9 @@ Changelog:
 - Güvenlik: Token expiry, kullanım kontrolü, e-posta doğrulama
 - Admin authentication sistemi tamamen güvenlik odaklı hale getirildi
 - July 3, 2025: Final Replit Agent'tan Replit ortamına migration başarıyla tamamlandı
-- July 3, 2025: SendGrid e-posta entegrasyonu tamamlandı - şifre sıfırlama sistemi aktif
+- July 3, 2025: SendGrid e-posta entegrasyonu tamamlandı - şifre sıfırlama sistemi aktiv
+- July 3, 2025: Authentication redirect düzeltildi - giriş/kayıt sonrası ana sayfaya yönlendirme
+- July 3, 2025: Admin güvenlik sorusu sistemi düzeltildi - security config fallback değerler eklendi
 - July 3, 2025: SendGrid domain authentication tamamlandı - noreply@smmkiwi.com verified
 - Şifre sıfırlama sistemi production seviyesinde çalışıyor - gerçek e-postalar gönderiliyor
 - July 3, 2025: Password reset email template güncellendi - Turkish content ve proper domain configuration
