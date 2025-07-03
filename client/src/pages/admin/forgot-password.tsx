@@ -225,7 +225,7 @@ export default function AdminForgotPassword() {
                           type="email"
                           {...register("email")}
                           className="bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:border-white/40 focus:ring-2 focus:ring-white/20 pl-12 py-3 rounded-xl"
-                          placeholder="deneme@mail.com"
+                          placeholder="admin@example.com"
                         />
                         <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white/60" />
                       </div>

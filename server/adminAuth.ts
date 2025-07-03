@@ -289,8 +289,9 @@ export function setupAdminAuth(app: Express) {
       // Check if admin with this email exists
       const admin = await storage.getAdminByEmail(email);
       if (!admin) {
-        console.log(`❌ Şifre sıfırlama talebi: ${email} - Sistemde kayıtlı değil`);
-        return res.status(404).json({ message: 'Bu e-posta adresi sistemde kayıtlı değil.' });
+        // Security: Don't reveal if email exists, but don't actually send email or create token
+        console.log(`❌ Şifre sıfırlama talebi: ${email} - Kayıtlı değil`);
+        return res.json({ message: 'E-posta adresinize şifre sıfırlama bağlantısı gönderildi (eğer hesap mevcutsa)' });
       }
 
       console.log(`✅ Şifre sıfırlama talebi: ${email} - Admin bulundu: ${admin.username}`);
