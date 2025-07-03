@@ -466,31 +466,36 @@ export default function Auth() {
             </CardHeader>
 
             <CardContent className="px-10 pb-10 relative z-10">
-              <Tabs
-                value={activeTab}
-                onValueChange={setActiveTab}
-                className="w-full"
-              >
-                <TabsList className="grid w-full grid-cols-2 mb-10 bg-white/10 backdrop-blur-sm rounded-2xl p-1 h-16 border border-white/20">
-                  <TabsTrigger
-                    value="login"
-                    className="flex-1 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl font-bold text-lg transition-all duration-300 text-gray-300 hover:text-white flex items-center justify-center space-x-2 h-14 m-1"
+              <div className="w-full">
+                <div className="grid w-full grid-cols-2 gap-2 mb-10 bg-white/10 backdrop-blur-sm rounded-2xl p-2 h-16 border border-white/20">
+                  <button
+                    onClick={() => setActiveTab("login")}
+                    className={`w-full h-12 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center space-x-2 ${
+                      activeTab === "login"
+                        ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg"
+                        : "text-gray-300 hover:text-white hover:bg-white/5"
+                    }`}
                   >
                     <LogIn className="w-5 h-5" />
                     <span>Giriş Yap</span>
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="register"
-                    className="flex-1 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-xl font-bold text-lg transition-all duration-300 text-gray-300 hover:text-white flex items-center justify-center space-x-2 h-14 m-1"
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("register")}
+                    className={`w-full h-12 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center space-x-2 ${
+                      activeTab === "register"
+                        ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
+                        : "text-gray-300 hover:text-white hover:bg-white/5"
+                    }`}
                   >
                     <UserPlus className="w-5 h-5" />
                     <span>Kayıt Ol</span>
-                  </TabsTrigger>
-                </TabsList>
+                  </button>
+                </div>
 
                 <div className="min-h-[450px]">
-                  <TabsContent value="login" className="space-y-4 mt-0">
-                    <AnimatePresence mode="wait">
+                  {activeTab === "login" && (
+                    <div className="space-y-4 mt-0">
+                      <AnimatePresence mode="wait">
                       <motion.div
                         key="login"
                         initial={{ opacity: 0, x: -20 }}
@@ -637,10 +642,12 @@ export default function Auth() {
                         </Form>
                       </motion.div>
                     </AnimatePresence>
-                  </TabsContent>
+                    </div>
+                  )}
 
-                  <TabsContent value="register" className="space-y-4 mt-0">
-                    <AnimatePresence mode="wait">
+                  {activeTab === "register" && (
+                    <div className="space-y-4 mt-0">
+                      <AnimatePresence mode="wait">
                       <motion.div
                         key="register"
                         initial={{ opacity: 0, x: 20 }}
@@ -836,10 +843,11 @@ export default function Auth() {
                           </form>
                         </Form>
                       </motion.div>
-                    </AnimatePresence>
-                  </TabsContent>
+                      </AnimatePresence>
+                    </div>
+                  )}
                 </div>
-              </Tabs>
+              </div>
             </CardContent>
           </Card>
         </motion.div>
