@@ -38,10 +38,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 
-// Modern Navigation Structure - 2nd image layout
+// Modern Navigation Structure
 const navigationSections = [
   {
-    title: "ANA",
+    title: "Ana",
     items: [
       { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard, badge: null },
       { name: "Key Yönetimi", href: "/admin/keys", icon: Key, badge: "hot" },
@@ -49,7 +49,7 @@ const navigationSections = [
     ]
   },
   {
-    title: "SİSTEM",
+    title: "Sistem",
     items: [
       { name: "Servisler", href: "/admin/services", icon: Globe, badge: null },
       { name: "API Yönetimi", href: "/admin/api-management", icon: Database, badge: null },
@@ -57,9 +57,33 @@ const navigationSections = [
     ]
   },
   {
-    title: "KULLANICI",
+    title: "Kullanıcı",
     items: [
       { name: "Kullanıcılar", href: "/admin/users", icon: Users, badge: null },
+      { name: "Geri Dönüşler", href: "/admin/feedback", icon: MessageCircle, badge: null },
+      { name: "Şikayetler", href: "/admin/complaints", icon: MessageCircle, badge: null },
+    ]
+  },
+  {
+    title: "Güvenlik",
+    items: [
+      { name: "Giriş Denemeleri", href: "/admin/login-attempts", icon: Shield, badge: null },
+      { name: "Master Şifre", href: "/admin/master-password-management", icon: Lock, badge: null },
+      { name: "Şifre Yönetimi", href: "/admin/password-management", icon: Lock, badge: null },
+    ]
+  },
+  {
+    title: "Analiz",
+    items: [
+      { name: "Key İstatistikleri", href: "/admin/key-stats", icon: BarChart3, badge: null },
+      { name: "Sipariş Sorgula", href: "/admin/order-search", icon: Search, badge: null },
+      { name: "Loglar", href: "/admin/logs", icon: FileText, badge: null },
+    ]
+  },
+  {
+    title: "Ayarlar",
+    items: [
+      { name: "Sistem Ayarları", href: "/admin/settings", icon: Cog, badge: null },
     ]
   }
 ];
@@ -123,16 +147,16 @@ const NavigationItem = ({ item, isActive }: { item: any, isActive: boolean }) =>
   </Link>
 );
 
-// Section Header Component - Updated for 2nd image style
+// Section Header Component
 const SectionHeader = ({ title }: { title: string }) => (
   <motion.div
-    className="px-4 py-3 mb-1 mt-6 first:mt-2"
+    className="px-6 py-3 mt-8 first:mt-6"
     initial={{ opacity: 0, x: -20 }}
     animate={{ opacity: 1, x: 0 }}
     transition={{ duration: 0.5 }}
   >
-    <h3 className="text-xs font-semibold text-white/50 uppercase tracking-widest mb-2">{title}</h3>
-    <div className="w-full h-px bg-white/10" />
+    <h3 className="text-xs font-bold text-white/40 uppercase tracking-wider">{title}</h3>
+    <div className="w-8 h-0.5 bg-gradient-to-r from-blue-400 to-transparent mt-2 rounded-full" />
   </motion.div>
 );
 
@@ -224,7 +248,7 @@ export default function Sidebar() {
               transition={{ duration: 0.5, delay: sectionIndex * 0.1 }}
             >
               {!isCollapsed && <SectionHeader title={section.title} />}
-              <div className="space-y-1 mb-4">
+              <div className="space-y-1">
                 {section.items.map((item) => (
                   <NavigationItem
                     key={item.name}
