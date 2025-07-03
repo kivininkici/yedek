@@ -135,52 +135,52 @@ export default function LoginAttempts() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       <Sidebar />
-      <div className="lg:ml-64 h-screen overflow-y-auto">
-        {/* GİRİŞ DENEMELERİ - SAYFANIN TAM TEPESI */}
-        <div className="bg-red-50 dark:bg-red-900/20 border-b-4 border-red-500">
-          <div className="p-4">
-            <h1 className="text-5xl font-black text-red-700 dark:text-red-300">
-              🚨 GİRİŞ DENEMELERİ 🚨
+      <div className="lg:ml-64">
+        {/* GİRİŞ DENEMELERİ - EN EN TEPEDE */}
+        <div className="bg-red-600 text-white sticky top-0 z-10 shadow-lg">
+          <div className="px-6 py-3">
+            <h1 className="text-4xl font-black">
+              🔥 GİRİŞ DENEMELERİ 🔥
             </h1>
-            <p className="text-xl font-bold text-red-600 dark:text-red-400 mt-2">CANLI GÜVENLİK LOGALRI</p>
+            <p className="text-lg font-bold opacity-90">CANLI LOGLAR</p>
           </div>
         </div>
         
-        <div className="p-4 bg-white dark:bg-slate-800">
+        <div className="px-4 py-2 bg-white dark:bg-slate-800">
           {isLoading ? (
-            <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-red-600 mx-auto"></div>
-              <p className="mt-4 text-lg font-bold">YÜKLENİYOR...</p>
+            <div className="text-center py-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mx-auto"></div>
+              <p className="mt-2 font-bold">YÜKLENİYOR...</p>
             </div>
           ) : recentAttempts.length === 0 ? (
-            <div className="text-center py-8">
-              <Shield className="w-16 h-16 mx-auto mb-4 text-red-500" />
-              <p className="text-xl font-bold text-red-600">GİRİŞ DENEMESİ YOK</p>
+            <div className="text-center py-4">
+              <Shield className="w-12 h-12 mx-auto mb-2 text-red-500" />
+              <p className="font-bold text-red-600">GİRİŞ DENEMESİ YOK</p>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-2">
               {recentAttempts.map((attempt) => {
                 const config = attemptTypeConfig[attempt.attemptType];
                 const Icon = config.icon;
                 return (
                   <div
                     key={attempt.id}
-                    className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border-l-4 border-red-500 shadow-md"
+                    className="bg-red-50 dark:bg-red-900/20 p-3 rounded border-l-4 border-red-500"
                   >
-                    <div className="flex items-center gap-4">
-                      <div className={`p-3 rounded-full ${config.color}/30`}>
-                        <Icon className={`w-6 h-6 ${config.color.replace('bg-', 'text-')}`} />
+                    <div className="flex items-center gap-3">
+                      <div className={`p-2 rounded-full ${config.color}/30`}>
+                        <Icon className={`w-5 h-5 ${config.color.replace('bg-', 'text-')}`} />
                       </div>
                       <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-1">
-                          <span className="font-mono text-xl font-black text-red-700 dark:text-red-300">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="font-mono text-lg font-black text-red-700 dark:text-red-300">
                             {attempt.ipAddress}
                           </span>
-                          <Badge variant={config.variant} className="text-sm font-bold">
+                          <Badge variant={config.variant} className="text-xs font-bold">
                             {config.label}
                           </Badge>
                         </div>
-                        <div className="text-red-600 dark:text-red-400 font-semibold">
+                        <div className="text-sm text-red-600 dark:text-red-400 font-semibold">
                           {formatDate(attempt.createdAt)}
                           {attempt.username && ` • ${attempt.username}`}
                         </div>
