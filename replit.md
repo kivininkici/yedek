@@ -446,6 +446,7 @@ Changelog:
 - July 3, 2025: Authentication redirect düzeltildi - giriş/kayıt sonrası ana sayfaya yönlendirme
 - July 3, 2025: Admin güvenlik sorusu sistemi düzeltildi - security config fallback değerler eklendi
 - July 3, 2025: /user sayfası tamamen yeniden tasarlandı - modern UI/UX, step indicator, animated background
+- July 3, 2025: Admin panel sidebar kategorize edildi - ANA/SİSTEM/KULLANICI bölümlerinde organize edildi
 - July 3, 2025: SendGrid domain authentication tamamlandı - noreply@smmkiwi.com verified
 - Şifre sıfırlama sistemi production seviyesinde çalışıyor - gerçek e-postalar gönderiliyor
 - July 3, 2025: Password reset email template güncellendi - Turkish content ve proper domain configuration
