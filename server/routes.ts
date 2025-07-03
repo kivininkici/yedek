@@ -11,7 +11,7 @@ import { sendFeedbackResponse, sendComplaintResponse, sendPasswordResetEmailNew 
 
 // Using admin session-based authentication only
 import { insertKeySchema, insertServiceSchema, insertOrderSchema, insertApiSettingsSchema } from "@shared/schema";
-import { normalUsers, users, passwordResetTokens } from "@shared/schema";
+import { normalUsers, users, passwordResetTokens, adminUsers } from "@shared/schema";
 import { nanoid } from 'nanoid';
 import { z } from "zod";
 
@@ -3578,11 +3578,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "E-posta adresi gerekli" });
       }
 
-      // E-posta doğrulama (basit admin e-posta kontrolü)
-      // OtoKiwi sisteminde sadece admin panel için şifre sıfırlama
-      const adminEmails = ['admin@smmkiwi.com', 'otokiwi@smmkiwi.com', 'support@smmkiwi.com'];
+      // Gerçek admin e-posta adreslerini database'den kontrol et
+      const adminUser = await db.select().from(adminUsers).where(eq(adminUsers.email, email.toLowerCase())).limit(1);
       
-      if (!adminEmails.includes(email.toLowerCase())) {
+      if (adminUser.length === 0 || !adminUser[0].isActive) {
         return res.status(404).json({ message: "Bu e-posta adresi admin sistemde kayıtlı değil" });
       }
 
@@ -3606,11 +3605,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       if (emailSent) {
         res.json({ 
-          message: "Şifre sıfırlama linki e-posta adresinize gönderildi",
+          message: "E-posta adresinize şifre sıfırlama bağlantısı gönderildi",
           email: email 
         });
       } else {
-        res.status(500).json({ message: "E-posta gönderilirken hata oluştu" });
+        console.error("Failed to send password reset email");
+        res.status(500).json({ message: "E-posta gönderilemedi. Lütfen daha sonra tekrar deneyin." });
       }
       
     } catch (error) {

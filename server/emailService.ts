@@ -116,7 +116,7 @@ export async function sendEmail(params: CustomEmailParams): Promise<boolean> {
             }
           ],
           from: {
-            email: 'noreply@smmkiwi.com',
+            email: params.from || 'noreply@smmkiwi.com',
             name: 'OtoKiwi'
           },
           subject: params.subject,
