@@ -3305,8 +3305,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Geri bildirim mesajı gerekli" });
       }
 
-      // If user selected "unsatisfied", redirect to complaints
-      if (satisfactionLevel === 'unsatisfied') {
+      // If user selected "dissatisfied", redirect to complaints
+      if (satisfactionLevel === 'dissatisfied') {
         return res.json({ 
           redirectToComplaints: true,
           message: "Memnun olmadığınız için üzgünüz. Şikayet formuna yönlendiriliyorsunuz."

@@ -87,7 +87,7 @@ export function FeedbackReminder({ onClose, userEmail, userName, orderId }: Feed
   };
 
   const satisfactionOptions = [
-    { value: "unsatisfied", icon: Frown, color: "text-red-400", label: "Memnun Değilim" },
+    { value: "dissatisfied", icon: Frown, color: "text-red-400", label: "Memnun Değilim" },
     { value: "neutral", icon: Meh, color: "text-yellow-400", label: "Normal" },
     { value: "satisfied", icon: Smile, color: "text-green-400", label: "Memnunum" },
   ];

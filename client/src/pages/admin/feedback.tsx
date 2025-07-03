@@ -66,7 +66,7 @@ export default function AdminFeedback() {
 
   const getSatisfactionIcon = (level?: string) => {
     switch (level) {
-      case "unsatisfied":
+      case "dissatisfied":
         return <Frown className="w-4 h-4 text-red-400" />;
       case "neutral":
         return <Meh className="w-4 h-4 text-yellow-400" />;
@@ -79,7 +79,7 @@ export default function AdminFeedback() {
 
   const getSatisfactionText = (level?: string) => {
     switch (level) {
-      case "unsatisfied":
+      case "dissatisfied":
         return "Memnun Değil";
       case "neutral":
         return "Normal";

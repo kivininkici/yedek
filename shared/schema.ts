@@ -57,6 +57,7 @@ export const normalUsers = pgTable("normal_users", {
   username: varchar("username", { length: 100 }).notNull().unique(),
   email: varchar("email", { length: 255 }).notNull().unique(),
   password: varchar("password", { length: 255 }).notNull(), // hashed password
+  avatarId: integer("avatar_id").notNull().default(1), // 1-24 arası kedi avatar ID'si
   isActive: boolean("is_active").notNull().default(true),
   createdAt: timestamp("created_at").defaultNow(),
   lastLoginAt: timestamp("last_login_at"),
