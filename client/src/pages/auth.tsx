@@ -182,55 +182,68 @@ const SuccessAnimation = ({ isVisible }: { isVisible: boolean }) => {
     <AnimatePresence>
       {isVisible && (
         <motion.div
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0 }}
-          className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none bg-black/30 backdrop-blur-sm"
         >
           <motion.div
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="relative"
+            initial={{ scale: 0.3, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.3, opacity: 0 }}
+            transition={{ duration: 0.4, ease: "backOut" }}
+            className="bg-white rounded-2xl p-8 shadow-2xl"
           >
             {/* Success checkmark */}
             <motion.svg
-              width="100"
-              height="100"
+              width="80"
+              height="80"
               viewBox="0 0 100 100"
-              className="text-blue-600"
+              className="text-green-500 mx-auto"
             >
+              <motion.circle
+                cx="50"
+                cy="50"
+                r="45"
+                fill="currentColor"
+                opacity="0.1"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ duration: 0.3, delay: 0.1 }}
+              />
               <motion.circle
                 cx="50"
                 cy="50"
                 r="45"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="4"
+                strokeWidth="3"
                 initial={{ pathLength: 0 }}
                 animate={{ pathLength: 1 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
+                transition={{ duration: 0.4, delay: 0.2 }}
               />
               <motion.path
-                d="M25 50 L40 65 L75 30"
+                d="M30 50 L43 63 L70 35"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="6"
+                strokeWidth="5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 initial={{ pathLength: 0 }}
                 animate={{ pathLength: 1 }}
-                transition={{ duration: 0.4, delay: 0.6 }}
+                transition={{ duration: 0.3, delay: 0.5 }}
               />
             </motion.svg>
-
-            {/* Ripple effect */}
-            <motion.div
-              initial={{ scale: 0, opacity: 0.8 }}
-              animate={{ scale: 3, opacity: 0 }}
-              transition={{ duration: 1, ease: "easeOut" }}
-              className="absolute inset-0 rounded-full bg-blue-200"
-            />
+            
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.7 }}
+              className="text-slate-700 text-center mt-4 font-medium"
+            >
+              Başarılı!
+            </motion.p>
           </motion.div>
         </motion.div>
       )}
