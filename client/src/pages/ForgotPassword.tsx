@@ -1,37 +1,58 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ArrowLeft, Mail, CheckCircle } from "lucide-react";
-import { Link } from "wouter";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState } from 'react';
+import { Link } from 'wouter';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, Mail, Lock, CheckCircle, AlertCircle } from 'lucide-react';
 
 export default function ForgotPassword() {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState(false);
+
+  // Floating orbs background
+  const FloatingOrbs = () => (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {[...Array(15)].map((_, i) => (
+        <motion.div
+          key={i}
+          className={`absolute rounded-full ${
+            i % 3 === 0 ? 'bg-blue-400/20' : 
+            i % 3 === 1 ? 'bg-purple-400/20' : 'bg-cyan-400/20'
+          }`}
+          style={{
+            width: Math.random() * 40 + 20,
+            height: Math.random() * 40 + 20,
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+          }}
+          animate={{
+            x: [0, Math.random() * 100 - 50],
+            y: [0, Math.random() * 100 - 50],
+            scale: [1, Math.random() + 0.5, 1],
+          }}
+          transition={{
+            duration: Math.random() * 10 + 10,
+            repeat: Infinity,
+            repeatType: "reverse",
+          }}
+        />
+      ))}
+    </div>
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError("");
-    setMessage("");
+    setError('');
+    setMessage('');
+    setSuccess(false);
 
     try {
-      const response = await fetch("/api/auth/forgot-password", {
-        method: "POST",
+      const response = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email }),
       });
@@ -40,127 +61,180 @@ export default function ForgotPassword() {
 
       if (response.ok) {
         setMessage(data.message);
-        setIsSuccess(true);
+        setSuccess(true);
       } else {
-        setError(data.message || "Bir hata oluştu");
+        setError(data.message);
       }
     } catch (error) {
-      setError("Bağlantı hatası. Lütfen tekrar deneyin.");
+      setError('Bir hata oluştu. Lütfen tekrar deneyin.');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
-      {/* Background decorations */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 relative flex items-center justify-center p-4">
+      <FloatingOrbs />
+      
+      {/* Background effects */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(59,130,246,0.15),transparent_50%)] pointer-events-none"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(147,51,234,0.15),transparent_50%)] pointer-events-none"></div>
+      
+      <motion.div
+        initial={{ opacity: 0, y: 50, scale: 0.9 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
+        className="relative w-full max-w-lg"
+      >
+        {/* Glow effect */}
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-cyan-400/20 rounded-3xl blur-3xl"></div>
+        
+        <div className="relative backdrop-blur-xl bg-gradient-to-br from-slate-800/95 via-blue-900/90 to-slate-800/95 border border-blue-400/30 shadow-2xl rounded-3xl overflow-hidden">
+          {/* Header with animated icon */}
+          <div className="relative p-12 pb-8 text-center">
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5"></div>
+            <div className="absolute top-0 left-0 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl"></div>
+            <div className="absolute bottom-0 right-0 w-24 h-24 bg-purple-500/10 rounded-full blur-xl"></div>
+            
+            <motion.div
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ delay: 0.3, duration: 0.8, type: "spring" }}
+              className="relative w-20 h-20 bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl"
+            >
+              <Lock className="w-10 h-10 text-white" />
+            </motion.div>
+            
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="text-4xl font-bold bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent mb-3"
+            >
+              Şifremi Unuttum
+            </motion.h1>
+            
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="text-lg text-gray-300 font-medium"
+            >
+              E-posta adresinizi girin, şifre sıfırlama linkini hemen gönderelim
+            </motion.p>
+          </div>
 
-      <div className="relative z-10 w-full max-w-md">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <Card className="shadow-2xl border-0 bg-white/80 backdrop-blur-lg">
-            <CardHeader className="text-center space-y-2 pb-4">
-              <div className="mx-auto w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mb-4">
-                <Mail className="w-8 h-8 text-white" />
-              </div>
-              <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Şifremi Unuttum
-              </CardTitle>
-              <CardDescription className="text-gray-600">
-                E-posta adresinizi girin, şifre sıfırlama linkini gönderelim
-              </CardDescription>
-            </CardHeader>
-
-            <CardContent className="space-y-6">
-              <AnimatePresence mode="wait">
-                {!isSuccess ? (
-                  <motion.form
-                    key="form"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    onSubmit={handleSubmit}
-                    className="space-y-4"
-                  >
-                    <div className="space-y-2">
-                      <Label
-                        htmlFor="email"
-                        className="text-sm font-medium text-gray-700"
-                      >
-                        E-posta Adresi
-                      </Label>
-                      <Input
-                        id="email"
+          <div className="px-12 pb-12">
+            <AnimatePresence mode="wait">
+              {!success ? (
+                <motion.form
+                  key="form"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  onSubmit={handleSubmit}
+                  className="space-y-8"
+                >
+                  <div className="space-y-3">
+                    <label htmlFor="email" className="block text-sm font-semibold text-gray-200 mb-3">
+                      E-posta Adresi
+                    </label>
+                    <div className="relative">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <Mail className="h-5 w-5 text-gray-400" />
+                      </div>
+                      <input
                         type="email"
-                        placeholder="mailiniz@mail.com"
+                        id="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        placeholder="mailiniz@mail.com"
+                        className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 text-lg font-medium backdrop-blur-sm"
                         required
-                        disabled={isLoading}
-                        className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
                       />
                     </div>
+                  </div>
 
+                  <AnimatePresence>
                     {error && (
-                      <Alert className="border-red-200 bg-red-50">
-                        <AlertDescription className="text-red-700">
-                          {error}
-                        </AlertDescription>
-                      </Alert>
+                      <motion.div
+                        initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                        className="flex items-center space-x-3 p-4 bg-red-500/10 border border-red-500/30 rounded-2xl text-red-300"
+                      >
+                        <AlertCircle className="w-5 h-5 flex-shrink-0" />
+                        <span className="font-medium">{error}</span>
+                      </motion.div>
                     )}
+                  </AnimatePresence>
 
-                    <Button
-                      type="submit"
-                      disabled={isLoading || !email}
-                      className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 transition-all duration-200 text-white font-medium py-2.5"
-                    >
-                      {isLoading ? (
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{
-                            duration: 1,
-                            repeat: Infinity,
-                            ease: "linear",
-                          }}
-                          className="w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2"
-                        />
-                      ) : null}
-                      {isLoading ? "Gönderiliyor..." : "Sıfırlama Linki Gönder"}
-                    </Button>
-                  </motion.form>
-                ) : (
-                  <motion.div
-                    key="success"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="text-center space-y-4"
+                  <motion.button
+                    type="submit"
+                    disabled={isLoading}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="w-full bg-gradient-to-r from-blue-500 via-purple-500 to-cyan-500 text-white font-bold py-4 px-6 rounded-2xl hover:from-blue-600 hover:via-purple-600 hover:to-cyan-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 disabled:opacity-50 text-lg shadow-xl relative overflow-hidden"
                   >
-                    <div className="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                      <CheckCircle className="w-8 h-8 text-green-600" />
-                    </div>
-                    <Alert className="border-green-200 bg-green-50">
-                      <AlertDescription className="text-green-700 text-center">
-                        {message}
-                      </AlertDescription>
-                    </Alert>
-                    <p className="text-sm text-gray-600">
-                      E-posta gelmedi mi? Spam klasörünüzü kontrol edin.
-                    </p>
+                    {isLoading && (
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: "100%" }}
+                        transition={{ duration: 2 }}
+                        className="absolute top-0 left-0 h-full bg-white/20 rounded-2xl"
+                      />
+                    )}
+                    <span className="relative z-10">
+                      {isLoading ? 'Gönderiliyor...' : 'Sıfırlama Linki Gönder'}
+                    </span>
+                  </motion.button>
+                </motion.form>
+              ) : (
+                <motion.div
+                  key="success"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="text-center space-y-6"
+                >
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                    className="w-16 h-16 bg-gradient-to-r from-green-400 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto"
+                  >
+                    <CheckCircle className="w-8 h-8 text-white" />
                   </motion.div>
-                )}
-              </AnimatePresence>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </div>
+                  
+                  <div className="space-y-3">
+                    <h3 className="text-2xl font-bold text-white">E-posta Gönderildi!</h3>
+                    <p className="text-gray-300 font-medium leading-relaxed">
+                      {message}
+                    </p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8 }}
+              className="mt-10 text-center"
+            >
+              <Link href="/auth">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="inline-flex items-center space-x-3 text-gray-300 hover:text-white transition-all duration-300 font-medium bg-white/5 hover:bg-white/10 px-6 py-3 rounded-2xl border border-white/10 hover:border-white/20"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                  <span>Giriş sayfasına dön</span>
+                </motion.button>
+              </Link>
+            </motion.div>
+          </div>
+        </div>
+      </motion.div>
     </div>
   );
 }

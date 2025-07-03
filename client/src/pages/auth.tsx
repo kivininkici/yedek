@@ -467,7 +467,7 @@ export default function Auth() {
 
             <CardContent className="px-10 pb-10 relative z-10">
               <div className="w-full">
-                <div className="grid w-full grid-cols-2 gap-2 mb-10 bg-white/10 backdrop-blur-sm rounded-2xl p-2 h-16 border border-white/20">
+                <div className="flex w-full mb-10 bg-white/10 backdrop-blur-sm rounded-2xl p-1 h-16 border border-white/20">
                   <button
                     onClick={() => setActiveTab("login")}
                     className={`w-full h-12 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center space-x-2 ${

@@ -460,6 +460,14 @@ Changelog:
 - Setup script'leri hazırlandı - hem Node.js (setup-admin.js) hem bash (create-admin.sh)
 - PostgreSQL database başarıyla kuruldu ve session store aktiv
 - OtoKiwi sistemi production seviyesinde Replit ortamında çalışıyor
+- July 3, 2025: Auth sayfası tab butonları tam genişlik yapıldı
+- Flex layout sistemi ile tab butonları artık tam satırı dolduruyor
+- Custom button implementasyonu - TabsList yerine native HTML button kullanımı
+- Forgot Password sayfası tamamen yeniden tasarlandı
+- Modern UI/UX: floating orbs, gradient effects, animasyonlar eklendi
+- Success state ile e-posta gönderim onayı gösterimi
+- Loading progress bar ve smooth animasyonlar
+- Responsive tasarım ve glassmorphism efektleri
 - July 2, 2025: cPanel Hosting Uyumlu Tam Stack Dönüşümü Tamamlandı
 - PHP/MySQL tam stack'e dönüştürüldü - Node.js bağımlılığı kaldırıldı
 - hosting/ klasöründe production-ready cPanel sistemi oluşturuldu
