@@ -136,72 +136,70 @@ export default function LoginAttempts() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       <Sidebar />
       <div className="lg:ml-64">
-        {/* GIRIŞ DENEMELERI - SAYFANIN EN TEPESINDE */}
-        <div className="p-0 m-0">
-          <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
-            <div className="p-4">
-              <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">
-                🔒 GİRİŞ DENEMELERİ
-              </h1>
-              <p className="text-slate-600 dark:text-slate-400">Admin panel güvenlik logları</p>
-            </div>
+        {/* GİRİŞ DENEMELERİ - EN ÜSTTE */}
+        <div className="bg-white dark:bg-slate-800 shadow-sm">
+          <div className="p-6 border-b border-slate-200 dark:border-slate-700">
+            <h1 className="text-4xl font-bold text-red-600 dark:text-red-400 mb-2">
+              🔐 GİRİŞ DENEMELERİ
+            </h1>
+            <p className="text-lg text-slate-700 dark:text-slate-300">Canlı güvenlik logları</p>
           </div>
-          
-          <div className="p-4">
-            {isLoading ? (
-              <div className="text-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-                <p className="mt-4 text-lg">Yükleniyor...</p>
-              </div>
-            ) : recentAttempts.length === 0 ? (
-              <div className="text-center py-12">
-                <Shield className="w-20 h-20 mx-auto mb-4 text-slate-400" />
-                <p className="text-xl text-slate-500">Giriş denemesi bulunmuyor</p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {recentAttempts.map((attempt) => {
-                  const config = attemptTypeConfig[attempt.attemptType];
-                  const Icon = config.icon;
-                  return (
-                    <div
-                      key={attempt.id}
-                      className="bg-white dark:bg-slate-700 p-4 rounded-lg border border-slate-200 dark:border-slate-600 shadow-sm hover:shadow-md transition-shadow"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          <div className={`p-3 rounded-full ${config.color}/20`}>
-                            <Icon className={`w-6 h-6 ${config.color.replace('bg-', 'text-')}`} />
+        
+        <div className="p-6">
+          {isLoading ? (
+            <div className="text-center py-16">
+              <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-red-600 mx-auto"></div>
+              <p className="mt-6 text-xl font-semibold">Yükleniyor...</p>
+            </div>
+          ) : recentAttempts.length === 0 ? (
+            <div className="text-center py-16">
+              <Shield className="w-24 h-24 mx-auto mb-6 text-slate-400" />
+              <p className="text-2xl font-bold text-slate-600">Giriş denemesi bulunmuyor</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {recentAttempts.map((attempt) => {
+                const config = attemptTypeConfig[attempt.attemptType];
+                const Icon = config.icon;
+                return (
+                  <div
+                    key={attempt.id}
+                    className="bg-slate-50 dark:bg-slate-700 p-6 rounded-xl border-2 border-slate-200 dark:border-slate-600 shadow-lg hover:shadow-xl transition-all hover:border-blue-300 dark:hover:border-blue-600"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-6">
+                        <div className={`p-4 rounded-full ${config.color}/30 border-2 ${config.color.replace('bg-', 'border-')}`}>
+                          <Icon className={`w-8 h-8 ${config.color.replace('bg-', 'text-')}`} />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-4 mb-2">
+                            <span className="font-mono text-2xl font-bold text-slate-900 dark:text-white">
+                              {attempt.ipAddress}
+                            </span>
+                            <Badge variant={config.variant} className="text-base font-bold px-3 py-1">
+                              {config.label}
+                            </Badge>
                           </div>
-                          <div>
-                            <div className="flex items-center gap-3 mb-1">
-                              <span className="font-mono text-lg font-bold text-slate-900 dark:text-white">
-                                {attempt.ipAddress}
-                              </span>
-                              <Badge variant={config.variant} className="text-sm font-medium">
-                                {config.label}
-                              </Badge>
-                            </div>
-                            <div className="text-slate-600 dark:text-slate-400">
-                              <span className="font-medium">{formatDate(attempt.createdAt)}</span>
-                              {attempt.username && (
-                                <span className="ml-2">• {attempt.username}</span>
-                              )}
-                            </div>
+                          <div className="text-lg text-slate-600 dark:text-slate-400">
+                            <span className="font-semibold">{formatDate(attempt.createdAt)}</span>
+                            {attempt.username && (
+                              <span className="ml-3">• Kullanıcı: {attempt.username}</span>
+                            )}
                           </div>
                         </div>
-                        {attempt.userAgent && (
-                          <div className="hidden lg:block text-sm text-slate-500 max-w-md truncate">
-                            {truncateUserAgent(attempt.userAgent)}
-                          </div>
-                        )}
                       </div>
+                      {attempt.userAgent && (
+                        <div className="hidden lg:block text-sm text-slate-500 max-w-lg truncate bg-white dark:bg-slate-800 p-3 rounded-lg border">
+                          {truncateUserAgent(attempt.userAgent)}
+                        </div>
+                      )}
                     </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
         </div>
 
         {/* İSTATİSTİKLER - ALTTA */}
