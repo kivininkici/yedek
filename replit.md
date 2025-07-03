@@ -443,7 +443,7 @@ Changelog:
 - Admin authentication sistemi tamamen güvenlik odaklı hale getirildi
 - July 3, 2025: Final Replit Agent'tan Replit ortamına migration başarıyla tamamlandı
 - July 3, 2025: Sidebar animasyon titreme sorunları düzeltildi - daha yumuşak animasyonlar
-- July 3, 2025: Giriş Denemeleri sayfası tamamen yeniden tasarlandı - kompakt design, sayfanın yukarısında konumlandırıldı
+- July 3, 2025: Giriş Denemeleri sayfası tamamen yeniden tasarlandı - giriş denemeleri tablosu sayfanın en üstüne taşındı, istatistikler alta konumlandırıldı
 - July 3, 2025: Modern UI/UX iyileştirmeleri - card-based compact layout, animated loading states, glassmorphism effects
 - July 3, 2025: SendGrid e-posta entegrasyonu tamamlandı - şifre sıfırlama sistemi aktiv
 - July 3, 2025: Authentication redirect düzeltildi - giriş/kayıt sonrası ana sayfaya yönlendirme
