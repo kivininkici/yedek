@@ -10,36 +10,48 @@ export default function ForgotPassword() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
-  // Floating orbs background
-  const FloatingOrbs = () => (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {[...Array(15)].map((_, i) => (
-        <motion.div
-          key={i}
-          className={`absolute rounded-full ${
-            i % 3 === 0 ? 'bg-blue-400/20' : 
-            i % 3 === 1 ? 'bg-purple-400/20' : 'bg-cyan-400/20'
-          }`}
-          style={{
-            width: Math.random() * 40 + 20,
-            height: Math.random() * 40 + 20,
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-          }}
-          animate={{
-            x: [0, Math.random() * 100 - 50],
-            y: [0, Math.random() * 100 - 50],
-            scale: [1, Math.random() + 0.5, 1],
-          }}
-          transition={{
-            duration: Math.random() * 10 + 10,
-            repeat: Infinity,
-            repeatType: "reverse",
-          }}
-        />
-      ))}
-    </div>
-  );
+  // Floating orbs background with fixed positions and independent animations
+  const FloatingOrbs = () => {
+    const orbData = Array.from({ length: 15 }, (_, i) => ({
+      id: i,
+      size: 30 + (i % 3) * 15,
+      x: (i * 7) % 100,
+      y: (i * 13) % 100,
+      color: i % 3 === 0 ? 'bg-blue-400/15' : i % 3 === 1 ? 'bg-purple-400/15' : 'bg-cyan-400/15',
+      duration: 15 + (i % 5) * 3,
+      delay: i * 0.5
+    }));
+
+    return (
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        {orbData.map((orb) => (
+          <motion.div
+            key={orb.id}
+            className={`absolute rounded-full ${orb.color} blur-sm`}
+            style={{
+              width: orb.size,
+              height: orb.size,
+              left: `${orb.x}%`,
+              top: `${orb.y}%`,
+            }}
+            animate={{
+              x: [0, 30, -20, 40, 0],
+              y: [0, -40, 30, -20, 0],
+              scale: [1, 1.2, 0.8, 1.1, 1],
+              opacity: [0.3, 0.6, 0.4, 0.7, 0.3],
+            }}
+            transition={{
+              duration: orb.duration,
+              repeat: Infinity,
+              repeatType: "loop",
+              delay: orb.delay,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </div>
+    );
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,25 +88,25 @@ export default function ForgotPassword() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 relative flex items-center justify-center p-4">
       <FloatingOrbs />
       
-      {/* Background effects */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(59,130,246,0.15),transparent_50%)] pointer-events-none"></div>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(147,51,234,0.15),transparent_50%)] pointer-events-none"></div>
+      {/* Background effects - fixed and independent */}
+      <div className="fixed inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(59,130,246,0.12),transparent_50%)] pointer-events-none z-0"></div>
+      <div className="fixed inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(147,51,234,0.12),transparent_50%)] pointer-events-none z-0"></div>
       
       <motion.div
         initial={{ opacity: 0, y: 50, scale: 0.9 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
-        className="relative w-full max-w-lg"
+        className="relative w-full max-w-lg z-10"
       >
-        {/* Glow effect */}
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-cyan-400/20 rounded-3xl blur-3xl"></div>
+        {/* Glow effect - static */}
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-400/15 via-purple-400/15 to-cyan-400/15 rounded-3xl blur-3xl pointer-events-none"></div>
         
-        <div className="relative backdrop-blur-xl bg-gradient-to-br from-slate-800/95 via-blue-900/90 to-slate-800/95 border border-blue-400/30 shadow-2xl rounded-3xl overflow-hidden">
+        <div className="relative backdrop-blur-xl bg-gradient-to-br from-slate-800/95 via-blue-900/90 to-slate-800/95 border border-blue-400/30 shadow-2xl rounded-3xl overflow-hidden z-20">
           {/* Header with animated icon */}
           <div className="relative p-12 pb-8 text-center">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5"></div>
-            <div className="absolute top-0 left-0 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl"></div>
-            <div className="absolute bottom-0 right-0 w-24 h-24 bg-purple-500/10 rounded-full blur-xl"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 pointer-events-none"></div>
+            <div className="absolute top-0 left-0 w-32 h-32 bg-blue-500/8 rounded-full blur-2xl pointer-events-none"></div>
+            <div className="absolute bottom-0 right-0 w-24 h-24 bg-purple-500/8 rounded-full blur-xl pointer-events-none"></div>
             
             <motion.div
               initial={{ scale: 0, rotate: -180 }}
