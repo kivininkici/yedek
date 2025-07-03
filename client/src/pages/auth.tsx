@@ -604,7 +604,7 @@ export default function Auth() {
                                       type="email"
                                       disabled={isRegisterLoading}
                                       className="h-14 text-lg bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-purple-400 focus:ring-purple-400/20 rounded-2xl backdrop-blur-sm transition-all duration-300 hover:bg-white/15"
-                                      placeholder="E-posta adresinizi girin"
+                                      placeholder="mailiniz@mail.com"
                                     />
                                   </FormControl>
                                   <FormMessage className="text-red-400" />

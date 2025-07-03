@@ -3724,6 +3724,59 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Normal User Forgot Password Endpoint (sadece kayıtlı normal kullanıcılar için)
+  app.post("/api/auth/forgot-password", async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: "E-posta adresi gerekli" });
+      }
+
+      // Normal users tablosunda e-posta kontrol et
+      const normalUser = await db.select()
+        .from(normalUsers)
+        .where(eq(normalUsers.email, email.toLowerCase()))
+        .limit(1);
+      
+      if (normalUser.length === 0 || !normalUser[0].isActive) {
+        return res.status(404).json({ message: "Bu e-posta adresi sistemde kayıtlı değil" });
+      }
+
+      // Reset token oluştur
+      const resetToken = nanoid(64); // 64 karakter güvenli token
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 saat geçerlilik
+
+      // Token'ı database'e kaydet
+      await db.insert(passwordResetTokens).values({
+        email,
+        token: resetToken,
+        expiresAt,
+        isUsed: false
+      });
+
+      // Base URL'i oluştur
+      const baseUrl = req.protocol + '://' + req.get('host');
+      
+      // E-posta gönder
+      const emailSent = await sendPasswordResetEmailNew(email, resetToken, baseUrl);
+      
+      if (emailSent) {
+        res.json({ 
+          message: "E-posta adresinize şifre sıfırlama bağlantısı gönderildi",
+          email: email 
+        });
+      } else {
+        console.error("Failed to send password reset email");
+        res.status(500).json({ message: "E-posta gönderilemedi. Lütfen daha sonra tekrar deneyin." });
+      }
+      
+    } catch (error) {
+      console.error("Normal user forgot password error:", error);
+      res.status(500).json({ message: "Sunucu hatası" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

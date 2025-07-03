@@ -22,7 +22,7 @@ export default function ForgotPassword() {
     setMessage('');
 
     try {
-      const response = await fetch('/api/admin/forgot-password', {
+      const response = await fetch('/api/auth/forgot-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
