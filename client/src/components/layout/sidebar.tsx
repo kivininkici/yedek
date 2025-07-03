@@ -1,445 +1,495 @@
-import { Link, useLocation } from "wouter";
 import { useState } from "react";
+import { Link, useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 import {
   LayoutDashboard,
   Key,
   Settings,
   Users,
+  Package,
+  FileText,
   Activity,
-  Server,
+  ShoppingCart,
+  Search,
+  CreditCard,
+  Shield,
   LogOut,
+  ChevronLeft,
+  ChevronRight,
+  Crown,
+  TrendingUp,
+  Database,
+  Globe,
+  Bell,
   Menu,
   X,
-  ChevronRight,
-  ShoppingCart,
-  FileText,
-  Cog,
-  Download,
-  Search,
-  BarChart3,
-  DollarSign,
-  Shield,
-  MessageCircle,
-  Lock,
-  Crown,
-  Zap,
-  Database,
-  Layers,
-  Eye,
-  Globe,
-  Target,
-  Sparkles,
   Star,
-  ShoppingBag
+  Zap,
+  Target,
+  BarChart3,
+  UserCheck,
+  MessageSquare,
+  AlertTriangle,
+  Lock,
+  PieChart,
+  Calendar,
+  Sparkles
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 
-// Modern Navigation Structure
-const navigationSections = [
+interface SidebarProps {
+  className?: string;
+}
+
+interface NavItem {
+  title: string;
+  href: string;
+  icon: any;
+  badge?: string;
+  color?: string;
+  isNew?: boolean;
+  isHot?: boolean;
+}
+
+const navSections = [
   {
-    title: "Ana",
+    title: "Ana Panel",
     items: [
-      { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard, badge: null },
-      { name: "Key Yönetimi", href: "/admin/keys", icon: Key, badge: "hot" },
-      { name: "Siparişler", href: "/admin/orders", icon: ShoppingCart, badge: null },
+      {
+        title: "Dashboard",
+        href: "/admin/dashboard",
+        icon: LayoutDashboard,
+        color: "text-blue-400",
+        isHot: true
+      },
+      {
+        title: "Canlı İstatistikler",
+        href: "/admin/key-stats",
+        icon: TrendingUp,
+        color: "text-emerald-400",
+        badge: "LIVE"
+      },
     ]
   },
   {
-    title: "Sistem",
+    title: "Yönetim",
     items: [
-      { name: "Servisler", href: "/admin/services", icon: Globe, badge: null },
-      { name: "API Yönetimi", href: "/admin/api-management", icon: Database, badge: null },
-      { name: "API Bakiyeleri", href: "/admin/api-balances", icon: DollarSign, badge: "new" },
+      {
+        title: "Key Yönetimi",
+        href: "/admin/keys",
+        icon: Key,
+        color: "text-purple-400"
+      },
+      {
+        title: "Servis Yönetimi",
+        href: "/admin/services",
+        icon: Package,
+        color: "text-indigo-400"
+      },
+      {
+        title: "API Yönetimi",
+        href: "/admin/api-management",
+        icon: Database,
+        color: "text-cyan-400",
+        isNew: true
+      },
+      {
+        title: "API Bakiyeleri",
+        href: "/admin/api-balances",
+        icon: CreditCard,
+        color: "text-green-400",
+        badge: "₺"
+      },
     ]
   },
   {
-    title: "Kullanıcı",
+    title: "Kullanıcılar & Siparişler",
     items: [
-      { name: "Kullanıcılar", href: "/admin/users", icon: Users, badge: null },
-      { name: "Geri Dönüşler", href: "/admin/feedback", icon: MessageCircle, badge: null },
-      { name: "Şikayetler", href: "/admin/complaints", icon: MessageCircle, badge: null },
+      {
+        title: "Kullanıcı Yönetimi",
+        href: "/admin/users",
+        icon: Users,
+        color: "text-orange-400"
+      },
+      {
+        title: "Sipariş Yönetimi",
+        href: "/admin/orders",
+        icon: ShoppingCart,
+        color: "text-rose-400"
+      },
+      {
+        title: "Sipariş Sorgulama",
+        href: "/admin/order-search",
+        icon: Search,
+        color: "text-yellow-400"
+      },
     ]
   },
   {
-    title: "Güvenlik",
+    title: "Güvenlik & Loglar",
     items: [
-      { name: "Giriş Denemeleri", href: "/admin/login-attempts", icon: Shield, badge: null },
-      { name: "Master Şifre", href: "/admin/master-password-management", icon: Lock, badge: null },
-      { name: "Şifre Yönetimi", href: "/admin/password-management", icon: Lock, badge: null },
+      {
+        title: "Giriş Denemeleri",
+        href: "/admin/login-attempts",
+        icon: Shield,
+        color: "text-red-400",
+        badge: "SEC"
+      },
+      {
+        title: "Sistem Logları",
+        href: "/admin/logs",
+        icon: Activity,
+        color: "text-gray-400"
+      },
+      {
+        title: "Master Şifre",
+        href: "/admin/master-password-management",
+        icon: Lock,
+        color: "text-red-500",
+        isHot: true
+      },
     ]
   },
   {
-    title: "Analiz",
+    title: "Destek & Ayarlar",
     items: [
-      { name: "Key İstatistikleri", href: "/admin/key-stats", icon: BarChart3, badge: null },
-      { name: "Sipariş Sorgula", href: "/admin/order-search", icon: Search, badge: null },
-      { name: "Loglar", href: "/admin/logs", icon: FileText, badge: null },
-    ]
-  },
-  {
-    title: "Ayarlar",
-    items: [
-      { name: "Sistem Ayarları", href: "/admin/settings", icon: Cog, badge: null },
+      {
+        title: "Geri Bildirimler",
+        href: "/admin/feedback",
+        icon: MessageSquare,
+        color: "text-blue-300"
+      },
+      {
+        title: "Şikayetler",
+        href: "/admin/complaints",
+        icon: AlertTriangle,
+        color: "text-amber-400"
+      },
+      {
+        title: "Sistem Ayarları",
+        href: "/admin/settings",
+        icon: Settings,
+        color: "text-slate-400"
+      },
     ]
   }
 ];
 
-// Modern Navigation Item Component
-const NavigationItem = ({ item, isActive }: { item: any, isActive: boolean }) => (
-  <Link href={item.href}>
-    <motion.div
-      className={`
-        relative flex items-center px-4 py-3 mx-2 rounded-xl transition-all duration-300 group cursor-pointer
-        ${isActive 
-          ? 'bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-400/30 text-white shadow-lg' 
-          : 'hover:bg-white/5 text-white/70 hover:text-white'
-        }
-      `}
-      whileHover={{ x: 5, scale: 1.02 }}
-      whileTap={{ scale: 0.98 }}
-    >
-      {/* Active indicator */}
-      {isActive && (
-        <motion.div
-          className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-400 to-purple-400 rounded-r-full"
-          layoutId="activeIndicator"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        />
-      )}
-      
-      <motion.div
-        className={`
-          w-10 h-10 rounded-lg flex items-center justify-center mr-3 transition-all duration-300
-          ${isActive 
-            ? 'bg-gradient-to-r from-blue-500 to-purple-500 shadow-lg' 
-            : 'bg-white/10 group-hover:bg-white/20'
-          }
-        `}
-        whileHover={{ rotate: 5, scale: 1.1 }}
-      >
-        <item.icon className="w-5 h-5" />
-      </motion.div>
-      
-      <span className="font-medium flex-1">{item.name}</span>
-      
-      {/* Badge */}
-      {item.badge && (
-        <Badge 
-          className={`
-            text-xs px-2 py-1 ml-2
-            ${item.badge === 'hot' ? 'bg-red-500/20 text-red-300 border-red-400/30' : ''}
-            ${item.badge === 'new' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-400/30' : ''}
-          `}
-        >
-          {item.badge === 'hot' ? '🔥' : item.badge === 'new' ? '✨' : item.badge}
-        </Badge>
-      )}
-      
-      {/* Hover arrow */}
-      <ChevronRight className={`w-4 h-4 transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-50'}`} />
-    </motion.div>
-  </Link>
-);
-
-// Section Header Component
-const SectionHeader = ({ title }: { title: string }) => (
-  <motion.div
-    className="px-6 py-3 mt-8 first:mt-6"
-    initial={{ opacity: 0, x: -20 }}
-    animate={{ opacity: 1, x: 0 }}
-    transition={{ duration: 0.5 }}
-  >
-    <h3 className="text-xs font-bold text-white/40 uppercase tracking-wider">{title}</h3>
-    <div className="w-8 h-0.5 bg-gradient-to-r from-blue-400 to-transparent mt-2 rounded-full" />
-  </motion.div>
-);
-
-export default function Sidebar() {
+export default function Sidebar({ className }: SidebarProps) {
   const [location] = useLocation();
-  const { admin, logout } = useAdminAuth();
-  const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const { logout } = useAdminAuth();
 
   const handleLogout = async () => {
     try {
       await logout();
-      window.location.href = "/admin/login";
     } catch (error) {
       console.error("Logout error:", error);
     }
   };
 
-  // Mobile Toggle Button
-  const MobileToggle = () => (
-    <Button
-      onClick={() => setIsMobileOpen(!isMobileOpen)}
-      className="lg:hidden fixed top-4 left-4 z-50 bg-black/20 backdrop-blur-xl border border-white/20 hover:bg-black/30"
-      size="sm"
-    >
-      {isMobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-    </Button>
-  );
-
-  // Desktop Sidebar
-  const DesktopSidebar = () => (
-    <motion.aside
-      className={`
-        hidden lg:flex fixed left-0 top-0 h-full bg-black/30 backdrop-blur-2xl border-r border-white/10 z-40 flex-col
-        ${isCollapsed ? 'w-20' : 'w-80'}
-      `}
-      initial={{ x: -100, opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
-    >
+  const SidebarContent = () => (
+    <div className="h-full flex flex-col bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 border-r border-slate-700/50">
       {/* Header */}
-      <div className="p-6 border-b border-white/10">
+      <div className="p-6 border-b border-slate-700/50">
         <div className="flex items-center justify-between">
-          {!isCollapsed && (
-            <motion.div
-              className="flex items-center space-x-3"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-            >
-              <motion.div
-                className="w-12 h-12 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-2xl"
-                animate={{ 
-                  boxShadow: [
-                    "0 0 20px rgba(59, 130, 246, 0.3)",
-                    "0 0 30px rgba(147, 51, 234, 0.4)",
-                    "0 0 20px rgba(236, 72, 153, 0.3)"
-                  ]
-                }}
-                transition={{ duration: 3, repeat: Infinity }}
-              >
-                <Crown className="w-6 h-6 text-white" />
-              </motion.div>
-              <div>
-                <h1 className="text-xl font-bold text-white">OtoKiwi</h1>
-                <p className="text-sm text-white/60">Admin Panel</p>
+          <motion.div
+            className="flex items-center space-x-3"
+            whileHover={{ scale: 1.02 }}
+          >
+            <div className="relative">
+              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25">
+                <Crown className="w-5 h-5 text-white" />
               </div>
-            </motion.div>
-          )}
+              <motion.div
+                className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-slate-900"
+                animate={{
+                  scale: [1, 1.2, 1],
+                  opacity: [1, 0.8, 1]
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+            </div>
+            <AnimatePresence>
+              {!collapsed && (
+                <motion.div
+                  initial={{ opacity: 0, width: 0 }}
+                  animate={{ opacity: 1, width: "auto" }}
+                  exit={{ opacity: 0, width: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden"
+                >
+                  <h1 className="text-xl font-bold text-white">OtoKiwi</h1>
+                  <div className="flex items-center space-x-2">
+                    <p className="text-xs text-slate-400">Admin Panel</p>
+                    <Badge variant="secondary" className="text-xs bg-blue-500/20 text-blue-300 border-blue-500/30">
+                      Pro
+                    </Badge>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
+          
           <Button
-            onClick={() => setIsCollapsed(!isCollapsed)}
             variant="ghost"
             size="sm"
-            className="hover:bg-white/10 text-white/70"
+            onClick={() => setCollapsed(!collapsed)}
+            className="hidden lg:flex text-slate-400 hover:text-white hover:bg-slate-700/50 w-8 h-8 p-0"
           >
-            <ChevronRight className={`w-4 h-4 transition-transform duration-300 ${isCollapsed ? '' : 'rotate-180'}`} />
+            {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+          </Button>
+          
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setMobileOpen(false)}
+            className="lg:hidden text-slate-400 hover:text-white hover:bg-slate-700/50 w-8 h-8 p-0"
+          >
+            <X className="w-4 h-4" />
           </Button>
         </div>
       </div>
 
       {/* Navigation */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden py-4">
-        <AnimatePresence>
-          {navigationSections.map((section, sectionIndex) => (
-            <motion.div
-              key={section.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: sectionIndex * 0.1 }}
-            >
-              {!isCollapsed && <SectionHeader title={section.title} />}
-              <div className="space-y-1">
-                {section.items.map((item) => (
-                  <NavigationItem
-                    key={item.name}
-                    item={item}
-                    isActive={location === item.href || location.startsWith(item.href + '/')}
-                  />
-                ))}
-              </div>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </div>
-
-      {/* User Profile & Logout */}
-      <div className="p-4 border-t border-white/10">
-        {!isCollapsed ? (
-          <motion.div
-            className="bg-white/5 rounded-2xl p-4 border border-white/10"
-            whileHover={{ scale: 1.02 }}
-          >
-            <div className="flex items-center space-x-3 mb-3">
-              <Avatar className="w-10 h-10 border-2 border-blue-400/30">
-                <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold">
-                  {admin?.username?.charAt(0).toUpperCase() || 'A'}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-white truncate">
-                  {admin?.username || 'Admin'}
-                </p>
-                <p className="text-xs text-white/60">Yönetici</p>
-              </div>
-              <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-400/30 text-xs">
-                Online
-              </Badge>
+      <div className="flex-1 overflow-y-auto p-4 space-y-6">
+        {navSections.map((section, sectionIndex) => (
+          <div key={section.title}>
+            <AnimatePresence>
+              {!collapsed && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.2, delay: sectionIndex * 0.05 }}
+                  className="overflow-hidden"
+                >
+                  <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3 px-2">
+                    {section.title}
+                  </h3>
+                </motion.div>
+              )}
+            </AnimatePresence>
+            
+            <div className="space-y-1">
+              {section.items.map((item, itemIndex) => {
+                const isActive = location === item.href;
+                const Icon = item.icon;
+                
+                return (
+                  <motion.div
+                    key={item.href}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: (sectionIndex * 0.1) + (itemIndex * 0.05) }}
+                  >
+                    <Link href={item.href}>
+                      <motion.div
+                        className={cn(
+                          "relative group flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-all duration-200 cursor-pointer",
+                          isActive
+                            ? "bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 shadow-lg shadow-blue-500/10"
+                            : "hover:bg-slate-700/30 hover:border hover:border-slate-600/50"
+                        )}
+                        whileHover={{ scale: 1.02, x: 4 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        {/* Active indicator */}
+                        {isActive && (
+                          <motion.div
+                            className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-gradient-to-b from-blue-400 to-purple-400 rounded-r-full"
+                            layoutId="activeIndicator"
+                          />
+                        )}
+                        
+                        <div className={cn(
+                          "flex items-center justify-center w-8 h-8 rounded-lg transition-colors",
+                          isActive
+                            ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg"
+                            : `${item.color} group-hover:bg-slate-700 group-hover:text-white`
+                        )}>
+                          <Icon className="w-4 h-4" />
+                        </div>
+                        
+                        <AnimatePresence>
+                          {!collapsed && (
+                            <motion.div
+                              initial={{ opacity: 0, width: 0 }}
+                              animate={{ opacity: 1, width: "auto" }}
+                              exit={{ opacity: 0, width: 0 }}
+                              transition={{ duration: 0.2 }}
+                              className="flex-1 overflow-hidden"
+                            >
+                              <div className="flex items-center justify-between">
+                                <span className={cn(
+                                  "text-sm font-medium transition-colors",
+                                  isActive ? "text-white" : "text-slate-300 group-hover:text-white"
+                                )}>
+                                  {item.title}
+                                </span>
+                                
+                                <div className="flex items-center space-x-1">
+                                  {item.badge && (
+                                    <Badge
+                                      variant="secondary"
+                                      className={cn(
+                                        "text-xs px-1.5 py-0.5 h-5",
+                                        isActive
+                                          ? "bg-white/20 text-white"
+                                          : "bg-slate-700 text-slate-300"
+                                      )}
+                                    >
+                                      {item.badge}
+                                    </Badge>
+                                  )}
+                                  
+                                  {"isNew" in item && item.isNew && (
+                                    <motion.div
+                                      animate={{ scale: [1, 1.1, 1] }}
+                                      transition={{ duration: 2, repeat: Infinity }}
+                                    >
+                                      <Badge className="text-xs px-1.5 py-0.5 h-5 bg-green-500 text-white">
+                                        YENİ
+                                      </Badge>
+                                    </motion.div>
+                                  )}
+                                  
+                                  {"isHot" in item && item.isHot && (
+                                    <motion.div
+                                      animate={{ rotate: [0, 10, -10, 0] }}
+                                      transition={{ duration: 2, repeat: Infinity }}
+                                    >
+                                      <Badge className="text-xs px-1.5 py-0.5 h-5 bg-red-500 text-white">
+                                        🔥
+                                      </Badge>
+                                    </motion.div>
+                                  )}
+                                </div>
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </motion.div>
+                    </Link>
+                  </motion.div>
+                );
+              })}
             </div>
-            <Button
-              onClick={handleLogout}
-              className="w-full bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-400/30"
-              size="sm"
-            >
-              <LogOut className="w-4 h-4 mr-2" />
-              Çıkış Yap
-            </Button>
-          </motion.div>
-        ) : (
-          <motion.div className="space-y-2">
-            <Avatar className="w-10 h-10 mx-auto border-2 border-blue-400/30">
-              <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold">
-                {admin?.username?.charAt(0).toUpperCase() || 'A'}
-              </AvatarFallback>
-            </Avatar>
-            <Button
-              onClick={handleLogout}
-              variant="ghost"
-              size="sm"
-              className="w-full hover:bg-red-500/20 text-red-300"
-            >
-              <LogOut className="w-4 h-4" />
-            </Button>
-          </motion.div>
-        )}
+            
+            {sectionIndex < navSections.length - 1 && (
+              <Separator className="my-4 bg-slate-700/50" />
+            )}
+          </div>
+        ))}
       </div>
 
-      {/* Buy Button */}
-      <div className="p-4">
-        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+      {/* Footer */}
+      <div className="p-4 border-t border-slate-700/50">
+        <motion.div
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+        >
           <Button
-            onClick={() => window.open('https://www.itemsatis.com/p/KiwiPazari', '_blank')}
-            className="w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-semibold shadow-lg"
+            onClick={handleLogout}
+            variant="ghost"
+            className={cn(
+              "w-full justify-start text-slate-300 hover:text-white hover:bg-red-500/20 hover:border-red-500/30 border border-transparent transition-all",
+              collapsed ? "justify-center px-0" : "px-3"
+            )}
           >
-            <ShoppingBag className="w-4 h-4 mr-2" />
-            {isCollapsed ? '' : 'Satın Al'}
+            <LogOut className="w-4 h-4" />
+            <AnimatePresence>
+              {!collapsed && (
+                <motion.span
+                  initial={{ opacity: 0, width: 0 }}
+                  animate={{ opacity: 1, width: "auto" }}
+                  exit={{ opacity: 0, width: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="ml-3 overflow-hidden"
+                >
+                  Çıkış Yap
+                </motion.span>
+              )}
+            </AnimatePresence>
           </Button>
         </motion.div>
+        
+        <AnimatePresence>
+          {!collapsed && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.2 }}
+              className="mt-3 text-center overflow-hidden"
+            >
+              <p className="text-xs text-slate-500">
+                OtoKiwi Admin v2.1
+              </p>
+              <div className="flex items-center justify-center space-x-1 mt-1">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span className="text-xs text-green-400">Sistem Aktif</span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </motion.aside>
-  );
-
-  // Mobile Sidebar
-  const MobileSidebar = () => (
-    <AnimatePresence>
-      {isMobileOpen && (
-        <>
-          {/* Backdrop */}
-          <motion.div
-            className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setIsMobileOpen(false)}
-          />
-          
-          {/* Mobile Sidebar */}
-          <motion.aside
-            className="lg:hidden fixed left-0 top-0 h-full w-80 bg-black/40 backdrop-blur-2xl border-r border-white/10 z-50 flex flex-col"
-            initial={{ x: -320, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -320, opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-          >
-            {/* Mobile Header */}
-            <div className="p-6 border-b border-white/10">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-2xl">
-                    <Crown className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h1 className="text-xl font-bold text-white">OtoKiwi</h1>
-                    <p className="text-sm text-white/60">Admin Panel</p>
-                  </div>
-                </div>
-                <Button
-                  onClick={() => setIsMobileOpen(false)}
-                  variant="ghost"
-                  size="sm"
-                  className="hover:bg-white/10 text-white/70"
-                >
-                  <X className="w-5 h-5" />
-                </Button>
-              </div>
-            </div>
-
-            {/* Mobile Navigation */}
-            <div className="flex-1 overflow-y-auto py-4">
-              {navigationSections.map((section) => (
-                <div key={section.title}>
-                  <SectionHeader title={section.title} />
-                  <div className="space-y-1">
-                    {section.items.map((item) => (
-                      <div key={item.name} onClick={() => setIsMobileOpen(false)}>
-                        <NavigationItem
-                          item={item}
-                          isActive={location === item.href || location.startsWith(item.href + '/')}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Mobile User Profile */}
-            <div className="p-4 border-t border-white/10">
-              <div className="bg-white/5 rounded-2xl p-4 border border-white/10 mb-4">
-                <div className="flex items-center space-x-3 mb-3">
-                  <Avatar className="w-10 h-10 border-2 border-blue-400/30">
-                    <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold">
-                      {admin?.username?.charAt(0).toUpperCase() || 'A'}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold text-white">
-                      {admin?.username || 'Admin'}
-                    </p>
-                    <p className="text-xs text-white/60">Yönetici</p>
-                  </div>
-                  <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-400/30">
-                    Online
-                  </Badge>
-                </div>
-                <Button
-                  onClick={handleLogout}
-                  className="w-full bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-400/30"
-                  size="sm"
-                >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Çıkış Yap
-                </Button>
-              </div>
-              
-              <Button
-                onClick={() => window.open('https://www.itemsatis.com/p/KiwiPazari', '_blank')}
-                className="w-full bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-semibold shadow-lg"
-              >
-                <ShoppingBag className="w-4 h-4 mr-2" />
-                Satın Al
-              </Button>
-            </div>
-          </motion.aside>
-        </>
-      )}
-    </AnimatePresence>
+    </div>
   );
 
   return (
     <>
-      <MobileToggle />
-      <DesktopSidebar />
-      <MobileSidebar />
+      {/* Desktop Sidebar */}
+      <motion.aside
+        className={cn(
+          "hidden lg:flex flex-col h-screen sticky top-0 z-40 transition-all duration-300",
+          collapsed ? "w-20" : "w-80",
+          className
+        )}
+        initial={false}
+        animate={{ width: collapsed ? 80 : 320 }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+      >
+        <SidebarContent />
+      </motion.aside>
+
+      {/* Mobile Menu Button */}
+      <Button
+        onClick={() => setMobileOpen(true)}
+        className="lg:hidden fixed top-4 left-4 z-50 w-10 h-10 p-0 bg-slate-900/90 backdrop-blur-sm border border-slate-700/50 hover:bg-slate-800"
+      >
+        <Menu className="w-5 h-5 text-white" />
+      </Button>
+
+      {/* Mobile Sidebar */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+              onClick={() => setMobileOpen(false)}
+            />
+            <motion.aside
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="lg:hidden fixed top-0 left-0 w-80 h-screen z-50"
+            >
+              <SidebarContent />
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
     </>
   );
 }

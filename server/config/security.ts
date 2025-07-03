@@ -17,25 +17,29 @@ export const ADMIN_CREDENTIALS = {
 // Build security questions array - fallback to default if env vars not set
 export const SECURITY_QUESTIONS = [
   {
-    question: "Kiwi'nin doğum tarihi nedir? (dd/mm/yyyy formatında)",
-    answer: "29/05/2020",
+    question: "Memleketiniz Neresi?",
+    answer: "giresun"
   },
   {
-    question: "Kiwi'nin annesinin adı nedir?",
-    answer: "Kadife",
+    question: "Doğduğunuz Şehir Neresi?",
+    answer: "bursa"
   },
   {
-    question: "Kiwi'nin annesinin kızlık soyadı nedir?",
-    answer: "Puvu",
+    question: "İlk Gittiğiniz Ülke?",
+    answer: "yunanistan"
   },
   {
-    question: "Kiwi'nin babasının adı nedir?",
-    answer: "Bulut",
+    question: "Memleketin Neyle Meşhur?",
+    answer: "fındık"
   },
   {
-    question: "Kiwi'nin babasının soyadı nedir?",
-    answer: "Puvu",
+    question: "Doğduğun Şehir Neyle Meşhur?",
+    answer: "i̇skender"
   },
+  {
+    question: "Gittiğin İkinci Ülke?",
+    answer: "gürcistan"
+  }
 ];
 
 // Get random security question
