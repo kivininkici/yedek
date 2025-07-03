@@ -1,8 +1,10 @@
-import { Resend } from 'resend';
+import { MailerSend, EmailParams, Sender, Recipient } from 'mailersend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const mailerSend = new MailerSend({
+  apiKey: process.env.MAILERSEND_API_KEY || '',
+});
 
-interface EmailParams {
+interface CustomEmailParams {
   to: string;
   from: string;
   subject: string;
@@ -10,29 +12,28 @@ interface EmailParams {
   html?: string;
 }
 
-export async function sendEmail(params: EmailParams): Promise<boolean> {
-  if (!process.env.RESEND_API_KEY) {
-    console.error('Resend API key not configured');
+export async function sendEmail(params: CustomEmailParams): Promise<boolean> {
+  if (!process.env.MAILERSEND_API_KEY) {
+    console.error('MailerSend API key not configured');
     return false;
   }
 
   try {
-    const { data, error } = await resend.emails.send({
-      from: params.from,
-      to: params.to,
-      subject: params.subject,
-      html: params.html || params.text || '',
-    });
+    const sentFrom = new Sender('noreply@trial-k68zxl24xz7l9yjr.mlsender.net', 'OtoKiwi');
+    const recipients = [new Recipient(params.to, 'Kullanıcı')];
     
-    if (error) {
-      console.error('Resend email error:', error);
-      return false;
-    }
+    const emailParams = new EmailParams()
+      .setFrom(sentFrom)
+      .setTo(recipients)
+      .setSubject(params.subject)
+      .setHtml(params.html || params.text || '')
+      .setText(params.text || params.html || '');
 
-    console.log('Email sent successfully to:', params.to, 'ID:', data?.id);
+    const response = await mailerSend.email.send(emailParams);
+    console.log('Email sent successfully to:', params.to, 'Response:', response);
     return true;
   } catch (error) {
-    console.error('Resend email error:', error);
+    console.error('MailerSend email error:', error);
     return false;
   }
 }
