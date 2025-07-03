@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Şifre Sıfırlama</title>
+<style>
+  body {
+    margin: 0; padding: 0; background-color: #f0f2f5; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  table {
+    border-collapse: collapse;
+  }
+  .container {
+    max-width: 600px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+  .header {
+    background: linear-gradient(90deg, #4f46e5, #6366f1);
+    padding: 30px; text-align: center; color: white;
+  }
+  .header h1 {
+    margin: 0; font-size: 26px;
+  }
+  .content {
+    padding: 40px 30px; color: #333;
+    font-size: 16px; line-height: 1.6;
+  }
+  .content p {
+    margin-bottom: 20px;
+  }
+  .btn {
+    display: inline-block;
+    background-color: #4f46e5;
+    color: white;
+    padding: 15px 40px;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 18px;
+    box-shadow: 0 8px 15px rgba(79, 70, 229, 0.3);
+    transition: background-color 0.3s ease;
+  }
+  .btn:hover {
+    background-color: #4338ca;
+  }
+  .footer {
+    background-color: #f9fafb;
+    color: #6b7280;
+    font-size: 13px;
+    padding: 20px 30px;
+    text-align: center;
+  }
+  @media (max-width: 620px) {
+    .container {
+      margin: 20px;
+    }
+    .content {
+      padding: 30px 20px;
+      font-size: 15px;
+    }
+    .btn {
+      width: 100%;
+      text-align: center;
+      padding: 15px 0;
+      font-size: 18px;
+    }
+  }
+</style>
+</head>
+<body>
+  <table class="container" role="presentation" width="100%" cellpadding="0" cellspacing="0" aria-label="Şifre sıfırlama e-postası">
+    <tr>
+      <td class="header">
+        <h1>OtoKiwi - Şifre Sıfırlama</h1>
+      </td>
+    </tr>
+    <tr>
+      <td class="content">
+        <p>Merhaba,</p>
+        <p>Şifrenizi sıfırlama talebinde bulundunuz. Yeni şifrenizi belirlemek için aşağıdaki butona tıklayın:</p>
+        <p style="text-align:center;">
+          <a href="https://otokiwi-demo.replit.app/reset-password?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwiZXhwIjoxNzUxNTQwMDAwfQ.K8Xv9hWtL5RqJ3mY2nP7sA4vB8cD9eF0gH1iJ2kL3mN" class="btn" target="_blank" rel="noopener noreferrer">Şifremi Sıfırla</a>
+        </p>
+        <p>Bu link 1 saat boyunca geçerlidir. Eğer bu isteği siz yapmadıysanız, bu e-postayı dikkate almayabilirsiniz.</p>
+      </td>
+    </tr>
+    <tr>
+      <td class="footer">
+        &copy; 2025 OtoKiwi. Tüm hakları saklıdır.<br/>
+        <a href="https://otokiwi-demo.replit.app" style="color:#6b7280; text-decoration:none;">OtoKiwi.com</a>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
