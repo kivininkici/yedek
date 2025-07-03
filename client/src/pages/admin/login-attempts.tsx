@@ -135,71 +135,62 @@ export default function LoginAttempts() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       <Sidebar />
-      <div className="lg:ml-64">
-        {/* GİRİŞ DENEMELERİ - EN ÜSTTE */}
-        <div className="bg-white dark:bg-slate-800 shadow-sm">
-          <div className="p-6 border-b border-slate-200 dark:border-slate-700">
-            <h1 className="text-4xl font-bold text-red-600 dark:text-red-400 mb-2">
-              🔐 GİRİŞ DENEMELERİ
+      <div className="lg:ml-64 h-screen overflow-y-auto">
+        {/* GİRİŞ DENEMELERİ - SAYFANIN TAM TEPESI */}
+        <div className="bg-red-50 dark:bg-red-900/20 border-b-4 border-red-500">
+          <div className="p-4">
+            <h1 className="text-5xl font-black text-red-700 dark:text-red-300">
+              🚨 GİRİŞ DENEMELERİ 🚨
             </h1>
-            <p className="text-lg text-slate-700 dark:text-slate-300">Canlı güvenlik logları</p>
+            <p className="text-xl font-bold text-red-600 dark:text-red-400 mt-2">CANLI GÜVENLİK LOGALRI</p>
           </div>
+        </div>
         
-        <div className="p-6">
+        <div className="p-4 bg-white dark:bg-slate-800">
           {isLoading ? (
-            <div className="text-center py-16">
-              <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-red-600 mx-auto"></div>
-              <p className="mt-6 text-xl font-semibold">Yükleniyor...</p>
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-red-600 mx-auto"></div>
+              <p className="mt-4 text-lg font-bold">YÜKLENİYOR...</p>
             </div>
           ) : recentAttempts.length === 0 ? (
-            <div className="text-center py-16">
-              <Shield className="w-24 h-24 mx-auto mb-6 text-slate-400" />
-              <p className="text-2xl font-bold text-slate-600">Giriş denemesi bulunmuyor</p>
+            <div className="text-center py-8">
+              <Shield className="w-16 h-16 mx-auto mb-4 text-red-500" />
+              <p className="text-xl font-bold text-red-600">GİRİŞ DENEMESİ YOK</p>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3">
               {recentAttempts.map((attempt) => {
                 const config = attemptTypeConfig[attempt.attemptType];
                 const Icon = config.icon;
                 return (
                   <div
                     key={attempt.id}
-                    className="bg-slate-50 dark:bg-slate-700 p-6 rounded-xl border-2 border-slate-200 dark:border-slate-600 shadow-lg hover:shadow-xl transition-all hover:border-blue-300 dark:hover:border-blue-600"
+                    className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border-l-4 border-red-500 shadow-md"
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-6">
-                        <div className={`p-4 rounded-full ${config.color}/30 border-2 ${config.color.replace('bg-', 'border-')}`}>
-                          <Icon className={`w-8 h-8 ${config.color.replace('bg-', 'text-')}`} />
+                    <div className="flex items-center gap-4">
+                      <div className={`p-3 rounded-full ${config.color}/30`}>
+                        <Icon className={`w-6 h-6 ${config.color.replace('bg-', 'text-')}`} />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-1">
+                          <span className="font-mono text-xl font-black text-red-700 dark:text-red-300">
+                            {attempt.ipAddress}
+                          </span>
+                          <Badge variant={config.variant} className="text-sm font-bold">
+                            {config.label}
+                          </Badge>
                         </div>
-                        <div>
-                          <div className="flex items-center gap-4 mb-2">
-                            <span className="font-mono text-2xl font-bold text-slate-900 dark:text-white">
-                              {attempt.ipAddress}
-                            </span>
-                            <Badge variant={config.variant} className="text-base font-bold px-3 py-1">
-                              {config.label}
-                            </Badge>
-                          </div>
-                          <div className="text-lg text-slate-600 dark:text-slate-400">
-                            <span className="font-semibold">{formatDate(attempt.createdAt)}</span>
-                            {attempt.username && (
-                              <span className="ml-3">• Kullanıcı: {attempt.username}</span>
-                            )}
-                          </div>
+                        <div className="text-red-600 dark:text-red-400 font-semibold">
+                          {formatDate(attempt.createdAt)}
+                          {attempt.username && ` • ${attempt.username}`}
                         </div>
                       </div>
-                      {attempt.userAgent && (
-                        <div className="hidden lg:block text-sm text-slate-500 max-w-lg truncate bg-white dark:bg-slate-800 p-3 rounded-lg border">
-                          {truncateUserAgent(attempt.userAgent)}
-                        </div>
-                      )}
                     </div>
                   </div>
                 );
               })}
             </div>
           )}
-        </div>
         </div>
 
         {/* İSTATİSTİKLER - ALTTA */}
