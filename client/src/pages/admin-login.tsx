@@ -555,25 +555,7 @@ export default function AdminLogin() {
           </Card>
           </motion.div>
 
-          {/* Forgot Password Button - Red Box */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-            className="mt-6 text-center"
-          >
-            <Link href="/admin/forgot-password">
-              <motion.div
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                className="inline-block px-6 py-3 bg-red-600 hover:bg-red-700 rounded-xl border-2 border-red-500 shadow-lg shadow-red-500/25 backdrop-blur-sm transition-all duration-300 cursor-pointer"
-              >
-                <span className="text-white font-medium text-sm">
-                  Şifremi Unuttum
-                </span>
-              </motion.div>
-            </Link>
-          </motion.div>
+
 
           {/* Security Badge */}
           <motion.div
