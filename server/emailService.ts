@@ -61,7 +61,9 @@ if (process.env.SENDGRID_API_KEY) {
 // E-posta template'ini oku ve customize et
 function loadEmailTemplate(templateName: string, variables: Record<string, string>): string {
   try {
-    const templatePath = path.join(__dirname, 'templates', `${templateName}.html`);
+    // ES modules için __dirname yerine import.meta.url kullan
+    const currentDir = path.dirname(new URL(import.meta.url).pathname);
+    const templatePath = path.join(currentDir, 'templates', `${templateName}.html`);
     let template = fs.readFileSync(templatePath, 'utf8');
     
     // Template değişkenlerini değiştir
@@ -72,7 +74,16 @@ function loadEmailTemplate(templateName: string, variables: Record<string, strin
     return template;
   } catch (error) {
     console.error('Template yükleme hatası:', error);
-    return '';
+    // Fallback olarak basit HTML template döndür
+    return `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <h2 style="color: #4f46e5;">OtoKiwi - Şifre Sıfırlama</h2>
+      <p>Merhaba,</p>
+      <p>Şifrenizi sıfırlama talebinde bulundunuz. Yeni şifrenizi belirlemek için aşağıdaki linke tıklayın:</p>
+      <p><a href="${variables.RESET_URL}" style="background: #4f46e5; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Şifremi Sıfırla</a></p>
+      <p>Bu link 1 saat boyunca geçerlidir.</p>
+      <p>© 2025 OtoKiwi</p>
+    </div>`;
   }
 }
 
