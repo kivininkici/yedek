@@ -145,17 +145,7 @@ export default function ForgotPassword() {
                 )}
               </AnimatePresence>
 
-              <div className="pt-4 border-t border-gray-200">
-                <Link href="/admin">
-                  <Button
-                    variant="ghost"
-                    className="w-full text-gray-600 hover:text-gray-800 transition-colors duration-200"
-                  >
-                    <ArrowLeft className="w-4 h-4 mr-2" />
-                    Admin Girişe Dön
-                  </Button>
-                </Link>
-              </div>
+              
             </CardContent>
           </Card>
         </motion.div>
