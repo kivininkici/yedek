@@ -52,6 +52,11 @@ define('API_TIMEOUT', 30);
 define('API_CACHE_DURATION', 15); // seconds
 define('ORDER_STATUS_CHECK_INTERVAL', 5); // seconds
 
+// Email Configuration (SendGrid)
+// cPanel Environment Variable olarak SENDGRID_API_KEY ayarlanabilir
+// Alternatif olarak burada direkt tanımlanabilir:
+// define('SENDGRID_API_KEY', 'your-sendgrid-api-key-here');
+
 // File paths
 define('BASE_PATH', dirname(__DIR__));
 define('ASSETS_PATH', BASE_PATH . '/assets');

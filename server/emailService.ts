@@ -4,12 +4,15 @@ import fs from 'fs';
 import path from 'path';
 
 // E-posta servis türünü belirle
-let emailService: 'smtpcom' | 'mailjet' | 'smtp' | 'console' = 'console';
+let emailService: 'sendgrid' | 'smtpcom' | 'mailjet' | 'smtp' | 'console' = 'console';
 let transporter: nodemailer.Transporter;
 let mailjetClient: any;
 
-// SMTP.com API kontrol et (en basit seçenek)
-if (process.env.SMTP_COM_API_KEY) {
+// SendGrid API kontrol et (en popüler seçenek)
+if (process.env.SENDGRID_API_KEY) {
+  emailService = 'sendgrid';
+  console.log('✅ SendGrid e-posta servisi hazır');
+} else if (process.env.SMTP_COM_API_KEY) {
   emailService = 'smtpcom';
   console.log('✅ SMTP.com e-posta servisi hazır');
 } else if (process.env.MAILJET_API_KEY && process.env.MAILJET_SECRET_KEY) {
@@ -83,7 +86,51 @@ interface CustomEmailParams {
 
 export async function sendEmail(params: CustomEmailParams): Promise<boolean> {
   try {
-    if (emailService === 'smtpcom') {
+    if (emailService === 'sendgrid') {
+      // SendGrid API ile e-posta gönder
+      const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.SENDGRID_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          personalizations: [
+            {
+              to: [
+                {
+                  email: params.to
+                }
+              ]
+            }
+          ],
+          from: {
+            email: 'noreply@smmkiwi.com',
+            name: 'OtoKiwi'
+          },
+          subject: params.subject,
+          content: [
+            {
+              type: 'text/plain',
+              value: params.text || ''
+            },
+            {
+              type: 'text/html',
+              value: params.html || params.text || ''
+            }
+          ]
+        })
+      });
+
+      if (response.ok) {
+        console.log('✅ SendGrid e-posta gönderildi:', params.to, 'Status:', response.status);
+        return true;
+      } else {
+        const error = await response.text();
+        console.error('SendGrid e-posta hatası:', error);
+        return false;
+      }
+    } else if (emailService === 'smtpcom') {
       // SMTP.com API ile e-posta gönder
       const response = await fetch('https://api.smtp.com/v4/messages', {
         method: 'POST',

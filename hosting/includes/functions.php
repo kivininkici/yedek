@@ -373,4 +373,193 @@ function generateResponsiveImage($src, $alt = '', $class = '', $lazy = true) {
     
     return "<img src=\"$src\" alt=\"$alt\" $class $lazyAttr>";
 }
+
+/**
+ * Send email via SendGrid API
+ */
+function sendEmailViaSendGrid($to, $subject, $htmlContent, $textContent = '') {
+    // SendGrid API Key - cPanel ortamında env variable olarak ayarlanacak
+    $sendgridApiKey = getenv('SENDGRID_API_KEY') ?: 'your-sendgrid-api-key-here';
+    
+    if ($sendgridApiKey === 'your-sendgrid-api-key-here') {
+        error_log('SendGrid API Key bulunamadı, mail() fonksiyonu kullanılıyor');
+        return sendEmailViaPHP($to, $subject, $htmlContent, $textContent);
+    }
+
+    $data = [
+        'personalizations' => [
+            [
+                'to' => [
+                    ['email' => $to]
+                ]
+            ]
+        ],
+        'from' => [
+            'email' => 'noreply@smmkiwi.com',
+            'name' => 'OtoKiwi'
+        ],
+        'subject' => $subject,
+        'content' => [
+            [
+                'type' => 'text/plain',
+                'value' => $textContent ?: strip_tags($htmlContent)
+            ],
+            [
+                'type' => 'text/html',
+                'value' => $htmlContent
+            ]
+        ]
+    ];
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, 'https://api.sendgrid.com/v3/mail/send');
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Authorization: Bearer ' . $sendgridApiKey,
+        'Content-Type: application/json'
+    ]);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($httpCode === 202) {
+        error_log("✅ SendGrid e-posta gönderildi: $to");
+        return true;
+    } else {
+        error_log("❌ SendGrid e-posta hatası ($httpCode): $response");
+        // Fallback to PHP mail
+        return sendEmailViaPHP($to, $subject, $htmlContent, $textContent);
+    }
+}
+
+/**
+ * Fallback email function using PHP mail()
+ */
+function sendEmailViaPHP($to, $subject, $htmlContent, $textContent = '') {
+    $headers = [
+        'MIME-Version: 1.0',
+        'Content-Type: text/html; charset=UTF-8',
+        'From: OtoKiwi <noreply@smmkiwi.com>',
+        'Reply-To: noreply@smmkiwi.com',
+        'X-Mailer: PHP/' . phpversion()
+    ];
+
+    $success = mail($to, $subject, $htmlContent, implode("\r\n", $headers));
+    
+    if ($success) {
+        error_log("✅ PHP mail() e-posta gönderildi: $to");
+    } else {
+        error_log("❌ PHP mail() e-posta hatası: $to");
+    }
+    
+    return $success;
+}
+
+/**
+ * Send password reset email
+ */
+function sendPasswordResetEmail($email, $resetToken) {
+    $domain = $_SERVER['HTTP_HOST'];
+    $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+    $resetUrl = "$protocol://$domain/admin/reset-password.php?token=$resetToken";
+    
+    $subject = 'OtoKiwi - Şifre Sıfırlama';
+    
+    $htmlContent = '
+    <!DOCTYPE html>
+    <html lang="tr">
+    <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Şifre Sıfırlama</title>
+    <style>
+      body {
+        margin: 0; padding: 0; background-color: #f0f2f5; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+      .container {
+        max-width: 600px; margin: 40px auto; background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        overflow: hidden;
+      }
+      .header {
+        background: linear-gradient(90deg, #4f46e5, #6366f1);
+        padding: 30px; text-align: center; color: white;
+      }
+      .header h1 {
+        margin: 0; font-size: 26px;
+      }
+      .content {
+        padding: 40px 30px; color: #333;
+        font-size: 16px; line-height: 1.6;
+      }
+      .content p {
+        margin-bottom: 20px;
+      }
+      .btn {
+        display: inline-block;
+        background-color: #4f46e5;
+        color: white;
+        padding: 15px 40px;
+        text-decoration: none;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 18px;
+        box-shadow: 0 8px 15px rgba(79, 70, 229, 0.3);
+        transition: background-color 0.3s ease;
+      }
+      .btn:hover {
+        background-color: #4338ca;
+      }
+      .footer {
+        background-color: #f9fafb;
+        color: #6b7280;
+        font-size: 13px;
+        padding: 20px 30px;
+        text-align: center;
+      }
+    </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>OtoKiwi - Şifre Sıfırlama</h1>
+        </div>
+        
+        <div class="content">
+          <p>Merhaba,</p>
+          <p>Şifrenizi sıfırlama talebinde bulundunuz. Yeni şifrenizi belirlemek için aşağıdaki butona tıklayın:</p>
+          <p style="text-align:center;">
+            <a href="' . $resetUrl . '" class="btn" target="_blank" rel="noopener noreferrer">Şifremi Sıfırla</a>
+          </p>
+          <p>Bu link 1 saat boyunca geçerlidir. Eğer bu isteği siz yapmadıysanız, bu e-postayı dikkate almayabilirsiniz.</p>
+        </div>
+
+        <div class="footer">
+          &copy; 2025 OtoKiwi. Tüm hakları saklıdır.<br/>
+          <a href="' . $protocol . '://' . $domain . '" style="color:#6b7280; text-decoration:none;">OtoKiwi.com</a>
+        </div>
+      </div>
+    </body>
+    </html>';
+    
+    $textContent = "
+OtoKiwi Şifre Sıfırlama
+
+Merhaba,
+
+Şifrenizi sıfırlama talebinde bulundunuz. Yeni şifrenizi belirlemek için aşağıdaki linki kullanın:
+
+$resetUrl
+
+Bu link 1 saat boyunca geçerlidir. Eğer bu isteği siz yapmadıysanız, bu e-postayı dikkate almayabilirsiniz.
+
+© 2025 OtoKiwi
+$domain
+    ";
+    
+    return sendEmailViaSendGrid($email, $subject, $htmlContent, $textContent);
+}
 ?>
