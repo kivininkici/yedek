@@ -116,7 +116,7 @@ export async function sendEmail(params: CustomEmailParams): Promise<boolean> {
             }
           ],
           from: {
-            email: params.from || 'noreply@smmkiwi.com',
+            email: params.from && params.from.includes('@') ? params.from : (process.env.SENDGRID_FROM_EMAIL || 'noreply@smmkiwi.com'),
             name: 'OtoKiwi'
           },
           subject: params.subject,
