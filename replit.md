@@ -442,6 +442,7 @@ Changelog:
 - Güvenlik: Token expiry, kullanım kontrolü, e-posta doğrulama
 - Admin authentication sistemi tamamen güvenlik odaklı hale getirildi
 - July 3, 2025: Final Replit Agent'tan Replit ortamına migration başarıyla tamamlandı
+- July 3, 2025: Password reset email template güncellendi - Turkish content ve proper domain configuration
 - PostgreSQL database kuruldu ve tüm tablolar başarıyla oluşturuldu
 - tsx dependency kuruldu ve server port 5000'de stable çalışıyor
 - Kendi e-posta servisi nodemailer ile oluşturuldu - üçüncü parti API bağımlılığı kaldırıldı

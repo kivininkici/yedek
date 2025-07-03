@@ -178,7 +178,8 @@ export async function sendPasswordResetEmailNew(email: string, resetToken: strin
   const resetUrl = `${baseUrl}/reset-password?token=${resetToken}`;
   
   const htmlTemplate = loadEmailTemplate('passwordReset', {
-    RESET_URL: resetUrl
+    RESET_URL: resetUrl,
+    DOMAIN_URL: baseUrl
   });
   
   const textMessage = `
