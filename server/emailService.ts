@@ -1,7 +1,27 @@
-import { MailerSend, EmailParams, Sender, Recipient } from 'mailersend';
+import nodemailer from 'nodemailer';
 
-const mailerSend = new MailerSend({
-  apiKey: process.env.MAILERSEND_API_KEY || '',
+// SMTP ayarları - Environment variable'lardan alınıyor
+const smtpConfig = {
+  host: process.env.SMTP_HOST || 'smtp.gmail.com',
+  port: parseInt(process.env.SMTP_PORT || '587'),
+  secure: process.env.SMTP_SECURE === 'true', // SSL/TLS
+  auth: {
+    user: process.env.SMTP_USER || 'kiwipazari@gmail.com',
+    pass: process.env.SMTP_PASS || process.env.EMAIL_PASSWORD || ''
+  },
+  tls: {
+    rejectUnauthorized: false
+  }
+};
+
+// SMTP transporter oluşturuyoruz
+const transporter = nodemailer.createTransport(smtpConfig);
+
+// Transporter bağlantısını doğruluyoruz
+transporter.verify().then(() => {
+  console.log('✅ E-posta servisi hazır ve SMTP bağlantısı başarılı');
+}).catch((error) => {
+  console.log('⚠️ E-posta servisi hazır ama SMTP ayarları gerekiyor:', error.message);
 });
 
 interface CustomEmailParams {
@@ -13,27 +33,22 @@ interface CustomEmailParams {
 }
 
 export async function sendEmail(params: CustomEmailParams): Promise<boolean> {
-  if (!process.env.MAILERSEND_API_KEY) {
-    console.error('MailerSend API key not configured');
-    return false;
-  }
-
   try {
-    const sentFrom = new Sender('noreply@trial-k68zxl24xz7l9yjr.mlsender.net', 'OtoKiwi');
-    const recipients = [new Recipient(params.to, 'Kullanıcı')];
-    
-    const emailParams = new EmailParams()
-      .setFrom(sentFrom)
-      .setTo(recipients)
-      .setSubject(params.subject)
-      .setHtml(params.html || params.text || '')
-      .setText(params.text || params.html || '');
+    // E-posta seçeneklerini ayarlıyoruz
+    const mailOptions = {
+      from: `"OtoKiwi" <${params.from}>`, // Gönderen
+      to: params.to, // Alıcı
+      subject: params.subject, // Konu
+      text: params.text || '', // Düz metin
+      html: params.html || params.text || '', // HTML içerik
+    };
 
-    const response = await mailerSend.email.send(emailParams);
-    console.log('Email sent successfully to:', params.to, 'Response:', response);
+    // E-postayı gönderiyoruz
+    const info = await transporter.sendMail(mailOptions);
+    console.log('E-posta başarıyla gönderildi:', params.to, 'Message ID:', info.messageId);
     return true;
   } catch (error) {
-    console.error('MailerSend email error:', error);
+    console.error('E-posta gönderme hatası:', error);
     return false;
   }
 }
