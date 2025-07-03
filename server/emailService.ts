@@ -62,15 +62,16 @@ export async function sendEmail(params: CustomEmailParams): Promise<boolean> {
     // E-postayı gönderiyoruz
     const info = await transporter.sendMail(mailOptions);
     
+    // Konsol modunda veya gerçek SMTP'de e-posta çıktısını göster
     if (smtpConfig.streamTransport) {
       // Konsol modunda - e-posta içeriğini konsola yazdır
       console.log('\n📧 E-POSTA GÖNDERİLDİ (KONSOL MODU):');
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      console.log('From:', params.from);
+      console.log('From: noreply@smmkiwi.com');
       console.log('To:', params.to);
       console.log('Subject:', params.subject);
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      console.log(params.text || 'HTML içerik var');
+      console.log(params.text || 'HTML içerik mevcut');
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
     } else {
       console.log('E-posta başarıyla gönderildi:', params.to, 'Message ID:', info.messageId);

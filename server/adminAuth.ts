@@ -289,9 +289,12 @@ export function setupAdminAuth(app: Express) {
       // Check if admin with this email exists
       const admin = await storage.getAdminByEmail(email);
       if (!admin) {
-        // Don't reveal if email exists or not for security
+        // Security: Don't reveal if email exists, but don't actually send email or create token
+        console.log(`❌ Şifre sıfırlama talebi: ${email} - Kayıtlı değil`);
         return res.json({ message: 'E-posta adresinize şifre sıfırlama bağlantısı gönderildi (eğer hesap mevcutsa)' });
       }
+
+      console.log(`✅ Şifre sıfırlama talebi: ${email} - Admin bulundu: ${admin.username}`);
 
       // Generate secure reset token
       const resetToken = crypto.randomBytes(32).toString('hex');
@@ -303,7 +306,7 @@ export function setupAdminAuth(app: Express) {
       // Create reset URL
       const resetUrl = `${req.protocol}://${req.get('host')}/admin/reset-password?token=${resetToken}`;
 
-      // Send email
+      // Send email only if admin exists
       const emailSent = await sendPasswordResetEmail(email, admin.username, resetUrl);
 
       if (!emailSent) {
@@ -311,6 +314,7 @@ export function setupAdminAuth(app: Express) {
         return res.status(500).json({ message: 'E-posta gönderilemedi. Lütfen daha sonra tekrar deneyin.' });
       }
 
+      console.log(`📧 Şifre sıfırlama e-postası gönderildi: ${email}`);
       res.json({ message: 'E-posta adresinize şifre sıfırlama bağlantısı gönderildi' });
     } catch (error) {
       console.error('Password reset request error:', error);
