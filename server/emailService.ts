@@ -186,3 +186,86 @@ Bu e-posta KeyPanel şikayet yönetim sisteminden otomatik olarak gönderilmişt
     html: html.trim()
   });
 }
+
+export async function sendPasswordResetEmail(
+  userEmail: string,
+  userName: string,
+  resetUrl: string
+): Promise<boolean> {
+  const html = `
+    <div style="max-width: 600px; margin: 0 auto; background: #f5f5f5; padding: 40px 20px;">
+      <div style="background: white; border-radius: 10px; padding: 40px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <div style="text-align: center; margin-bottom: 30px;">
+          <h1 style="color: #2563eb; margin: 0; font-size: 28px; font-weight: bold;">
+            🔐 OtoKiwi Şifre Sıfırlama
+          </h1>
+          <p style="color: #666; margin: 10px 0 0 0; font-size: 16px;">
+            Admin panel şifrenizi sıfırlamak için
+          </p>
+        </div>
+        
+        <div style="background: #f8fafc; border-radius: 8px; padding: 25px; margin: 20px 0;">
+          <h2 style="color: #1e293b; margin: 0 0 15px 0; font-size: 20px;">
+            Merhaba ${userName || 'Admin Kullanıcısı'},
+          </h2>
+          <p style="color: #555; line-height: 1.6; margin: 0 0 20px 0;">
+            OtoKiwi admin paneli için şifre sıfırlama talebinde bulundunuz. 
+            Şifrenizi sıfırlamak için aşağıdaki linke tıklayın:
+          </p>
+          
+          <div style="text-align: center; margin: 25px 0;">
+            <a href="${resetUrl}" 
+               style="background: #2563eb; color: white; text-decoration: none; 
+                      padding: 15px 30px; border-radius: 8px; font-weight: bold; 
+                      display: inline-block; font-size: 16px;">
+              Şifremi Sıfırla
+            </a>
+          </div>
+          
+          <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 6px; padding: 15px; margin: 20px 0;">
+            <p style="color: #92400e; margin: 0; font-size: 14px;">
+              ⚠️ <strong>Güvenlik Uyarısı:</strong> Bu link 1 saat içinde geçerliliğini yitirecektir.
+              Eğer şifre sıfırlama talebinde bulunmadıysanız, bu e-postayı göz ardı edebilirsiniz.
+            </p>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+          <p style="color: #555; line-height: 1.6; margin: 0 0 15px 0;">
+            Sorun yaşıyorsanız, link yerine aşağıdaki URL'yi tarayıcınıza kopyalayabilirsiniz:
+          </p>
+          <p style="color: #999; font-size: 12px; word-break: break-all; margin: 0 0 15px 0;">
+            ${resetUrl}
+          </p>
+          <p style="color: #999; font-size: 14px; margin: 0;">
+            Bu e-posta OtoKiwi güvenlik sisteminden otomatik olarak gönderilmiştir.
+          </p>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const text = `
+OtoKiwi Şifre Sıfırlama
+
+Merhaba ${userName || 'Admin Kullanıcısı'},
+
+OtoKiwi admin paneli için şifre sıfırlama talebinde bulundunuz.
+
+Şifrenizi sıfırlamak için aşağıdaki linke tıklayın:
+${resetUrl}
+
+Güvenlik Uyarısı: Bu link 1 saat içinde geçerliliğini yitirecektir.
+Eğer şifre sıfırlama talebinde bulunmadıysanız, bu e-postayı göz ardı edebilirsiniz.
+
+Bu e-posta OtoKiwi güvenlik sisteminden otomatik olarak gönderilmiştir.
+  `;
+
+  return await sendEmail({
+    to: userEmail,
+    from: 'noreply@smmkiwi.com',
+    subject: 'OtoKiwi - Şifre Sıfırlama Talebi',
+    text: text.trim(),
+    html: html.trim()
+  });
+}

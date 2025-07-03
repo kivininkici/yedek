@@ -1,7 +1,9 @@
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 import type { Express, RequestHandler } from 'express';
 import { storage } from './storage';
 import { adminLoginSchema, type AdminLogin } from '@shared/schema';
+import { sendPasswordResetEmail } from './emailService';
 import { 
   getCurrentMasterPassword, 
   updateMasterPassword, 
@@ -272,6 +274,133 @@ export function setupAdminAuth(app: Express) {
     } catch (error) {
       console.error('Direct admin creation error:', error);
       res.status(500).json({ message: 'Admin oluşturulamadı' });
+    }
+  });
+
+  // Password reset request endpoint
+  app.post('/api/admin/forgot-password', async (req, res) => {
+    try {
+      const { email } = req.body;
+
+      if (!email) {
+        return res.status(400).json({ message: 'E-posta adresi gerekli' });
+      }
+
+      // Check if admin with this email exists
+      const admin = await storage.getAdminByEmail(email);
+      if (!admin) {
+        // Don't reveal if email exists or not for security
+        return res.json({ message: 'E-posta adresinize şifre sıfırlama bağlantısı gönderildi (eğer hesap mevcutsa)' });
+      }
+
+      // Generate secure reset token
+      const resetToken = crypto.randomBytes(32).toString('hex');
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour from now
+
+      // Save reset token to database
+      await storage.createPasswordResetToken(email, resetToken, expiresAt);
+
+      // Create reset URL
+      const resetUrl = `${req.protocol}://${req.get('host')}/admin/reset-password?token=${resetToken}`;
+
+      // Send email
+      const emailSent = await sendPasswordResetEmail(email, admin.username, resetUrl);
+
+      if (!emailSent) {
+        console.error('Failed to send password reset email');
+        return res.status(500).json({ message: 'E-posta gönderilemedi. Lütfen daha sonra tekrar deneyin.' });
+      }
+
+      res.json({ message: 'E-posta adresinize şifre sıfırlama bağlantısı gönderildi' });
+    } catch (error) {
+      console.error('Password reset request error:', error);
+      res.status(500).json({ message: 'Şifre sıfırlama talebi işlenemedi' });
+    }
+  });
+
+  // Password reset verification endpoint
+  app.get('/api/admin/reset-password/verify/:token', async (req, res) => {
+    try {
+      const { token } = req.params;
+
+      if (!token) {
+        return res.status(400).json({ message: 'Geçersiz token' });
+      }
+
+      // Get token from database
+      const resetToken = await storage.getPasswordResetToken(token);
+
+      if (!resetToken) {
+        return res.status(404).json({ message: 'Geçersiz veya süresi dolmuş token' });
+      }
+
+      if (resetToken.isUsed) {
+        return res.status(400).json({ message: 'Bu token zaten kullanılmış' });
+      }
+
+      if (new Date() > resetToken.expiresAt) {
+        return res.status(400).json({ message: 'Token süresi dolmuş' });
+      }
+
+      res.json({ 
+        message: 'Token geçerli',
+        email: resetToken.email 
+      });
+    } catch (error) {
+      console.error('Password reset verification error:', error);
+      res.status(500).json({ message: 'Token doğrulanamadı' });
+    }
+  });
+
+  // Password reset completion endpoint
+  app.post('/api/admin/reset-password', async (req, res) => {
+    try {
+      const { token, newPassword, confirmPassword } = req.body;
+
+      if (!token || !newPassword || !confirmPassword) {
+        return res.status(400).json({ message: 'Tüm alanlar gerekli' });
+      }
+
+      if (newPassword !== confirmPassword) {
+        return res.status(400).json({ message: 'Şifreler eşleşmiyor' });
+      }
+
+      if (newPassword.length < 6) {
+        return res.status(400).json({ message: 'Şifre en az 6 karakter olmalı' });
+      }
+
+      // Get and validate token
+      const resetToken = await storage.getPasswordResetToken(token);
+
+      if (!resetToken) {
+        return res.status(404).json({ message: 'Geçersiz token' });
+      }
+
+      if (resetToken.isUsed) {
+        return res.status(400).json({ message: 'Bu token zaten kullanılmış' });
+      }
+
+      if (new Date() > resetToken.expiresAt) {
+        return res.status(400).json({ message: 'Token süresi dolmuş' });
+      }
+
+      // Get admin user
+      const admin = await storage.getAdminByEmail(resetToken.email);
+      if (!admin) {
+        return res.status(404).json({ message: 'Kullanıcı bulunamadı' });
+      }
+
+      // Hash new password and update
+      const hashedPassword = await hashPassword(newPassword);
+      await storage.updateAdminPassword(admin.username, hashedPassword);
+
+      // Mark token as used
+      await storage.markPasswordResetTokenAsUsed(token);
+
+      res.json({ message: 'Şifreniz başarıyla güncellendi. Artık yeni şifrenizle giriş yapabilirsiniz.' });
+    } catch (error) {
+      console.error('Password reset completion error:', error);
+      res.status(500).json({ message: 'Şifre güncellenemedi' });
     }
   });
 }

@@ -10,6 +10,8 @@ import Home from "@/pages/home";
 import Auth from "@/pages/auth";
 import UserInterface from "@/pages/user-interface-new";
 import AdminLogin from "@/pages/admin-login";
+import AdminForgotPassword from "@/pages/admin/forgot-password";
+import AdminResetPassword from "@/pages/admin/reset-password";
 import Dashboard from "@/pages/admin/dashboard";
 import Keys from "@/pages/admin/keys";
 import Services from "@/pages/admin/services";
@@ -84,6 +86,8 @@ function Router() {
       {/* Admin login routes */}
       <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin-login" component={AdminLogin} />
+      <Route path="/admin/forgot-password" component={AdminForgotPassword} />
+      <Route path="/admin/reset-password" component={AdminResetPassword} />
       
       {/* Admin main route - redirect to dashboard */}
       <Route path="/admin">

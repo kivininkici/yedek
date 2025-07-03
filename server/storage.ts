@@ -35,7 +35,10 @@ import {
   type InsertUserFeedback,
   complaints,
   type Complaint,
-  type InsertComplaint
+  type InsertComplaint,
+  passwordResetTokens,
+  type PasswordResetToken,
+  type InsertPasswordResetToken
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, sql, and, isNull, isNotNull, count } from "drizzle-orm";
@@ -172,6 +175,13 @@ export interface IStorage {
   getMasterPassword(): Promise<{ id: number; password: string; isActive: boolean } | undefined>;
   createMasterPassword(hashedPassword: string): Promise<{ id: number; password: string; isActive: boolean }>;
   updateMasterPassword(newHashedPassword: string, currentHashedPassword?: string): Promise<void>;
+
+  // Password reset operations
+  createPasswordResetToken(email: string, token: string, expiresAt: Date): Promise<PasswordResetToken>;
+  getPasswordResetToken(token: string): Promise<PasswordResetToken | undefined>;
+  markPasswordResetTokenAsUsed(token: string): Promise<void>;
+  getAdminByEmail(email: string): Promise<AdminUser | undefined>;
+  updateAdminPassword(username: string, hashedPassword: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1088,6 +1098,48 @@ export class DatabaseStorage implements IStorage {
         isActive: true
       });
   }
+
+  // Password reset operations
+  async createPasswordResetToken(email: string, token: string, expiresAt: Date): Promise<PasswordResetToken> {
+    const [resetToken] = await db
+      .insert(passwordResetTokens)
+      .values({
+        email,
+        token,
+        expiresAt,
+        isUsed: false
+      })
+      .returning();
+    return resetToken;
+  }
+
+  async getPasswordResetToken(token: string): Promise<PasswordResetToken | undefined> {
+    const [resetToken] = await db
+      .select()
+      .from(passwordResetTokens)
+      .where(eq(passwordResetTokens.token, token))
+      .limit(1);
+    return resetToken;
+  }
+
+  async markPasswordResetTokenAsUsed(token: string): Promise<void> {
+    await db
+      .update(passwordResetTokens)
+      .set({ isUsed: true })
+      .where(eq(passwordResetTokens.token, token));
+  }
+
+  async getAdminByEmail(email: string): Promise<AdminUser | undefined> {
+    if (!email) return undefined;
+    
+    const [admin] = await db
+      .select()
+      .from(adminUsers)
+      .where(eq(adminUsers.email, email))
+      .limit(1);
+    return admin;
+  }
+
 }
 
 export const storage = new DatabaseStorage();

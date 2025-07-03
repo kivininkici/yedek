@@ -170,6 +170,16 @@ export const adminMasterPassword = pgTable("admin_master_password", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Password reset tokens table
+export const passwordResetTokens = pgTable("password_reset_tokens", {
+  id: serial("id").primaryKey(),
+  email: varchar("email", { length: 255 }).notNull(),
+  token: varchar("token", { length: 255 }).notNull().unique(),
+  expiresAt: timestamp("expires_at").notNull(),
+  isUsed: boolean("is_used").notNull().default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // User feedback table
 export const userFeedback = pgTable("user_feedback", {
   id: serial("id").primaryKey(),
@@ -279,6 +289,11 @@ export const insertNormalUserSchema = createInsertSchema(normalUsers).omit({
   isActive: true,
 });
 
+export const insertPasswordResetTokenSchema = createInsertSchema(passwordResetTokens).omit({
+  id: true,
+  createdAt: true,
+});
+
 export const adminLoginSchema = z.object({
   username: z.string().min(3, "Kullanıcı adı en az 3 karakter olmalı"),
   password: z.string().min(6, "Şifre en az 6 karakter olmalı"),
@@ -312,3 +327,5 @@ export type InsertUserFeedback = z.infer<typeof insertUserFeedbackSchema>;
 export type UserFeedback = typeof userFeedback.$inferSelect;
 export type InsertComplaint = z.infer<typeof insertComplaintSchema>;
 export type Complaint = typeof complaints.$inferSelect;
+export type InsertPasswordResetToken = z.infer<typeof insertPasswordResetTokenSchema>;
+export type PasswordResetToken = typeof passwordResetTokens.$inferSelect;

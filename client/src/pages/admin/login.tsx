@@ -147,8 +147,9 @@ export default function AdminLogin() {
   // Fetch security question when moving to admin login step
   const fetchSecurityQuestion = async () => {
     try {
-      const response = await apiRequest('/api/admin/security-question');
-      setSecurityQuestion(response.question);
+      const response = await apiRequest('GET', '/api/admin/security-question');
+      const data = await response.json();
+      setSecurityQuestion(data.question);
     } catch (error) {
       console.error("Error fetching security question:", error);
       setSecurityQuestion("Güvenlik sorusu yüklenemedi");
@@ -163,12 +164,8 @@ export default function AdminLogin() {
   // Master password verification
   const masterPasswordMutation = useMutation({
     mutationFn: async (password: string) => {
-      const response = await apiRequest('/api/admin/verify-master-password', {
-        method: 'POST',
-        body: JSON.stringify({ masterPassword: password }),
-        headers: { 'Content-Type': 'application/json' },
-      });
-      return response;
+      const response = await apiRequest('POST', '/api/admin/verify-master-password', { masterPassword: password });
+      return response.json();
     },
     onSuccess: () => {
       setMasterPasswordStep(false);
@@ -190,12 +187,8 @@ export default function AdminLogin() {
   // Admin login mutation
   const adminLoginMutation = useMutation({
     mutationFn: async (data: AdminLogin) => {
-      const response = await apiRequest('/api/admin/login', {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: { 'Content-Type': 'application/json' },
-      });
-      return response;
+      const response = await apiRequest('POST', '/api/admin/login', data);
+      return response.json();
     },
     onSuccess: () => {
       setIsLoading(false);
@@ -475,6 +468,20 @@ export default function AdminLogin() {
                           )}
                         </Button>
                       </motion.div>
+
+                      {/* Forgot Password Link */}
+                      <div className="text-center">
+                        <Link href="/admin/forgot-password">
+                          <motion.button
+                            type="button"
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="text-white/80 hover:text-white text-sm underline underline-offset-4 transition-colors"
+                          >
+                            Şifremi Unuttum
+                          </motion.button>
+                        </Link>
+                      </div>
 
                       <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                         <Button

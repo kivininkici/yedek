@@ -431,6 +431,16 @@ Changelog:
 - adminAuth.ts ve routes.ts dosyaları security config'i kullanacak şekilde güncellendi
 - validateSecurityAnswer, getRandomSecurityQuestion fonksiyonları config'den çalışıyor
 - Güvenlik için hassas veriler artık ayrı dosyada merkezi olarak yönetiliyor
+- July 3, 2025: Kapsamlı şifre sıfırlama sistemi eklendi
+- "Şifremi Unuttum" linki admin giriş sayfasına eklendi
+- E-posta bazlı şifre sıfırlama sistemi: forgot-password ve reset-password sayfaları
+- Güvenli token tabanlı şifre sıfırlama: 1 saatlik geçerlilik süresi
+- SendGrid e-posta entegrasyonu: noreply@smmkiwi.com adresinden profesyonel e-postalar
+- Database schema: passwordResetTokens tablosu eklendi ve production'a push edildi
+- API endpoint'leri: /api/admin/forgot-password, /api/admin/reset-password/verify/:token, /api/admin/reset-password
+- Modern UI/UX: animasyonlu reset password ve forgot password sayfaları
+- Güvenlik: Token expiry, kullanım kontrolü, e-posta doğrulama
+- Admin authentication sistemi tamamen güvenlik odaklı hale getirildi
 - July 2, 2025: Final Replit Agent'tan Replit ortamına migration tamamlandı
 - PostgreSQL database kuruldu ve tüm tablolar başarıyla oluşturuldu
 - Environment variables (.env) dosyası oluşturuldu ve güvenlik bilgileri ayarlandı
