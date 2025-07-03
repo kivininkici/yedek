@@ -29,12 +29,16 @@ if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
 // SMTP transporter oluşturuyoruz
 const transporter = nodemailer.createTransport(smtpConfig);
 
-// Transporter bağlantısını doğruluyoruz
-transporter.verify().then(() => {
-  console.log('✅ E-posta servisi hazır ve SMTP bağlantısı başarılı');
-}).catch((error) => {
-  console.log('⚠️ E-posta servisi hazır ama SMTP ayarları gerekiyor:', error.message);
-});
+// Transporter bağlantısını doğruluyoruz (sadece gerçek SMTP için)
+if (!smtpConfig.streamTransport) {
+  transporter.verify().then(() => {
+    console.log('✅ E-posta servisi hazır ve SMTP bağlantısı başarılı');
+  }).catch((error) => {
+    console.log('⚠️ E-posta servisi hazır ama SMTP ayarları gerekiyor:', error.message);
+  });
+} else {
+  console.log('📧 E-posta servisi konsol modunda hazır');
+}
 
 interface CustomEmailParams {
   to: string;
@@ -48,7 +52,7 @@ export async function sendEmail(params: CustomEmailParams): Promise<boolean> {
   try {
     // E-posta seçeneklerini ayarlıyoruz
     const mailOptions = {
-      from: `"OtoKiwi" <${params.from}>`, // Gönderen
+      from: `"OtoKiwi" <noreply@smmkiwi.com>`, // Gönderen
       to: params.to, // Alıcı
       subject: params.subject, // Konu
       text: params.text || '', // Düz metin
@@ -153,8 +157,8 @@ Bu e-posta KeyPanel sisteminden otomatik olarak gönderilmiştir.
 
   return await sendEmail({
     to: userEmail,
-    from: 'kiwipazari@gmail.com',
-    subject: 'KeyPanel - Geri Bildirim Yanıtınız',
+    from: 'noreply@smmkiwi.com',
+    subject: 'OtoKiwi - Geri Bildirim Yanıtınız',
     text: text.trim(),
     html: html.trim()
   });
@@ -225,8 +229,8 @@ Bu e-posta KeyPanel şikayet yönetim sisteminden otomatik olarak gönderilmişt
 
   return await sendEmail({
     to: userEmail,
-    from: 'kiwipazari@gmail.com',
-    subject: `KeyPanel - Şikayet Yanıtı: ${complaintSubject}`,
+    from: 'noreply@smmkiwi.com',
+    subject: `OtoKiwi - Şikayet Yanıtı: ${complaintSubject}`,
     text: text.trim(),
     html: html.trim()
   });
