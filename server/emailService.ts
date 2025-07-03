@@ -1,11 +1,26 @@
 import nodemailer from 'nodemailer';
+import Mailjet from 'node-mailjet';
 
-// SMTP ayarları - Kolay test için Ethereal Email kullanıyoruz
-let smtpConfig;
+// E-posta servis türünü belirle
+let emailService: 'smtpcom' | 'mailjet' | 'smtp' | 'console' = 'console';
+let transporter: nodemailer.Transporter;
+let mailjetClient: any;
 
-if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+// SMTP.com API kontrol et (en basit seçenek)
+if (process.env.SMTP_COM_API_KEY) {
+  emailService = 'smtpcom';
+  console.log('✅ SMTP.com e-posta servisi hazır');
+} else if (process.env.MAILJET_API_KEY && process.env.MAILJET_SECRET_KEY) {
+  emailService = 'mailjet';
+  mailjetClient = Mailjet.apiConnect(
+    process.env.MAILJET_API_KEY,
+    process.env.MAILJET_SECRET_KEY
+  );
+  console.log('✅ Mailjet e-posta servisi hazır');
+} else if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
   // Gerçek SMTP ayarları varsa onları kullan
-  smtpConfig = {
+  emailService = 'smtp';
+  const smtpConfig = {
     host: process.env.SMTP_HOST,
     port: parseInt(process.env.SMTP_PORT || '587'),
     secure: process.env.SMTP_SECURE === 'true',
@@ -17,26 +32,24 @@ if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
       rejectUnauthorized: false
     }
   };
+  
+  transporter = nodemailer.createTransport(smtpConfig);
+  
+  // SMTP bağlantısını doğrula
+  transporter.verify().then(() => {
+    console.log('✅ E-posta servisi hazır ve SMTP bağlantısı başarılı');
+  }).catch((error: any) => {
+    console.log('⚠️ E-posta servisi hazır ama SMTP ayarları gerekiyor:', error.message);
+  });
 } else {
   // Konsol modu - e-postaları gerçekten göndermeyen basit mod
-  smtpConfig = {
+  emailService = 'console';
+  const smtpConfig = {
     streamTransport: true,
     newline: 'unix',
     buffer: true
   };
-}
-
-// SMTP transporter oluşturuyoruz
-const transporter = nodemailer.createTransport(smtpConfig);
-
-// Transporter bağlantısını doğruluyoruz (sadece gerçek SMTP için)
-if (!smtpConfig.streamTransport) {
-  transporter.verify().then(() => {
-    console.log('✅ E-posta servisi hazır ve SMTP bağlantısı başarılı');
-  }).catch((error) => {
-    console.log('⚠️ E-posta servisi hazır ama SMTP ayarları gerekiyor:', error.message);
-  });
-} else {
+  transporter = nodemailer.createTransport(smtpConfig);
   console.log('📧 E-posta servisi konsol modunda hazır');
 }
 
@@ -50,20 +63,79 @@ interface CustomEmailParams {
 
 export async function sendEmail(params: CustomEmailParams): Promise<boolean> {
   try {
-    // E-posta seçeneklerini ayarlıyoruz
-    const mailOptions = {
-      from: `"OtoKiwi" <noreply@smmkiwi.com>`, // Gönderen
-      to: params.to, // Alıcı
-      subject: params.subject, // Konu
-      text: params.text || '', // Düz metin
-      html: params.html || params.text || '', // HTML içerik
-    };
+    if (emailService === 'smtpcom') {
+      // SMTP.com API ile e-posta gönder
+      const response = await fetch('https://api.smtp.com/v4/messages', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.SMTP_COM_API_KEY}`,
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          subject: params.subject,
+          from: {
+            address: 'noreply@smmkiwi.com',
+            name: 'OtoKiwi'
+          },
+          to: [
+            {
+              address: params.to
+            }
+          ],
+          text: params.text || '',
+          html: params.html || params.text || ''
+        })
+      });
 
-    // E-postayı gönderiyoruz
-    const info = await transporter.sendMail(mailOptions);
-    
-    // Konsol modunda veya gerçek SMTP'de e-posta çıktısını göster
-    if (smtpConfig.streamTransport) {
+      if (response.ok) {
+        const result = await response.json();
+        console.log('✅ SMTP.com e-posta gönderildi:', params.to, 'Message ID:', result.data?.message_id);
+        return true;
+      } else {
+        const error = await response.text();
+        console.error('SMTP.com e-posta hatası:', error);
+        return false;
+      }
+    } else if (emailService === 'mailjet') {
+      // Mailjet ile e-posta gönder
+      const request = mailjetClient.post('send', { version: 'v3.1' }).request({
+        Messages: [
+          {
+            From: {
+              Email: 'noreply@smmkiwi.com',
+              Name: 'OtoKiwi'
+            },
+            To: [
+              {
+                Email: params.to,
+                Name: params.to.split('@')[0]
+              }
+            ],
+            Subject: params.subject,
+            TextPart: params.text || '',
+            HTMLPart: params.html || params.text || ''
+          }
+        ]
+      });
+
+      const result = await request;
+      console.log('✅ Mailjet e-posta gönderildi:', params.to, 'Status:', result.body.Messages[0].Status);
+      return true;
+    } else if (emailService === 'smtp') {
+      // SMTP ile e-posta gönder
+      const mailOptions = {
+        from: `"OtoKiwi" <noreply@smmkiwi.com>`,
+        to: params.to,
+        subject: params.subject,
+        text: params.text || '',
+        html: params.html || params.text || '',
+      };
+
+      const info = await transporter.sendMail(mailOptions);
+      console.log('✅ SMTP e-posta gönderildi:', params.to, 'Message ID:', info.messageId);
+      return true;
+    } else {
       // Konsol modunda - e-posta içeriğini konsola yazdır
       console.log('\n📧 E-POSTA GÖNDERİLDİ (KONSOL MODU):');
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
@@ -73,11 +145,8 @@ export async function sendEmail(params: CustomEmailParams): Promise<boolean> {
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
       console.log(params.text || 'HTML içerik mevcut');
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
-    } else {
-      console.log('E-posta başarıyla gönderildi:', params.to, 'Message ID:', info.messageId);
+      return true;
     }
-    
-    return true;
   } catch (error) {
     console.error('E-posta gönderme hatası:', error);
     return false;
@@ -100,7 +169,7 @@ export async function sendFeedbackResponse(
   const html = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
       <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-        <h1 style="margin: 0; font-size: 28px;">KeyPanel Geri Bildirim Yanıtı</h1>
+        <h1 style="margin: 0; font-size: 28px;">OtoKiwi Geri Bildirim Yanıtı</h1>
         <p style="margin: 10px 0 0 0; opacity: 0.9;">Geri bildiriminize yanıt verdik!</p>
       </div>
       
@@ -130,7 +199,7 @@ export async function sendFeedbackResponse(
             Başka sorularınız varsa bize ulaşmaktan çekinmeyin.
           </p>
           <p style="color: #999; font-size: 14px; margin: 0;">
-            Bu e-posta KeyPanel sisteminden otomatik olarak gönderilmiştir.
+            Bu e-posta OtoKiwi sisteminden otomatik olarak gönderilmiştir.
           </p>
         </div>
       </div>
@@ -138,7 +207,7 @@ export async function sendFeedbackResponse(
   `;
 
   const text = `
-KeyPanel Geri Bildirim Yanıtı
+OtoKiwi Geri Bildirim Yanıtı
 
 Merhaba ${userName || 'Değerli Kullanıcımız'},
 
@@ -153,7 +222,7 @@ ${adminResponse}
 
 Başka sorularınız varsa bize ulaşmaktan çekinmeyin.
 
-Bu e-posta KeyPanel sisteminden otomatik olarak gönderilmiştir.
+Bu e-posta OtoKiwi sisteminden otomatik olarak gönderilmiştir.
   `;
 
   return await sendEmail({
@@ -176,7 +245,7 @@ export async function sendComplaintResponse(
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #f5f5f5; padding: 20px;">
       <div style="background: #fff; border-radius: 8px; padding: 30px; border: 2px solid #e74c3c;">
         <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #e74c3c; margin: 0; font-size: 28px;">KeyPanel Şikayet Yanıtı</h1>
+          <h1 style="color: #e74c3c; margin: 0; font-size: 28px;">OtoKiwi Şikayet Yanıtı</h1>
           <p style="color: #666; margin: 10px 0 0 0; font-size: 16px;">Şikayetiniz değerlendirildi</p>
         </div>
         
@@ -203,7 +272,7 @@ export async function sendComplaintResponse(
             lütfen tekrar iletişime geçmekten çekinmeyin.
           </p>
           <p style="color: #999; font-size: 14px; margin: 0;">
-            Bu e-posta KeyPanel şikayet yönetim sisteminden otomatik olarak gönderilmiştir.
+            Bu e-posta OtoKiwi şikayet yönetim sisteminden otomatik olarak gönderilmiştir.
           </p>
         </div>
       </div>
@@ -211,7 +280,7 @@ export async function sendComplaintResponse(
   `;
 
   const text = `
-KeyPanel Şikayet Yanıtı
+OtoKiwi Şikayet Yanıtı
 
 Merhaba ${userName || 'Değerli Kullanıcımız'},
 
@@ -225,7 +294,7 @@ ${adminResponse}
 
 Şikayetinizi ciddiyetle değerlendirdik. Bu yanıt sorununuzu çözmezse, lütfen tekrar iletişime geçmekten çekinmeyin.
 
-Bu e-posta KeyPanel şikayet yönetim sisteminden otomatik olarak gönderilmiştir.
+Bu e-posta OtoKiwi şikayet yönetim sisteminden otomatik olarak gönderilmiştir.
   `;
 
   return await sendEmail({
