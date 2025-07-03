@@ -194,66 +194,34 @@ export default function Sidebar({ className }: SidebarProps) {
   };
 
   const SidebarContent = () => (
-    <div className="h-full flex flex-col bg-gradient-to-b from-slate-900 via-slate-800 to-slate-900 border-r border-slate-700/50">
+    <div className="h-full flex flex-col bg-slate-900 border-r border-slate-700">
       {/* Header */}
-      <div className="p-6 border-b border-slate-700/50">
+      <div className="p-4 border-b border-slate-700">
         <div className="flex items-center justify-between">
-          <motion.div
-            className="flex items-center space-x-3"
-            whileHover={{ scale: 1.005 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-          >
-            <div className="relative">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25">
-                <Crown className="w-5 h-5 text-white" />
-              </div>
-              <motion.div
-                className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-slate-900"
-                animate={{
-                  scale: [1, 1.05, 1],
-                  opacity: [1, 0.95, 1]
-                }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              />
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+              <Crown className="w-4 h-4 text-white" />
             </div>
-            <AnimatePresence>
-              {!collapsed && (
-                <motion.div
-                  initial={{ opacity: 0, width: 0 }}
-                  animate={{ opacity: 1, width: "auto" }}
-                  exit={{ opacity: 0, width: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="overflow-hidden"
-                >
-                  <h1 className="text-xl font-bold text-white">OtoKiwi</h1>
-                  <div className="flex items-center space-x-2">
-                    <p className="text-xs text-slate-400">Admin Panel</p>
-                    <Badge variant="secondary" className="text-xs bg-blue-500/20 text-blue-300 border-blue-500/30">
-                      Pro
-                    </Badge>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
+            {!collapsed && (
+              <div>
+                <h1 className="text-lg font-bold text-white">OtoKiwi</h1>
+              </div>
+            )}
+          </div>
           
-          <Button
-            variant="ghost"
-            size="sm"
+          <button
             onClick={() => setCollapsed(!collapsed)}
-            className="hidden lg:flex text-slate-400 hover:text-white hover:bg-slate-700/50 w-8 h-8 p-0"
+            className="hidden lg:flex p-1 rounded hover:bg-slate-700 text-slate-400 hover:text-white"
           >
             {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-          </Button>
+          </button>
           
-          <Button
-            variant="ghost"
-            size="sm"
+          <button
             onClick={() => setMobileOpen(false)}
-            className="lg:hidden text-slate-400 hover:text-white hover:bg-slate-700/50 w-8 h-8 p-0"
+            className="lg:hidden p-1 rounded hover:bg-slate-700 text-slate-400 hover:text-white"
           >
             <X className="w-4 h-4" />
-          </Button>
+          </button>
         </div>
       </div>
 

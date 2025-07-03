@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
-import Sidebar from "@/components/layout/sidebar";
+import Sidebar from "@/components/layout/sidebar-new";
 import Header from "@/components/layout/header";
 import StatsCard from "@/components/admin/stats-card";
 import { motion } from "framer-motion";
@@ -135,18 +135,17 @@ export default function LoginAttempts() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       <Sidebar />
-      <div className="lg:ml-64">
-        {/* GİRİŞ DENEMELERİ - EN EN TEPEDE */}
-        <div className="bg-red-600 text-white sticky top-0 z-10 shadow-lg">
-          <div className="px-6 py-3">
-            <h1 className="text-4xl font-black">
-              🔥 GİRİŞ DENEMELERİ 🔥
+      <div className="lg:ml-64 h-screen overflow-y-auto">
+        {/* GİRİŞ DENEMELERİ - TAM EN ÜSTTE */}
+        <div className="bg-red-700 text-white">
+          <div className="px-4 py-2">
+            <h1 className="text-2xl font-black">
+              🚨 GİRİŞ DENEMELERİ
             </h1>
-            <p className="text-lg font-bold opacity-90">CANLI LOGLAR</p>
           </div>
         </div>
         
-        <div className="px-4 py-2 bg-white dark:bg-slate-800">
+        <div className="p-3 bg-white dark:bg-slate-800">
           {isLoading ? (
             <div className="text-center py-4">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mx-auto"></div>
