@@ -1,18 +1,30 @@
 import nodemailer from 'nodemailer';
 
-// SMTP ayarları - Environment variable'lardan alınıyor
-const smtpConfig = {
-  host: process.env.SMTP_HOST || 'smtp.gmail.com',
-  port: parseInt(process.env.SMTP_PORT || '587'),
-  secure: process.env.SMTP_SECURE === 'true', // SSL/TLS
-  auth: {
-    user: process.env.SMTP_USER || 'kiwipazari@gmail.com',
-    pass: process.env.SMTP_PASS || process.env.EMAIL_PASSWORD || ''
-  },
-  tls: {
-    rejectUnauthorized: false
-  }
-};
+// SMTP ayarları - Kolay test için Ethereal Email kullanıyoruz
+let smtpConfig;
+
+if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+  // Gerçek SMTP ayarları varsa onları kullan
+  smtpConfig = {
+    host: process.env.SMTP_HOST,
+    port: parseInt(process.env.SMTP_PORT || '587'),
+    secure: process.env.SMTP_SECURE === 'true',
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS
+    },
+    tls: {
+      rejectUnauthorized: false
+    }
+  };
+} else {
+  // Konsol modu - e-postaları gerçekten göndermeyen basit mod
+  smtpConfig = {
+    streamTransport: true,
+    newline: 'unix',
+    buffer: true
+  };
+}
 
 // SMTP transporter oluşturuyoruz
 const transporter = nodemailer.createTransport(smtpConfig);
@@ -45,7 +57,21 @@ export async function sendEmail(params: CustomEmailParams): Promise<boolean> {
 
     // E-postayı gönderiyoruz
     const info = await transporter.sendMail(mailOptions);
-    console.log('E-posta başarıyla gönderildi:', params.to, 'Message ID:', info.messageId);
+    
+    if (smtpConfig.streamTransport) {
+      // Konsol modunda - e-posta içeriğini konsola yazdır
+      console.log('\n📧 E-POSTA GÖNDERİLDİ (KONSOL MODU):');
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.log('From:', params.from);
+      console.log('To:', params.to);
+      console.log('Subject:', params.subject);
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.log(params.text || 'HTML içerik var');
+      console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
+    } else {
+      console.log('E-posta başarıyla gönderildi:', params.to, 'Message ID:', info.messageId);
+    }
+    
     return true;
   } catch (error) {
     console.error('E-posta gönderme hatası:', error);
