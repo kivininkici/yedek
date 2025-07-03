@@ -547,19 +547,7 @@ export default function AdminLogin() {
                       )}
                     </Button>
                     
-                    {/* Forgot Password Link */}
-                    <div className="text-center pt-4">
-                      <Link href="/forgot-password">
-                        <motion.button
-                          type="button"
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          className="text-slate-400 hover:text-blue-400 text-sm underline underline-offset-4 transition-colors duration-300"
-                        >
-                          Şifremi Unuttum
-                        </motion.button>
-                      </Link>
-                    </div>
+
                   </motion.form>
                 )}
               </AnimatePresence>
@@ -567,12 +555,32 @@ export default function AdminLogin() {
           </Card>
           </motion.div>
 
+          {/* Forgot Password Button - Red Box */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="mt-6 text-center"
+          >
+            <Link href="/admin/forgot-password">
+              <motion.div
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="inline-block px-6 py-3 bg-red-600 hover:bg-red-700 rounded-xl border-2 border-red-500 shadow-lg shadow-red-500/25 backdrop-blur-sm transition-all duration-300 cursor-pointer"
+              >
+                <span className="text-white font-medium text-sm">
+                  Şifremi Unuttum
+                </span>
+              </motion.div>
+            </Link>
+          </motion.div>
+
           {/* Security Badge */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="mt-6 text-center"
+            transition={{ delay: 0.4, duration: 0.5 }}
+            className="mt-4 text-center"
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800/30 rounded-full border border-slate-700/30 backdrop-blur-sm">
               <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
