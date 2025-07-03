@@ -135,15 +135,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (existingUser) {
         return res.status(400).json({ message: 'Kullanıcı adı veya email zaten kullanımda' });
       }
+      
+      // Generate random avatar ID (1-24)
+      const avatarId = Math.floor(Math.random() * 24) + 1;
 
       // Create user with random avatar
       const hashedPassword = await hashPassword(password);
-      const randomAvatarId = Math.floor(Math.random() * 24) + 1; // 1-24 arası rastgele avatar
       const user = await storage.createNormalUser({
         username,
         email,
         password: hashedPassword,
-        avatarId: randomAvatarId,
+        avatarId,
       });
 
       // Set session
@@ -155,6 +157,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         id: user.id, 
         username: user.username, 
         email: user.email,
+        avatarId: user.avatarId,
         isAdmin: false,
         message: 'Kayıt başarılı' 
       });
@@ -216,6 +219,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         id: user.id, 
         username: user.username, 
         email: user.email,
+        avatarId: user.avatarId,
         isAdmin: isUserAdmin || false,
         message: 'Giriş başarılı' 
       });
@@ -329,6 +333,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return res.json({
             id: req.session.userId,
             username: req.session.username,
+            email: normalUser.email,
+            avatarId: normalUser.avatarId,
             authenticated: true,
             isAdmin: isAdmin
           });

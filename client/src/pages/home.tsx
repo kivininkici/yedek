@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Avatar } from "@/components/ui/avatar";
 import { KeyRound, Shield, Zap, Users, Star, TrendingUp, Activity, LogOut, User, ExternalLink, Search, ShoppingCart, Crown, Sparkles, CheckCircle, Send, MessageCircle, Frown, Meh, Smile, BarChart3, Globe, Clock, Award, Rocket, Target, Fingerprint, Heart } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
@@ -341,9 +342,13 @@ export default function Home() {
               </Button>
               
               <div className="flex items-center space-x-3 px-4 py-2 bg-white/10 rounded-2xl backdrop-blur-sm border border-white/10">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
-                  <User className="w-4 h-4 text-white" />
-                </div>
+                {user?.avatarId ? (
+                  <Avatar avatarId={user.avatarId} size="sm" className="border-white/20" />
+                ) : (
+                  <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                    <User className="w-4 h-4 text-white" />
+                  </div>
+                )}
                 <span className="text-white font-medium">{user?.username || 'Kullanıcı'}</span>
               </div>
               

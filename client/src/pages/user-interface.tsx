@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
@@ -148,7 +149,11 @@ const UserHeader = () => {
                 whileHover={{ scale: 1.05 }}
                 className="flex items-center space-x-3 bg-white/10 rounded-xl px-4 py-2"
               >
-                <User className="w-4 h-4 text-blue-300" />
+                {user?.avatarId ? (
+                  <Avatar avatarId={user.avatarId} size="sm" className="border-white/20" />
+                ) : (
+                  <User className="w-4 h-4 text-blue-300" />
+                )}
                 <span className="text-white text-sm font-medium">{user?.username}</span>
               </motion.div>
             )}
