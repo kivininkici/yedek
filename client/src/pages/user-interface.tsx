@@ -500,7 +500,7 @@ export default function UserInterface() {
                           </div>
                           <div>
                             <p className="text-sm text-green-200">Kategori</p>
-                            <Badge variant="secondary" className="bg-blue-500/20 text-blue-200">
+                            <Badge variant="secondary" className="bg-blue-500/20 text-[#101930]">
                               {validatedKey.category}
                             </Badge>
                           </div>
