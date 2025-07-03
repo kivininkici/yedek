@@ -200,7 +200,8 @@ export default function Sidebar({ className }: SidebarProps) {
         <div className="flex items-center justify-between">
           <motion.div
             className="flex items-center space-x-3"
-            whileHover={{ scale: 1.02 }}
+            whileHover={{ scale: 1.01 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
           >
             <div className="relative">
               <div className="w-10 h-10 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25">
@@ -209,10 +210,10 @@ export default function Sidebar({ className }: SidebarProps) {
               <motion.div
                 className="absolute -top-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-slate-900"
                 animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [1, 0.8, 1]
+                  scale: [1, 1.1, 1],
+                  opacity: [1, 0.9, 1]
                 }}
-                transition={{ duration: 2, repeat: Infinity }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
               />
             </div>
             <AnimatePresence>
@@ -296,8 +297,9 @@ export default function Sidebar({ className }: SidebarProps) {
                             ? "bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 shadow-lg shadow-blue-500/10"
                             : "hover:bg-slate-700/30 hover:border hover:border-slate-600/50"
                         )}
-                        whileHover={{ scale: 1.02, x: 4 }}
-                        whileTap={{ scale: 0.98 }}
+                        whileHover={{ scale: 1.01, x: 2 }}
+                        whileTap={{ scale: 0.99 }}
+                        transition={{ duration: 0.15, ease: "easeOut" }}
                       >
                         {/* Active indicator */}
                         {isActive && (
@@ -307,14 +309,18 @@ export default function Sidebar({ className }: SidebarProps) {
                           />
                         )}
                         
-                        <div className={cn(
-                          "flex items-center justify-center w-8 h-8 rounded-lg transition-colors",
-                          isActive
-                            ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg"
-                            : `${item.color} group-hover:bg-slate-700 group-hover:text-white`
-                        )}>
+                        <motion.div
+                          className={cn(
+                            "flex items-center justify-center w-8 h-8 rounded-lg transition-all duration-200",
+                            isActive
+                              ? "bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg"
+                              : `${item.color} group-hover:bg-slate-700 group-hover:text-white`
+                          )}
+                          whileHover={{ scale: 1.03 }}
+                          transition={{ duration: 0.2, ease: "easeOut" }}
+                        >
                           <Icon className="w-4 h-4" />
-                        </div>
+                        </motion.div>
                         
                         <AnimatePresence>
                           {!collapsed && (
@@ -350,8 +356,15 @@ export default function Sidebar({ className }: SidebarProps) {
                                   
                                   {"isNew" in item && item.isNew && (
                                     <motion.div
-                                      animate={{ scale: [1, 1.1, 1] }}
-                                      transition={{ duration: 2, repeat: Infinity }}
+                                      animate={{ 
+                                        scale: [1, 1.05, 1],
+                                        opacity: [0.9, 1, 0.9]
+                                      }}
+                                      transition={{ 
+                                        duration: 3, 
+                                        repeat: Infinity, 
+                                        ease: "easeInOut" 
+                                      }}
                                     >
                                       <Badge className="text-xs px-1.5 py-0.5 h-5 bg-green-500 text-white">
                                         YENİ
@@ -361,8 +374,15 @@ export default function Sidebar({ className }: SidebarProps) {
                                   
                                   {"isHot" in item && item.isHot && (
                                     <motion.div
-                                      animate={{ rotate: [0, 10, -10, 0] }}
-                                      transition={{ duration: 2, repeat: Infinity }}
+                                      animate={{ 
+                                        rotate: [0, 2, -2, 0],
+                                        scale: [1, 1.03, 1]
+                                      }}
+                                      transition={{ 
+                                        duration: 4, 
+                                        repeat: Infinity, 
+                                        ease: "easeInOut" 
+                                      }}
                                     >
                                       <Badge className="text-xs px-1.5 py-0.5 h-5 bg-red-500 text-white">
                                         🔥
@@ -391,8 +411,9 @@ export default function Sidebar({ className }: SidebarProps) {
       {/* Footer */}
       <div className="p-4 border-t border-slate-700/50">
         <motion.div
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+          whileHover={{ scale: 1.01 }}
+          whileTap={{ scale: 0.99 }}
+          transition={{ duration: 0.15, ease: "easeOut" }}
         >
           <Button
             onClick={handleLogout}
@@ -459,12 +480,18 @@ export default function Sidebar({ className }: SidebarProps) {
       </motion.aside>
 
       {/* Mobile Menu Button */}
-      <Button
-        onClick={() => setMobileOpen(true)}
-        className="lg:hidden fixed top-4 left-4 z-50 w-10 h-10 p-0 bg-slate-900/90 backdrop-blur-sm border border-slate-700/50 hover:bg-slate-800"
+      <motion.div
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        transition={{ duration: 0.15, ease: "easeOut" }}
       >
-        <Menu className="w-5 h-5 text-white" />
-      </Button>
+        <Button
+          onClick={() => setMobileOpen(true)}
+          className="lg:hidden fixed top-4 left-4 z-50 w-10 h-10 p-0 bg-slate-900/90 backdrop-blur-sm border border-slate-700/50 hover:bg-slate-800"
+        >
+          <Menu className="w-5 h-5 text-white" />
+        </Button>
+      </motion.div>
 
       {/* Mobile Sidebar */}
       <AnimatePresence>
