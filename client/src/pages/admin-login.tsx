@@ -546,6 +546,20 @@ export default function AdminLogin() {
                         </div>
                       )}
                     </Button>
+                    
+                    {/* Forgot Password Link */}
+                    <div className="text-center pt-4">
+                      <Link href="/forgot-password">
+                        <motion.button
+                          type="button"
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className="text-slate-400 hover:text-blue-400 text-sm underline underline-offset-4 transition-colors duration-300"
+                        >
+                          Şifremi Unuttum
+                        </motion.button>
+                      </Link>
+                    </div>
                   </motion.form>
                 )}
               </AnimatePresence>

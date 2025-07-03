@@ -1,5 +1,7 @@
 import nodemailer from 'nodemailer';
 import Mailjet from 'node-mailjet';
+import fs from 'fs';
+import path from 'path';
 
 // E-posta servis türünü belirle
 let emailService: 'smtpcom' | 'mailjet' | 'smtp' | 'console' = 'console';
@@ -51,6 +53,24 @@ if (process.env.SMTP_COM_API_KEY) {
   };
   transporter = nodemailer.createTransport(smtpConfig);
   console.log('📧 E-posta servisi konsol modunda hazır');
+}
+
+// E-posta template'ini oku ve customize et
+function loadEmailTemplate(templateName: string, variables: Record<string, string>): string {
+  try {
+    const templatePath = path.join(__dirname, 'templates', `${templateName}.html`);
+    let template = fs.readFileSync(templatePath, 'utf8');
+    
+    // Template değişkenlerini değiştir
+    for (const [key, value] of Object.entries(variables)) {
+      template = template.replace(new RegExp(`{{${key}}}`, 'g'), value);
+    }
+    
+    return template;
+  } catch (error) {
+    console.error('Template yükleme hatası:', error);
+    return '';
+  }
 }
 
 interface CustomEmailParams {
@@ -151,6 +171,40 @@ export async function sendEmail(params: CustomEmailParams): Promise<boolean> {
     console.error('E-posta gönderme hatası:', error);
     return false;
   }
+}
+
+// Şifre sıfırlama e-postası gönder
+export async function sendPasswordResetEmailNew(email: string, resetToken: string, baseUrl: string): Promise<boolean> {
+  const resetUrl = `${baseUrl}/reset-password?token=${resetToken}`;
+  
+  const htmlTemplate = loadEmailTemplate('passwordReset', {
+    RESET_URL: resetUrl
+  });
+  
+  const textMessage = `
+OtoKiwi Şifre Sıfırlama
+
+Merhaba,
+
+Şifre sıfırlama talebinizi aldık. Yeni şifrenizi ayarlamak için aşağıdaki linki kullanın:
+
+${resetUrl}
+
+Bu link 60 dakika boyunca geçerlidir.
+
+Eğer bu talebi siz yapmadıysanız, bu e-postayı görmezden gelebilirsiniz.
+
+© 2025 OtoKiwi
+smmkiwi.com
+  `;
+  
+  return await sendEmail({
+    to: email,
+    from: 'noreply@smmkiwi.com',
+    subject: 'OtoKiwi - Şifre Sıfırlama',
+    text: textMessage,
+    html: htmlTemplate
+  });
 }
 
 export async function sendFeedbackResponse(
@@ -306,7 +360,7 @@ Bu e-posta OtoKiwi şikayet yönetim sisteminden otomatik olarak gönderilmişti
   });
 }
 
-export async function sendPasswordResetEmail(
+export async function sendPasswordResetEmailOld(
   userEmail: string,
   userName: string,
   resetUrl: string

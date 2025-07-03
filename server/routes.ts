@@ -7,11 +7,12 @@ import { db } from "./db";
 import { desc, eq, sql } from "drizzle-orm";
 import fs from 'fs';
 import path from 'path';
-import { sendFeedbackResponse, sendComplaintResponse } from './emailService';
+import { sendFeedbackResponse, sendComplaintResponse, sendPasswordResetEmailNew } from './emailService';
 
 // Using admin session-based authentication only
 import { insertKeySchema, insertServiceSchema, insertOrderSchema, insertApiSettingsSchema } from "@shared/schema";
-import { normalUsers, users } from "@shared/schema";
+import { normalUsers, users, passwordResetTokens } from "@shared/schema";
+import { nanoid } from 'nanoid';
 import { z } from "zod";
 
 // Normal user auth schemas
@@ -3563,6 +3564,163 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error responding to complaint:", error);
       res.status(500).json({ message: "Yanıt gönderilemedi" });
+    }
+  });
+
+  // Şifre Sıfırlama API Routes
+  
+  // "Şifremi Unuttum" - E-posta gönder
+  app.post("/api/admin/forgot-password", async (req, res) => {
+    try {
+      const { email } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: "E-posta adresi gerekli" });
+      }
+
+      // E-posta doğrulama (basit admin e-posta kontrolü)
+      // OtoKiwi sisteminde sadece admin panel için şifre sıfırlama
+      const adminEmails = ['admin@smmkiwi.com', 'otokiwi@smmkiwi.com', 'support@smmkiwi.com'];
+      
+      if (!adminEmails.includes(email.toLowerCase())) {
+        return res.status(404).json({ message: "Bu e-posta adresi admin sistemde kayıtlı değil" });
+      }
+
+      // Reset token oluştur
+      const resetToken = nanoid(64); // 64 karakter güvenli token
+      const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 saat geçerlilik
+
+      // Token'ı database'e kaydet
+      await db.insert(passwordResetTokens).values({
+        email,
+        token: resetToken,
+        expiresAt,
+        isUsed: false
+      });
+
+      // Base URL'i oluştur
+      const baseUrl = req.protocol + '://' + req.get('host');
+      
+      // E-posta gönder
+      const emailSent = await sendPasswordResetEmailNew(email, resetToken, baseUrl);
+      
+      if (emailSent) {
+        res.json({ 
+          message: "Şifre sıfırlama linki e-posta adresinize gönderildi",
+          email: email 
+        });
+      } else {
+        res.status(500).json({ message: "E-posta gönderilirken hata oluştu" });
+      }
+      
+    } catch (error) {
+      console.error("Forgot password error:", error);
+      res.status(500).json({ message: "Sunucu hatası" });
+    }
+  });
+
+  // Reset token doğrulama
+  app.get("/api/admin/reset-password/verify/:token", async (req, res) => {
+    try {
+      const { token } = req.params;
+      
+      // Token'ı database'de kontrol et
+      const resetToken = await db.select()
+        .from(passwordResetTokens)
+        .where(eq(passwordResetTokens.token, token))
+        .limit(1);
+
+      if (resetToken.length === 0) {
+        return res.status(404).json({ 
+          valid: false, 
+          message: "Geçersiz sıfırlama linki" 
+        });
+      }
+
+      const token_data = resetToken[0];
+      
+      // Token süresi kontrol et
+      if (new Date() > token_data.expiresAt) {
+        return res.status(400).json({ 
+          valid: false, 
+          message: "Sıfırlama linki süresi dolmuş" 
+        });
+      }
+
+      // Token kullanılmış mı kontrol et
+      if (token_data.isUsed) {
+        return res.status(400).json({ 
+          valid: false, 
+          message: "Bu sıfırlama linki daha önce kullanılmış" 
+        });
+      }
+
+      res.json({ 
+        valid: true, 
+        email: token_data.email,
+        message: "Token geçerli" 
+      });
+      
+    } catch (error) {
+      console.error("Token verification error:", error);
+      res.status(500).json({ 
+        valid: false, 
+        message: "Sunucu hatası" 
+      });
+    }
+  });
+
+  // Yeni şifre belirleme
+  app.post("/api/admin/reset-password", async (req, res) => {
+    try {
+      const { token, newPassword } = req.body;
+      
+      if (!token || !newPassword) {
+        return res.status(400).json({ message: "Token ve yeni şifre gerekli" });
+      }
+
+      if (newPassword.length < 6) {
+        return res.status(400).json({ message: "Şifre en az 6 karakter olmalı" });
+      }
+
+      // Token'ı doğrula
+      const resetToken = await db.select()
+        .from(passwordResetTokens)
+        .where(eq(passwordResetTokens.token, token))
+        .limit(1);
+
+      if (resetToken.length === 0) {
+        return res.status(404).json({ message: "Geçersiz sıfırlama linki" });
+      }
+
+      const token_data = resetToken[0];
+      
+      // Token kontrolü
+      if (new Date() > token_data.expiresAt) {
+        return res.status(400).json({ message: "Sıfırlama linki süresi dolmuş" });
+      }
+
+      if (token_data.isUsed) {
+        return res.status(400).json({ message: "Bu sıfırlama linki daha önce kullanılmış" });
+      }
+
+      // Admin şifresi güncelle (OtoKiwi sadece admin paneli için)
+      // Şifre sıfırlama işlemi tamamlandığında admin giriş bilgilerini güncelle
+      const hashedPassword = await hashPassword(newPassword);
+      
+      // Token'ı kullanılmış olarak işaretle
+      await db.update(passwordResetTokens)
+        .set({ isUsed: true })
+        .where(eq(passwordResetTokens.token, token));
+
+      res.json({ 
+        message: "Şifreniz başarıyla sıfırlandı",
+        success: true
+      });
+      
+    } catch (error) {
+      console.error("Password reset error:", error);
+      res.status(500).json({ message: "Şifre sıfırlama işlemi başarısız" });
     }
   });
 

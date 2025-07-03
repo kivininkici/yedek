@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import type { Express, RequestHandler } from 'express';
 import { storage } from './storage';
 import { adminLoginSchema, type AdminLogin } from '@shared/schema';
-import { sendPasswordResetEmail } from './emailService';
+import { sendPasswordResetEmailNew } from './emailService';
 import { 
   getCurrentMasterPassword, 
   updateMasterPassword, 
@@ -307,7 +307,7 @@ export function setupAdminAuth(app: Express) {
       const resetUrl = `${req.protocol}://${req.get('host')}/admin/reset-password?token=${resetToken}`;
 
       // Send email only if admin exists
-      const emailSent = await sendPasswordResetEmail(email, admin.username, resetUrl);
+      const emailSent = await sendPasswordResetEmailNew(email, resetToken, `${req.protocol}://${req.get('host')}`);
 
       if (!emailSent) {
         console.error('Failed to send password reset email');
