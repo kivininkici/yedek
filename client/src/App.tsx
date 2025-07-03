@@ -15,6 +15,7 @@ import AdminResetPassword from "@/pages/admin/reset-password";
 import ForgotPassword from "@/pages/ForgotPassword";
 import ResetPassword from "@/pages/ResetPassword";
 import Dashboard from "@/pages/admin/dashboard";
+import DashboardNew from "@/pages/admin/dashboard-new";
 import Keys from "@/pages/admin/keys";
 import Services from "@/pages/admin/services";
 import Users from "@/pages/admin/users";

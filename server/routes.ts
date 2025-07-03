@@ -8,6 +8,17 @@ import { desc, eq, sql } from "drizzle-orm";
 import fs from 'fs';
 import path from 'path';
 import { sendFeedbackResponse, sendComplaintResponse, sendPasswordResetEmailNew } from './emailService';
+import { 
+  securityHeadersMiddleware, 
+  ipBlockingMiddleware, 
+  advancedRateLimitMiddleware, 
+  userAgentValidationMiddleware, 
+  contentInspectionMiddleware, 
+  adminRouteProtection, 
+  antiAutomationMiddleware, 
+  getConsoleProtectionScript, 
+  getSecurityStatus 
+} from './security/protections';
 
 // Using admin session-based authentication only
 import { insertKeySchema, insertServiceSchema, insertOrderSchema, insertApiSettingsSchema } from "@shared/schema";
@@ -121,6 +132,18 @@ async function makeServiceRequest(
 }
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Apply security middleware to all routes
+  app.use(securityHeadersMiddleware);
+  app.use(ipBlockingMiddleware);
+  app.use(advancedRateLimitMiddleware);
+  app.use(userAgentValidationMiddleware);
+  app.use(contentInspectionMiddleware);
+  app.use(antiAutomationMiddleware);
+  
+  // Apply enhanced protection to admin routes
+  app.use('/admin', adminRouteProtection);
+  app.use('/api/admin', adminRouteProtection);
+  
   // Admin auth setup
   setupAdminAuth(app);
 
@@ -3782,6 +3805,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Normal user forgot password error:", error);
       res.status(500).json({ message: "Sunucu hatası" });
+    }
+  });
+
+  // Security Status API endpoint
+  app.get('/api/admin/security/status', requireAdminAuth, async (req, res) => {
+    try {
+      const securityStatus = getSecurityStatus();
+      res.json(securityStatus);
+    } catch (error) {
+      console.error('Error fetching security status:', error);
+      res.status(500).json({ message: 'Güvenlik durumu alınamadı' });
+    }
+  });
+
+  // Dashboard Statistics API endpoint
+  app.get('/api/admin/dashboard/stats', requireAdminAuth, async (req, res) => {
+    try {
+      const stats = await storage.getDashboardStats();
+      res.json(stats);
+    } catch (error) {
+      console.error('Error fetching dashboard stats:', error);
+      res.status(500).json({ message: 'Dashboard istatistikleri alınamadı' });
     }
   });
 
