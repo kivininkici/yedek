@@ -35,6 +35,7 @@ export const users = pgTable("users", {
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
   role: varchar("role", { length: 50 }).notNull().default("user"), // "user" or "admin"
+  avatarId: integer("avatar_id").notNull().default(1), // 1-24 arası kedi avatar ID'si
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });

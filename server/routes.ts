@@ -136,12 +136,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'Kullanıcı adı veya email zaten kullanımda' });
       }
 
-      // Create user
+      // Create user with random avatar
       const hashedPassword = await hashPassword(password);
+      const randomAvatarId = Math.floor(Math.random() * 24) + 1; // 1-24 arası rastgele avatar
       const user = await storage.createNormalUser({
         username,
         email,
         password: hashedPassword,
+        avatarId: randomAvatarId,
       });
 
       // Set session
