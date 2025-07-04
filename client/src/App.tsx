@@ -18,7 +18,7 @@ const AdminForgotPassword = lazy(() => import("@/pages/admin/forgot-password"));
 const AdminResetPassword = lazy(() => import("@/pages/admin/reset-password"));
 const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
-const Dashboard = lazy(() => import("@/pages/admin/dashboard"));
+const Dashboard = lazy(() => import("@/pages/admin/dashboard-simple"));
 const Keys = lazy(() => import("@/pages/admin/keys"));
 const Services = lazy(() => import("@/pages/admin/services"));
 const Users = lazy(() => import("@/pages/admin/users"));

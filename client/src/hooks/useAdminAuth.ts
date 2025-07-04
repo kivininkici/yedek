@@ -20,22 +20,15 @@ export function useAdminAuth() {
     queryKey: ["/api/admin/me"],
     queryFn: async () => {
       try {
-        console.log('Making request to /api/admin/me...');
         const response = await fetch("/api/admin/me");
-        console.log('Response status:', response.status);
         if (response.status === 401) {
-          console.log('Got 401, returning null');
           return null; // Not authenticated
         }
         if (!response.ok) {
-          console.log('Response not ok, throwing error');
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const data = await response.json();
-        console.log('Got admin data:', data);
-        return data;
+        return await response.json();
       } catch (error) {
-        console.log('Caught error:', error);
         // Any error (including 401) means not authenticated
         return null;
       }
