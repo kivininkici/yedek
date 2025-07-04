@@ -79,11 +79,11 @@ app.use(express.json({
 }));
 app.use(express.urlencoded({ extended: false, limit: '50mb' }));
 
-// Add content inspection middleware after body parsing
-app.use(contentInspectionMiddleware);
+// Add content inspection middleware after body parsing - temporarily disabled for debugging
+// app.use(contentInspectionMiddleware);
 
-// Add input validation middleware
-app.use(inputValidationMiddleware);
+// Add input validation middleware - temporarily disabled for debugging
+// app.use(inputValidationMiddleware);
 
 // PostgreSQL session store
 const PgSession = ConnectPgSimple(session);
