@@ -18,28 +18,28 @@ export const ADMIN_CREDENTIALS = {
 export const SECURITY_QUESTIONS = [
   {
     question: "Memleketiniz Neresi?",
-    answer: "giresun"
+    answer: "giresun",
   },
   {
     question: "Doğduğunuz Şehir Neresi?",
-    answer: "bursa"
+    answer: "bursa",
   },
   {
     question: "İlk Gittiğiniz Ülke?",
-    answer: "yunanistan"
+    answer: "yunanistan",
   },
   {
     question: "Memleketin Neyle Meşhur?",
-    answer: "fındık"
+    answer: "fındık",
   },
   {
     question: "Doğduğun Şehir Neyle Meşhur?",
-    answer: "i̇skender"
+    answer: "iskender",
   },
   {
     question: "Gittiğin İkinci Ülke?",
-    answer: "gürcistan"
-  }
+    answer: "gürcistan",
+  },
 ];
 
 // Get random security question
