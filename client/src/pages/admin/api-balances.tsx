@@ -125,48 +125,43 @@ export default function ApiBalances() {
   if (isLoading) {
     return (
       <ModernAdminLayout title="API Bakiyeleri">
-            <div className="animate-pulse space-y-4">
-              <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="h-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
-                ))}
-              </div>
-            </div>
-          </main>
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-1/4"></div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="h-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
+            ))}
+          </div>
         </div>
-      </div>
+      </ModernAdminLayout>
     );
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50 dark:bg-gray-900">
-      <Sidebar />
-      <div className="flex-1 flex flex-col">
-        <Header />
-        <main className="flex-1 p-6 space-y-6">
-          {/* Header */}
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                API Bakiyeleri
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400 mt-2">
-                Tüm API sağlayıcılarının bakiye durumunu görüntüleyin
-              </p>
-            </div>
-            <Button
-              onClick={handleRefreshBalances}
-              disabled={refreshing}
-              className="flex items-center gap-2"
-            >
-              <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-              {refreshing ? 'Güncelleniyor...' : 'Bakiyeleri Yenile'}
-            </Button>
+    <ModernAdminLayout title="API Bakiyeleri">
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              API Bakiyeleri
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400 mt-2">
+              Tüm API sağlayıcılarının bakiye durumunu görüntüleyin
+            </p>
           </div>
+          <Button
+            onClick={handleRefreshBalances}
+            disabled={refreshing}
+            className="flex items-center gap-2"
+          >
+            <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+            {refreshing ? 'Güncelleniyor...' : 'Bakiyeleri Yenile'}
+          </Button>
+        </div>
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
@@ -302,8 +297,7 @@ export default function ApiBalances() {
               )}
             </CardContent>
           </Card>
-        </main>
       </div>
-    </div>
+    </ModernAdminLayout>
   );
 }

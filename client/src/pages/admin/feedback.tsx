@@ -339,6 +339,7 @@ export default function AdminFeedback() {
           </motion.div>
         </div>
       )}
+      </div>
     </ModernAdminLayout>
   );
 }
