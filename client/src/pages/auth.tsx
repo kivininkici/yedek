@@ -22,16 +22,18 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Progress } from "@/components/ui/progress";
-import { Eye, EyeOff, Home, LogIn, UserPlus } from "lucide-react";
+import { Eye, EyeOff, Home, LogIn, UserPlus, Shield } from "lucide-react";
 import { Link } from "wouter";
 import { z } from "zod";
 import { apiRequest } from "@/lib/queryClient";
 import { motion, AnimatePresence } from "framer-motion";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 
-// Schema definitions without math validation
+// Schema definitions with hCaptcha validation
 const loginSchema = z.object({
   username: z.string().min(1, "Kullanıcı adı gerekli"),
   password: z.string().min(1, "Şifre gerekli"),
+  hcaptcha: z.string().min(1, "CAPTCHA doğrulaması gerekli"),
 });
 
 const registerSchema = z
@@ -40,6 +42,7 @@ const registerSchema = z
     email: z.string().email("Geçerli bir e-posta adresi girin"),
     password: z.string().min(6, "Şifre en az 6 karakter olmalı"),
     confirmPassword: z.string(),
+    hcaptcha: z.string().min(1, "CAPTCHA doğrulaması gerekli"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Şifreler eşleşmiyor",
@@ -262,13 +265,19 @@ export default function Auth() {
   const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [showRegisterPassword, setShowRegisterPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loginCaptcha, setLoginCaptcha] = useState<string>("");
+  const [registerCaptcha, setRegisterCaptcha] = useState<string>("");
   const { toast } = useToast();
+
+  // hCaptcha site key - bu anahtarı hCaptcha dashboard'dan alabilirsiniz
+  const HCAPTCHA_SITE_KEY = "10000000-ffff-ffff-ffff-000000000001"; // Test key - production için değiştirin
 
   const loginForm = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       username: "",
       password: "",
+      hcaptcha: "",
     },
   });
 
@@ -279,6 +288,7 @@ export default function Auth() {
       email: "",
       password: "",
       confirmPassword: "",
+      hcaptcha: "",
     },
   });
 
@@ -525,6 +535,42 @@ export default function Auth() {
                             onSubmit={loginForm.handleSubmit(onLoginSubmit)}
                             className="space-y-4"
                           >
+                            {/* hCaptcha - Login Form */}
+                            <FormField
+                              control={loginForm.control}
+                              name="hcaptcha"
+                              render={({ field }) => (
+                                <FormItem className="space-y-3">
+                                  <FormLabel className="text-white font-semibold text-lg flex items-center">
+                                    <Shield className="w-5 h-5 mr-2 text-blue-400" />
+                                    Güvenlik Doğrulaması
+                                  </FormLabel>
+                                  <FormControl>
+                                    <div className="flex justify-center p-4 bg-white/5 rounded-2xl border border-white/20 backdrop-blur-sm">
+                                      <HCaptcha
+                                        sitekey={HCAPTCHA_SITE_KEY}
+                                        onVerify={(token) => {
+                                          setLoginCaptcha(token);
+                                          field.onChange(token);
+                                        }}
+                                        onExpire={() => {
+                                          setLoginCaptcha("");
+                                          field.onChange("");
+                                        }}
+                                        onError={() => {
+                                          setLoginCaptcha("");
+                                          field.onChange("");
+                                        }}
+                                        theme="dark"
+                                        size="normal"
+                                      />
+                                    </div>
+                                  </FormControl>
+                                  <FormMessage className="text-red-400" />
+                                </FormItem>
+                              )}
+                            />
+
                             <FormField
                               control={loginForm.control}
                               name="username"
@@ -679,6 +725,42 @@ export default function Auth() {
                             )}
                             className="space-y-4"
                           >
+                            {/* hCaptcha - Register Form */}
+                            <FormField
+                              control={registerForm.control}
+                              name="hcaptcha"
+                              render={({ field }) => (
+                                <FormItem className="space-y-3">
+                                  <FormLabel className="text-white font-semibold text-lg flex items-center">
+                                    <Shield className="w-5 h-5 mr-2 text-purple-400" />
+                                    Güvenlik Doğrulaması
+                                  </FormLabel>
+                                  <FormControl>
+                                    <div className="flex justify-center p-4 bg-white/5 rounded-2xl border border-white/20 backdrop-blur-sm">
+                                      <HCaptcha
+                                        sitekey={HCAPTCHA_SITE_KEY}
+                                        onVerify={(token) => {
+                                          setRegisterCaptcha(token);
+                                          field.onChange(token);
+                                        }}
+                                        onExpire={() => {
+                                          setRegisterCaptcha("");
+                                          field.onChange("");
+                                        }}
+                                        onError={() => {
+                                          setRegisterCaptcha("");
+                                          field.onChange("");
+                                        }}
+                                        theme="dark"
+                                        size="normal"
+                                      />
+                                    </div>
+                                  </FormControl>
+                                  <FormMessage className="text-red-400" />
+                                </FormItem>
+                              )}
+                            />
+
                             <FormField
                               control={registerForm.control}
                               name="username"

@@ -26,17 +26,41 @@ import { normalUsers, users, passwordResetTokens, adminUsers } from "@shared/sch
 import { nanoid } from 'nanoid';
 import { z } from "zod";
 
-// Normal user auth schemas
+// Normal user auth schemas with hCaptcha
 const userLoginSchema = z.object({
   username: z.string().min(3),
   password: z.string().min(6),
+  hcaptcha: z.string().min(1, "CAPTCHA gerekli"),
 });
 
 const userRegisterSchema = z.object({
   username: z.string().min(3),
   email: z.string().email(),
   password: z.string().min(6),
+  hcaptcha: z.string().min(1, "CAPTCHA gerekli"),
 });
+
+// hCaptcha verification function
+async function verifyHCaptcha(token: string): Promise<boolean> {
+  try {
+    // Using test secret key - replace with real one in production
+    const secret = "0x0000000000000000000000000000000000000000";
+    
+    const response = await fetch('https://hcaptcha.com/siteverify', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `secret=${secret}&response=${token}`,
+    });
+    
+    const data = await response.json();
+    return data.success === true;
+  } catch (error) {
+    console.error('hCaptcha verification error:', error);
+    return false;
+  }
+}
 
 // Normal user auth middleware
 const requireUserAuth = (req: any, res: any, next: any) => {
@@ -151,7 +175,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Normal user authentication routes
   app.post('/api/auth/register', async (req, res) => {
     try {
-      const { username, email, password } = userRegisterSchema.parse(req.body);
+      const { username, email, password, hcaptcha } = userRegisterSchema.parse(req.body);
+      
+      // Verify hCaptcha
+      const isCaptchaValid = await verifyHCaptcha(hcaptcha);
+      if (!isCaptchaValid) {
+        return res.status(400).json({ message: 'CAPTCHA doğrulaması başarısız. Lütfen tekrar deneyin.' });
+      }
       
       // Check if user already exists
       const existingUser = await storage.getUserByUsernameOrEmail(username, email);
@@ -191,7 +221,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post('/api/auth/login', async (req, res) => {
     try {
-      const { username, password } = userLoginSchema.parse(req.body);
+      const { username, password, hcaptcha } = userLoginSchema.parse(req.body);
+      
+      // Verify hCaptcha
+      const isCaptchaValid = await verifyHCaptcha(hcaptcha);
+      if (!isCaptchaValid) {
+        return res.status(400).json({ message: 'CAPTCHA doğrulaması başarısız. Lütfen tekrar deneyin.' });
+      }
       
       // First try to find admin user
       const foundAdminUser = await storage.getAdminByUsername(username);
