@@ -592,13 +592,13 @@ export default function Auth() {
               <div className="w-full">
                 {/* Modern Tab Buttons */}
                 <div className="w-full mb-10">
-                  <div className="grid grid-cols-2 gap-1 p-1 bg-slate-800/80 backdrop-blur-sm rounded-2xl border border-slate-700/50">
+                  <div className="flex w-full bg-slate-700/60 backdrop-blur-sm rounded-2xl p-2 border border-slate-600/30">
                     <button
                       onClick={() => setActiveTab("login")}
-                      className={`relative h-14 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center space-x-2 ${
+                      className={`flex-1 h-14 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center space-x-2 ${
                         activeTab === "login"
-                          ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg transform scale-[1.02]"
-                          : "text-slate-300 hover:text-white hover:bg-slate-700/50"
+                          ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg"
+                          : "text-slate-300 hover:text-white hover:bg-slate-600/40"
                       }`}
                     >
                       <LogIn className="w-5 h-5" />
@@ -606,10 +606,10 @@ export default function Auth() {
                     </button>
                     <button
                       onClick={() => setActiveTab("register")}
-                      className={`relative h-14 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center space-x-2 ${
+                      className={`flex-1 h-14 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center space-x-2 ml-2 ${
                         activeTab === "register"
-                          ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg transform scale-[1.02]"
-                          : "text-slate-300 hover:text-white hover:bg-slate-700/50"
+                          ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
+                          : "text-slate-300 hover:text-white hover:bg-slate-600/40"
                       }`}
                     >
                       <UserPlus className="w-5 h-5" />
