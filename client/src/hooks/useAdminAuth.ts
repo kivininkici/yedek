@@ -18,18 +18,37 @@ export function useAdminAuth() {
     isLoading,
   } = useQuery<AdminUser | undefined, Error>({
     queryKey: ["/api/admin/me"],
-    queryFn: getQueryFn({ on401: "returnNull" }),
+    queryFn: async () => {
+      try {
+        console.log('Making request to /api/admin/me...');
+        const response = await fetch("/api/admin/me");
+        console.log('Response status:', response.status);
+        if (response.status === 401) {
+          console.log('Got 401, returning null');
+          return null; // Not authenticated
+        }
+        if (!response.ok) {
+          console.log('Response not ok, throwing error');
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log('Got admin data:', data);
+        return data;
+      } catch (error) {
+        console.log('Caught error:', error);
+        // Any error (including 401) means not authenticated
+        return null;
+      }
+    },
     retry: false,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
     refetchOnReconnect: false,
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    gcTime: 15 * 60 * 1000, // 15 minutes
+    staleTime: 0, // Always fresh for security
+    gcTime: 0,
   });
 
-  // If we got a 401 error, we're definitely not authenticated
-  const is401Error = error?.message?.includes("401");
-  const effectiveIsLoading = isLoading && !is401Error;
+  const effectiveIsLoading = isLoading;
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
@@ -52,11 +71,13 @@ export function useAdminAuth() {
     },
   });
 
+  const isAuthenticated = !!admin && admin !== null;
+
   return {
     admin,
     isLoading: effectiveIsLoading,
     error,
-    isAuthenticated: !!admin,
+    isAuthenticated,
     logout: logoutMutation.mutate,
     isLoggingOut: logoutMutation.isPending,
   };

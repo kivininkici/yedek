@@ -54,7 +54,7 @@ function Router() {
   const { isAuthenticated: isUserAuthenticated, isLoading: isUserLoading } = useAuth();
   const { isAuthenticated: isAdminAuthenticated, isLoading: isAdminLoading } = useAdminAuth();
 
-  // Debug logging removed for performance optimization
+
 
   // Simplified loading state - only show for very short time
   const [showLoader, setShowLoader] = useState(true);
