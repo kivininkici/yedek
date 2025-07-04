@@ -42,96 +42,96 @@ export default function SimpleAdminLayout({ children, title }: SimpleAdminLayout
           
           <nav className="space-y-1">
             <Link href="/admin">
-              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-150 ${
-                isActive('/admin') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-75 ${
+                isActive('/admin') ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
               }`}>
                 <BarChart3 className="w-4 h-4 mr-3" />
                 Dashboard
               </div>
             </Link>
             <Link href="/admin/users">
-              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-150 ${
-                isActive('/admin/users') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-75 ${
+                isActive('/admin/users') ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
               }`}>
                 <Users className="w-4 h-4 mr-3" />
                 Kullanıcılar
               </div>
             </Link>
             <Link href="/admin/keys">
-              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-150 ${
-                isActive('/admin/keys') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-75 ${
+                isActive('/admin/keys') ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
               }`}>
                 <Key className="w-4 h-4 mr-3" />
                 Anahtarlar
               </div>
             </Link>
             <Link href="/admin/orders">
-              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-150 ${
-                isActive('/admin/orders') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-75 ${
+                isActive('/admin/orders') ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
               }`}>
                 <ShoppingCart className="w-4 h-4 mr-3" />
                 Siparişler
               </div>
             </Link>
             <Link href="/admin/services">
-              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-150 ${
-                isActive('/admin/services') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-75 ${
+                isActive('/admin/services') ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
               }`}>
                 <Activity className="w-4 h-4 mr-3" />
                 Servisler
               </div>
             </Link>
             <Link href="/admin/api-management">
-              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-150 ${
-                isActive('/admin/api-management') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-75 ${
+                isActive('/admin/api-management') ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
               }`}>
                 <Database className="w-4 h-4 mr-3" />
                 API Yönetimi
               </div>
             </Link>
             <Link href="/admin/api-balances">
-              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-150 ${
-                isActive('/admin/api-balances') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-75 ${
+                isActive('/admin/api-balances') ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
               }`}>
                 <CreditCard className="w-4 h-4 mr-3" />
                 API Bakiyeler
               </div>
             </Link>
             <Link href="/admin/logs">
-              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-150 ${
-                isActive('/admin/logs') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-75 ${
+                isActive('/admin/logs') ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
               }`}>
                 <FileText className="w-4 h-4 mr-3" />
                 Loglar
               </div>
             </Link>
             <Link href="/admin/login-attempts">
-              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-150 ${
-                isActive('/admin/login-attempts') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-75 ${
+                isActive('/admin/login-attempts') ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
               }`}>
                 <Shield className="w-4 h-4 mr-3" />
                 Giriş Denemeleri
               </div>
             </Link>
             <Link href="/admin/feedback">
-              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-150 ${
-                isActive('/admin/feedback') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-75 ${
+                isActive('/admin/feedback') ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
               }`}>
                 <MessageSquare className="w-4 h-4 mr-3" />
                 Geri Bildirimler
               </div>
             </Link>
             <Link href="/admin/complaints">
-              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-150 ${
-                isActive('/admin/complaints') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-75 ${
+                isActive('/admin/complaints') ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
               }`}>
                 <AlertTriangle className="w-4 h-4 mr-3" />
                 Şikayetler
               </div>
             </Link>
             <Link href="/admin/settings">
-              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-150 ${
-                isActive('/admin/settings') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-75 ${
+                isActive('/admin/settings') ? 'bg-blue-600 text-white shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
               }`}>
                 <Settings className="w-4 h-4 mr-3" />
                 Ayarlar
