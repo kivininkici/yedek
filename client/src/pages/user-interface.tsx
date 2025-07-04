@@ -347,45 +347,104 @@ export default function UserInterface() {
         <AnimatedBackground />
         
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          initial={{ opacity: 0, y: 30, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ 
+            duration: 0.6, 
+            ease: [0.4, 0, 0.2, 1],
+            delay: 0.1
+          }}
           className="relative z-10"
         >
-          <Card className="w-full max-w-md bg-slate-800/95 backdrop-blur-sm border border-slate-700 shadow-xl rounded-2xl">
-            <CardHeader className="text-center pt-8 pb-6">
-              <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                <Key className="w-8 h-8 text-white" />
-              </div>
-              
-              <CardTitle className="text-2xl font-bold text-white mb-3">
-                Giriş Gerekli
-              </CardTitle>
-              
-              <p className="text-slate-400 text-sm">
-                Key kullanım paneline erişmek için giriş yapmanız gerekiyor
-              </p>
-            </CardHeader>
+          <div className="relative">
+            {/* Glow effect */}
+            <div className="absolute inset-0 bg-blue-500/20 rounded-3xl blur-2xl opacity-60"></div>
             
-            <CardContent className="px-6 pb-6 space-y-3">
-              <Link href="/auth">
-                <Button className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 rounded-xl">
-                  <User className="w-5 h-5 mr-2" />
-                  Giriş Yap / Kayıt Ol
-                </Button>
-              </Link>
+            <Card className="relative w-full max-w-md bg-slate-900/90 backdrop-blur-xl border border-slate-700/50 shadow-2xl rounded-3xl overflow-hidden">
+              {/* Subtle gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5 pointer-events-none"></div>
               
-              <Link href="/">
-                <Button 
-                  variant="outline" 
-                  className="w-full bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600 hover:text-white font-medium py-3 rounded-xl"
+              <CardHeader className="relative text-center pt-10 pb-8">
+                {/* Animated icon */}
+                <motion.div
+                  className="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg"
+                  animate={{ 
+                    boxShadow: [
+                      "0 10px 30px rgba(59, 130, 246, 0.3)",
+                      "0 15px 40px rgba(59, 130, 246, 0.4)",
+                      "0 10px 30px rgba(59, 130, 246, 0.3)"
+                    ]
+                  }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  whileHover={{ scale: 1.05, rotate: 5 }}
                 >
-                  <Home className="w-5 h-5 mr-2" />
-                  Ana Sayfaya Dön
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
+                  <Key className="w-10 h-10 text-white" />
+                </motion.div>
+                
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3, duration: 0.5 }}
+                >
+                  <CardTitle className="text-3xl font-bold text-white mb-4">
+                    Giriş Gerekli
+                  </CardTitle>
+                  
+                  <p className="text-slate-400 text-base leading-relaxed px-2">
+                    Key kullanım paneline erişmek için giriş yapmanız gerekiyor
+                  </p>
+                </motion.div>
+              </CardHeader>
+              
+              <CardContent className="relative px-8 pb-8">
+                <div className="space-y-5">
+                  {/* Primary button */}
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4, duration: 0.5 }}
+                  >
+                    <Link href="/auth">
+                      <motion.div
+                        whileHover={{ scale: 1.02, y: -2 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="relative group"
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl blur-sm opacity-50 group-hover:opacity-70 transition-all duration-300"></div>
+                        <Button className="relative w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-4 rounded-2xl shadow-lg border border-blue-400/20">
+                          <User className="w-5 h-5 mr-2" />
+                          Giriş Yap / Kayıt Ol
+                        </Button>
+                      </motion.div>
+                    </Link>
+                  </motion.div>
+                  
+                  {/* Secondary button */}
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.5, duration: 0.5 }}
+                  >
+                    <Link href="/">
+                      <motion.div
+                        whileHover={{ scale: 1.02, y: -1 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="group"
+                      >
+                        <Button 
+                          variant="outline" 
+                          className="w-full bg-slate-800/80 border-slate-600 text-slate-300 hover:bg-slate-700 hover:border-slate-500 hover:text-white font-semibold py-4 rounded-2xl transition-all duration-300"
+                        >
+                          <Home className="w-5 h-5 mr-2" />
+                          Ana Sayfaya Dön
+                        </Button>
+                      </motion.div>
+                    </Link>
+                  </motion.div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </motion.div>
       </div>
     );
