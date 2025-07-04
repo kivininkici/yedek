@@ -239,6 +239,11 @@ export function advancedRateLimitMiddleware(req: Request, res: Response, next: N
  * User agent validation middleware
  */
 export function userAgentValidationMiddleware(req: Request, res: Response, next: NextFunction) {
+  // Skip user agent validation in development
+  if (process.env.NODE_ENV === 'development') {
+    return next();
+  }
+  
   const userAgent = req.get('User-Agent') || '';
   
   // Check against blocked user agents
@@ -377,6 +382,11 @@ export function securityHeadersMiddleware(req: Request, res: Response, next: Nex
  * Anti-automation detection
  */
 export function antiAutomationMiddleware(req: Request, res: Response, next: NextFunction) {
+  // Skip automation detection in development
+  if (process.env.NODE_ENV === 'development') {
+    return next();
+  }
+  
   const clientIP = getClientIP(req);
   
   // Check for automation patterns
