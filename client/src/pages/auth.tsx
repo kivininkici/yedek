@@ -590,14 +590,15 @@ export default function Auth() {
 
             <CardContent className="px-10 pb-10 relative z-10">
               <div className="w-full">
-                <div className="w-full mb-10 bg-white/10 backdrop-blur-sm rounded-2xl p-1 h-16 border border-white/20">
-                  <div className="flex w-full h-full gap-0">
+                {/* Modern Tab Buttons */}
+                <div className="w-full mb-10">
+                  <div className="grid grid-cols-2 gap-1 p-1 bg-slate-800/80 backdrop-blur-sm rounded-2xl border border-slate-700/50">
                     <button
                       onClick={() => setActiveTab("login")}
-                      className={`flex-1 h-12 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center space-x-2 ${
+                      className={`relative h-14 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center space-x-2 ${
                         activeTab === "login"
-                          ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg"
-                          : "text-gray-300 hover:text-white hover:bg-white/5"
+                          ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg transform scale-[1.02]"
+                          : "text-slate-300 hover:text-white hover:bg-slate-700/50"
                       }`}
                     >
                       <LogIn className="w-5 h-5" />
@@ -605,10 +606,10 @@ export default function Auth() {
                     </button>
                     <button
                       onClick={() => setActiveTab("register")}
-                      className={`flex-1 h-12 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center space-x-2 ${
+                      className={`relative h-14 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center space-x-2 ${
                         activeTab === "register"
-                          ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
-                          : "text-gray-300 hover:text-white hover:bg-white/5"
+                          ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg transform scale-[1.02]"
+                          : "text-slate-300 hover:text-white hover:bg-slate-700/50"
                       }`}
                     >
                       <UserPlus className="w-5 h-5" />
