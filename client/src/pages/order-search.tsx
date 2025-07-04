@@ -361,7 +361,7 @@ export default function OrderSearchPage() {
   };
 
   return (
-    <div className="min-h-screen text-white relative">
+    <div className="min-h-screen text-white relative" key={Date.now()}>
       {/* Modern Background */}
       <ModernBackground />
       
