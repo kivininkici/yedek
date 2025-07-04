@@ -7,13 +7,83 @@ import ConnectPgSimple from "connect-pg-simple";
 import { pool } from "./db";
 import { setupAuth } from "./replitAuth";
 import { setupAdminAuth } from "./adminAuth";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+import { body, validationResult } from "express-validator";
+import hpp from "hpp";
+import { 
+  securityHeadersMiddleware, 
+  ipBlockingMiddleware, 
+  userAgentValidationMiddleware, 
+  contentInspectionMiddleware, 
+  advancedRateLimitMiddleware 
+} from "./security/protections";
+import { inputValidationMiddleware } from "./validation";
 
 // Load environment variables
 config();
 
 const app = express();
-app.use(express.json({ limit: '50mb' }));
+
+// Apply security middleware FIRST
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "blob:"],
+      styleSrc: ["'self'", "'unsafe-inline'", "blob:"],
+      imgSrc: ["'self'", "data:", "https:", "blob:"],
+      fontSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'", "ws:", "wss:"],
+      frameSrc: ["'none'"],
+      objectSrc: ["'none'"],
+      mediaSrc: ["'self'"],
+      workerSrc: ["'self'", "blob:"],
+    },
+  },
+  hsts: {
+    maxAge: 31536000,
+    includeSubDomains: true,
+    preload: true
+  }
+}));
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 1000, // limit each IP to 1000 requests per windowMs
+  message: {
+    error: 'Çok fazla istek gönderildi. Lütfen daha sonra tekrar deneyin.',
+    code: 'RATE_LIMIT_EXCEEDED'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use(limiter);
+
+// HTTP Parameter Pollution protection
+app.use(hpp());
+
+// Custom security middleware
+app.use(securityHeadersMiddleware);
+app.use(ipBlockingMiddleware);
+app.use(userAgentValidationMiddleware);
+app.use(advancedRateLimitMiddleware);
+
+app.use(express.json({ 
+  limit: '50mb',
+  verify: (req: any, res, buf) => {
+    req.rawBody = buf.toString();
+  }
+}));
 app.use(express.urlencoded({ extended: false, limit: '50mb' }));
+
+// Add content inspection middleware after body parsing
+app.use(contentInspectionMiddleware);
+
+// Add input validation middleware
+app.use(inputValidationMiddleware);
 
 // PostgreSQL session store
 const PgSession = ConnectPgSimple(session);
