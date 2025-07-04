@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
-import NewModernAdminLayout from "@/components/admin/NewModernAdminLayout";
+import SimpleAdminLayout from "@/components/admin/SimpleAdminLayout";
 import StatsCard from "@/components/admin/stats-card";
 import KeyCreationModal from "@/components/admin/key-creation-modal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -287,7 +287,7 @@ export default function Keys() {
   const paginatedKeys = filteredKeys.slice(startIndex, endIndex);
 
   return (
-    <NewModernAdminLayout>
+    <SimpleAdminLayout>
       <div className="space-y-6">
         {/* Header Actions */}
         <div className="flex items-center justify-between">
@@ -559,6 +559,6 @@ export default function Keys() {
           </DialogContent>
         </Dialog>
       </div>
-    </NewModernAdminLayout>
+    </SimpleAdminLayout>
   );
 }

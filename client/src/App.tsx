@@ -18,7 +18,7 @@ const AdminForgotPassword = lazy(() => import("@/pages/admin/forgot-password"));
 const AdminResetPassword = lazy(() => import("@/pages/admin/reset-password"));
 const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
-const SimpleDashboard = lazy(() => import("@/pages/admin/simple-dashboard"));
+const Dashboard = lazy(() => import("@/pages/admin/dashboard"));
 const Keys = lazy(() => import("@/pages/admin/keys"));
 const Services = lazy(() => import("@/pages/admin/services"));
 const Users = lazy(() => import("@/pages/admin/users"));
@@ -114,12 +114,12 @@ function Router() {
         
         {/* Admin main route - redirect to dashboard */}
         <Route path="/admin">
-          {isAdminAuthenticated ? <SimpleDashboard /> : <AdminLogin />}
+          {isAdminAuthenticated ? <Dashboard /> : <AdminLogin />}
         </Route>
         
         {/* Protected admin routes */}
         <Route path="/admin/dashboard">
-          {isAdminAuthenticated ? <SimpleDashboard /> : <AdminLogin />}
+          {isAdminAuthenticated ? <Dashboard /> : <AdminLogin />}
         </Route>
         <Route path="/admin/keys">
           {isAdminAuthenticated ? <Keys /> : <AdminLogin />}

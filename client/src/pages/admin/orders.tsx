@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useToast } from "@/hooks/use-toast";
-import NewModernAdminLayout from "@/components/admin/NewModernAdminLayout";
+import SimpleAdminLayout from "@/components/admin/SimpleAdminLayout";
 import StatsCard from "@/components/admin/stats-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -115,7 +115,7 @@ export default function Orders() {
   };
 
   return (
-    <NewModernAdminLayout>
+    <SimpleAdminLayout>
         <div className="space-y-6">
           {/* Header Actions */}
           <div className="flex items-center justify-between">
@@ -273,6 +273,6 @@ export default function Orders() {
               </CardContent>
             </Card>
         </div>
-    </NewModernAdminLayout>
+    </SimpleAdminLayout>
   );
 }
