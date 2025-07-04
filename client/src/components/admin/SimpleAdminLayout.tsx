@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { Button } from "@/components/ui/button";
+import { Link, useLocation } from 'wouter';
 import {
   Users,
   Key,
@@ -23,10 +24,14 @@ interface SimpleAdminLayoutProps {
 }
 
 export default function SimpleAdminLayout({ children, title }: SimpleAdminLayoutProps) {
+  const [location] = useLocation();
+  
   const logout = () => {
     fetch('/api/admin/logout', { method: 'POST' })
       .then(() => window.location.href = '/admin/login');
   };
+
+  const isActive = (path: string) => location === path;
 
   return (
     <div className="min-h-screen bg-gray-900 text-white flex">
@@ -36,54 +41,102 @@ export default function SimpleAdminLayout({ children, title }: SimpleAdminLayout
           <h1 className="text-xl font-bold text-white mb-8">OtoKiwi Admin</h1>
           
           <nav className="space-y-1">
-            <a href="/admin" className="flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 rounded text-sm">
-              <BarChart3 className="w-4 h-4 mr-3" />
-              Dashboard
-            </a>
-            <a href="/admin/users" className="flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 rounded text-sm">
-              <Users className="w-4 h-4 mr-3" />
-              Kullanıcılar
-            </a>
-            <a href="/admin/keys" className="flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 rounded text-sm">
-              <Key className="w-4 h-4 mr-3" />
-              Anahtarlar
-            </a>
-            <a href="/admin/orders" className="flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 rounded text-sm">
-              <ShoppingCart className="w-4 h-4 mr-3" />
-              Siparişler
-            </a>
-            <a href="/admin/services" className="flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 rounded text-sm">
-              <Activity className="w-4 h-4 mr-3" />
-              Servisler
-            </a>
-            <a href="/admin/api-management" className="flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 rounded text-sm">
-              <Database className="w-4 h-4 mr-3" />
-              API Yönetimi
-            </a>
-            <a href="/admin/api-balances" className="flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 rounded text-sm">
-              <CreditCard className="w-4 h-4 mr-3" />
-              API Bakiyeler
-            </a>
-            <a href="/admin/logs" className="flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 rounded text-sm">
-              <FileText className="w-4 h-4 mr-3" />
-              Loglar
-            </a>
-            <a href="/admin/login-attempts" className="flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 rounded text-sm">
-              <Shield className="w-4 h-4 mr-3" />
-              Giriş Denemeleri
-            </a>
-            <a href="/admin/feedback" className="flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 rounded text-sm">
-              <MessageSquare className="w-4 h-4 mr-3" />
-              Geri Bildirimler
-            </a>
-            <a href="/admin/complaints" className="flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 rounded text-sm">
-              <AlertTriangle className="w-4 h-4 mr-3" />
-              Şikayetler
-            </a>
-            <a href="/admin/settings" className="flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 rounded text-sm">
-              <Settings className="w-4 h-4 mr-3" />
-              Ayarlar
-            </a>
+            <Link href="/admin">
+              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-150 ${
+                isActive('/admin') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+              }`}>
+                <BarChart3 className="w-4 h-4 mr-3" />
+                Dashboard
+              </div>
+            </Link>
+            <Link href="/admin/users">
+              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-150 ${
+                isActive('/admin/users') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+              }`}>
+                <Users className="w-4 h-4 mr-3" />
+                Kullanıcılar
+              </div>
+            </Link>
+            <Link href="/admin/keys">
+              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-150 ${
+                isActive('/admin/keys') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+              }`}>
+                <Key className="w-4 h-4 mr-3" />
+                Anahtarlar
+              </div>
+            </Link>
+            <Link href="/admin/orders">
+              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-150 ${
+                isActive('/admin/orders') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+              }`}>
+                <ShoppingCart className="w-4 h-4 mr-3" />
+                Siparişler
+              </div>
+            </Link>
+            <Link href="/admin/services">
+              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-150 ${
+                isActive('/admin/services') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+              }`}>
+                <Activity className="w-4 h-4 mr-3" />
+                Servisler
+              </div>
+            </Link>
+            <Link href="/admin/api-management">
+              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-150 ${
+                isActive('/admin/api-management') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+              }`}>
+                <Database className="w-4 h-4 mr-3" />
+                API Yönetimi
+              </div>
+            </Link>
+            <Link href="/admin/api-balances">
+              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-150 ${
+                isActive('/admin/api-balances') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+              }`}>
+                <CreditCard className="w-4 h-4 mr-3" />
+                API Bakiyeler
+              </div>
+            </Link>
+            <Link href="/admin/logs">
+              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-150 ${
+                isActive('/admin/logs') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+              }`}>
+                <FileText className="w-4 h-4 mr-3" />
+                Loglar
+              </div>
+            </Link>
+            <Link href="/admin/login-attempts">
+              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-150 ${
+                isActive('/admin/login-attempts') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+              }`}>
+                <Shield className="w-4 h-4 mr-3" />
+                Giriş Denemeleri
+              </div>
+            </Link>
+            <Link href="/admin/feedback">
+              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-150 ${
+                isActive('/admin/feedback') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+              }`}>
+                <MessageSquare className="w-4 h-4 mr-3" />
+                Geri Bildirimler
+              </div>
+            </Link>
+            <Link href="/admin/complaints">
+              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-150 ${
+                isActive('/admin/complaints') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+              }`}>
+                <AlertTriangle className="w-4 h-4 mr-3" />
+                Şikayetler
+              </div>
+            </Link>
+            <Link href="/admin/settings">
+              <div className={`flex items-center px-3 py-2 rounded text-sm transition-all duration-150 ${
+                isActive('/admin/settings') ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-700'
+              }`}>
+                <Settings className="w-4 h-4 mr-3" />
+                Ayarlar
+              </div>
+            </Link>
           </nav>
 
           <div className="absolute bottom-6 left-6 right-6">
