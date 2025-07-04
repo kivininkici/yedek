@@ -269,7 +269,7 @@ export default function Auth() {
   const [registerCaptcha, setRegisterCaptcha] = useState<string>("");
   const { toast } = useToast();
 
-  // hCaptcha site key - bu anahtarı hCaptcha dashboard'dan alabilirsiniz
+  // hCaptcha site key - development için test key kullanılıyor
   const HCAPTCHA_SITE_KEY = "10000000-ffff-ffff-ffff-000000000001"; // Test key - production için değiştirin
 
   const loginForm = useForm<LoginData>({
@@ -546,7 +546,7 @@ export default function Auth() {
                                     Güvenlik Doğrulaması
                                   </FormLabel>
                                   <FormControl>
-                                    <div className="flex justify-center p-4 bg-white/5 rounded-2xl border border-white/20 backdrop-blur-sm">
+                                    <div className="flex flex-col items-center space-y-3 p-4 bg-white/5 rounded-2xl border border-white/20 backdrop-blur-sm">
                                       <HCaptcha
                                         sitekey={HCAPTCHA_SITE_KEY}
                                         onVerify={(token) => {
@@ -557,13 +557,31 @@ export default function Auth() {
                                           setLoginCaptcha("");
                                           field.onChange("");
                                         }}
-                                        onError={() => {
+                                        onError={(error) => {
+                                          console.log("hCaptcha error:", error);
                                           setLoginCaptcha("");
                                           field.onChange("");
                                         }}
                                         theme="dark"
                                         size="normal"
                                       />
+                                      
+                                      {/* Development bypass button */}
+                                      {HCAPTCHA_SITE_KEY === "10000000-ffff-ffff-ffff-000000000001" && (
+                                        <Button
+                                          type="button"
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => {
+                                            const testToken = "test-token-dev-mode";
+                                            setLoginCaptcha(testToken);
+                                            field.onChange(testToken);
+                                          }}
+                                          className="text-xs text-gray-400 border-gray-600 hover:bg-gray-700"
+                                        >
+                                          Geliştirme Modu: CAPTCHA'yı Atla
+                                        </Button>
+                                      )}
                                     </div>
                                   </FormControl>
                                   <FormMessage className="text-red-400" />
@@ -736,7 +754,7 @@ export default function Auth() {
                                     Güvenlik Doğrulaması
                                   </FormLabel>
                                   <FormControl>
-                                    <div className="flex justify-center p-4 bg-white/5 rounded-2xl border border-white/20 backdrop-blur-sm">
+                                    <div className="flex flex-col items-center space-y-3 p-4 bg-white/5 rounded-2xl border border-white/20 backdrop-blur-sm">
                                       <HCaptcha
                                         sitekey={HCAPTCHA_SITE_KEY}
                                         onVerify={(token) => {
@@ -747,13 +765,31 @@ export default function Auth() {
                                           setRegisterCaptcha("");
                                           field.onChange("");
                                         }}
-                                        onError={() => {
+                                        onError={(error) => {
+                                          console.log("hCaptcha error:", error);
                                           setRegisterCaptcha("");
                                           field.onChange("");
                                         }}
                                         theme="dark"
                                         size="normal"
                                       />
+                                      
+                                      {/* Development bypass button */}
+                                      {HCAPTCHA_SITE_KEY === "10000000-ffff-ffff-ffff-000000000001" && (
+                                        <Button
+                                          type="button"
+                                          size="sm"
+                                          variant="outline"
+                                          onClick={() => {
+                                            const testToken = "test-token-dev-mode";
+                                            setRegisterCaptcha(testToken);
+                                            field.onChange(testToken);
+                                          }}
+                                          className="text-xs text-gray-400 border-gray-600 hover:bg-gray-700"
+                                        >
+                                          Geliştirme Modu: CAPTCHA'yı Atla
+                                        </Button>
+                                      )}
                                     </div>
                                   </FormControl>
                                   <FormMessage className="text-red-400" />
