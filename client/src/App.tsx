@@ -5,7 +5,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
-import Landing from "@/pages/landing";
+import SimpleLanding from "@/pages/simple-landing";
 import Home from "@/pages/home";
 import Auth from "@/pages/auth";
 import UserInterface from "@/pages/user-interface";
@@ -44,65 +44,28 @@ function Router() {
   const { isAuthenticated: isUserAuthenticated, isLoading: isUserLoading } = useAuth();
   const { isAuthenticated: isAdminAuthenticated, isLoading: isAdminLoading } = useAdminAuth();
 
-  // Show loading screen only for initial auth checks (max 1 second to prevent infinite loading)
-  const [showLoader, setShowLoader] = useState(true);
+  // Loading control - simplified
+  const [initialLoad, setInitialLoad] = useState(true);
   
   useEffect(() => {
+    // Quick timeout to avoid loading flash
     const timer = setTimeout(() => {
-      setShowLoader(false);
-    }, 1000);
-    
-    // Hide loader early if auth checks complete
-    if (!isUserLoading && !isAdminLoading) {
-      setShowLoader(false);
-      clearTimeout(timer);
-    }
+      setInitialLoad(false);
+    }, 300);
     
     return () => clearTimeout(timer);
-  }, [isUserLoading, isAdminLoading]);
+  }, []);
 
-  // Debug: Log auth states
-  console.log('Auth States:', { 
-    isUserAuthenticated, isUserLoading, 
-    isAdminAuthenticated, isAdminLoading, 
-    showLoader 
-  });
-
-  if (showLoader && (isUserLoading || isAdminLoading)) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <div className="text-xl font-semibold text-gray-700">OtoKiwi Yükleniyor...</div>
-          <div className="text-sm text-gray-500 mt-2">Debug: User={isUserLoading ? 'loading' : 'loaded'}, Admin={isAdminLoading ? 'loading' : 'loaded'}</div>
-        </div>
-      </div>
-    );
+  // Skip loading screen entirely if not needed
+  if (initialLoad) {
+    return null; // Let browser show content immediately
   }
 
   return (
     <Switch>
       {/* Home route - conditional based on user auth */}
       <Route path="/">
-        {isUserAuthenticated ? <Home /> : (
-          <div className="min-h-screen bg-blue-50 flex items-center justify-center">
-            <div className="text-center">
-              <h1 className="text-4xl font-bold text-blue-600 mb-4">OtoKiwi</h1>
-              <p className="text-lg text-gray-700 mb-8">Key Yönetim Sistemi</p>
-              <div className="space-x-4">
-                <a href="/auth" className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
-                  Giriş Yap / Kayıt Ol
-                </a>
-                <a href="/user" className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700">
-                  Key Kullan
-                </a>
-                <a href="/admin" className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700">
-                  Admin Panel
-                </a>
-              </div>
-            </div>
-          </div>
-        )}
+        {isUserAuthenticated ? <Home /> : <SimpleLanding />}
       </Route>
       
       {/* Public routes */}
