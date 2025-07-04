@@ -128,16 +128,18 @@ export default function Landing() {
                 {/* Authenticated User Buttons */}
                 {isAuthenticated ? (
                   <>
-                    {/* User Profile */}
-                    <div className="bg-gradient-to-r from-purple-500 to-violet-500 hover:from-purple-600 hover:to-violet-600 text-white font-bold px-6 py-3 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 border border-white/20 flex items-center gap-3">
-                      <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                        <Crown className="w-4 h-4 text-white" />
-                      </div>
-                      <div className="hidden sm:block">
-                        <p className="text-white font-bold text-sm">{user?.username || 'Kullanıcı'}</p>
-                        <p className="text-white/80 text-xs">{user?.email || 'Admin'}</p>
-                      </div>
-                    </div>
+                    {/* Çıkış Button */}
+                    <Button 
+                      onClick={() => {
+                        fetch('/api/logout', { method: 'POST' })
+                          .then(() => window.location.reload());
+                      }}
+                      className="bg-gradient-to-r from-gray-500 to-slate-500 hover:from-gray-600 hover:to-slate-600 text-white font-bold px-6 py-3 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 border border-white/20"
+                    >
+                      <LogIn className="w-4 h-4 mr-2 rotate-180" />
+                      <span className="hidden sm:inline">Çıkış</span>
+                      <span className="sm:hidden">Çık</span>
+                    </Button>
 
                     {/* Admin Panel Button - ONLY for admin users */}
                     {user?.isAdmin && (
@@ -151,18 +153,16 @@ export default function Landing() {
                       </Button>
                     )}
 
-                    {/* Çıkış Button */}
-                    <Button 
-                      onClick={() => {
-                        fetch('/api/logout', { method: 'POST' })
-                          .then(() => window.location.reload());
-                      }}
-                      className="bg-gradient-to-r from-gray-500 to-slate-500 hover:from-gray-600 hover:to-slate-600 text-white font-bold px-6 py-3 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 border border-white/20"
-                    >
-                      <LogIn className="w-4 h-4 mr-2 rotate-180" />
-                      <span className="hidden sm:inline">Çıkış</span>
-                      <span className="sm:hidden">Çık</span>
-                    </Button>
+                    {/* User Profile */}
+                    <div className="bg-gradient-to-r from-purple-500 to-violet-500 hover:from-purple-600 hover:to-violet-600 text-white font-bold px-6 py-3 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 border border-white/20 flex items-center gap-3">
+                      <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
+                        <Crown className="w-4 h-4 text-white" />
+                      </div>
+                      <div className="hidden sm:block">
+                        <p className="text-white font-bold text-sm">{user?.username || 'Kullanıcı'}</p>
+                        <p className="text-white/80 text-xs">{user?.email || 'Admin'}</p>
+                      </div>
+                    </div>
                   </>
                 ) : (
                   /* Giriş Yap Button - Non-authenticated users only */
