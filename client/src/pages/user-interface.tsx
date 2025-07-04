@@ -347,84 +347,45 @@ export default function UserInterface() {
         <AnimatedBackground />
         
         <motion.div
-          initial={{ opacity: 0, y: 40, scale: 0.8 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
           className="relative z-10"
         >
-          {/* Modern Glass Card */}
-          <div className="relative group">
-            {/* Floating glow effect */}
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/30 via-purple-500/30 to-pink-500/30 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500 opacity-60 group-hover:opacity-80"></div>
-            
-            <Card className="relative w-full max-w-md bg-slate-800/80 backdrop-blur-2xl border border-slate-700/50 shadow-2xl rounded-3xl overflow-hidden">
-              {/* Gradient border animation */}
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-3xl opacity-20 animate-pulse"></div>
-              <div className="absolute inset-[1px] bg-slate-800/90 rounded-3xl"></div>
-              
-              <div className="relative z-10">
-                <CardHeader className="text-center pt-12 pb-8">
-                  {/* Modern icon container */}
-                  <motion.div
-                    className="relative w-24 h-24 mx-auto mb-8"
-                    animate={{
-                      rotateY: [0, 180, 360],
-                    }}
-                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl rotate-6 opacity-80"></div>
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl -rotate-6 opacity-60"></div>
-                    <div className="relative w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-2xl">
-                      <Key className="w-12 h-12 text-white drop-shadow-lg" />
-                    </div>
-                  </motion.div>
-                  
-                  <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
-                    Giriş Gerekli
-                  </CardTitle>
-                  
-                  <p className="text-slate-300 text-lg leading-relaxed px-4">
-                    Key kullanım paneline erişmek için giriş yapmanız gerekiyor
-                  </p>
-                </CardHeader>
-                
-                <CardContent className="px-8 pb-8 space-y-4">
-                  {/* Primary Action Button */}
-                  <Link href="/auth">
-                    <motion.div 
-                      whileHover={{ scale: 1.02, y: -2 }} 
-                      whileTap={{ scale: 0.98 }}
-                      className="relative group"
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl blur-md opacity-60 group-hover:opacity-80 transition-all duration-300"></div>
-                      <Button className="relative w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-4 text-lg rounded-2xl border border-white/20 shadow-xl">
-                        <User className="w-6 h-6 mr-3" />
-                        Giriş Yap / Kayıt Ol
-                      </Button>
-                    </motion.div>
-                  </Link>
-                  
-                  {/* Secondary Action Button */}
-                  <Link href="/">
-                    <motion.div 
-                      whileHover={{ scale: 1.02, y: -1 }} 
-                      whileTap={{ scale: 0.98 }}
-                      className="relative group"
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-r from-slate-600 to-slate-700 rounded-2xl blur-sm opacity-40 group-hover:opacity-60 transition-all duration-300"></div>
-                      <Button 
-                        variant="outline" 
-                        className="relative w-full bg-slate-700/50 border-slate-600/50 text-slate-200 hover:bg-slate-600/50 hover:border-slate-500/50 font-semibold py-4 text-lg rounded-2xl backdrop-blur-sm"
-                      >
-                        <Home className="w-6 h-6 mr-3" />
-                        Ana Sayfaya Dön
-                      </Button>
-                    </motion.div>
-                  </Link>
-                </CardContent>
+          <Card className="w-full max-w-md bg-slate-800/95 backdrop-blur-sm border border-slate-700 shadow-xl rounded-2xl">
+            <CardHeader className="text-center pt-8 pb-6">
+              <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                <Key className="w-8 h-8 text-white" />
               </div>
-            </Card>
-          </div>
+              
+              <CardTitle className="text-2xl font-bold text-white mb-3">
+                Giriş Gerekli
+              </CardTitle>
+              
+              <p className="text-slate-400 text-sm">
+                Key kullanım paneline erişmek için giriş yapmanız gerekiyor
+              </p>
+            </CardHeader>
+            
+            <CardContent className="px-6 pb-6 space-y-3">
+              <Link href="/auth">
+                <Button className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-3 rounded-xl">
+                  <User className="w-5 h-5 mr-2" />
+                  Giriş Yap / Kayıt Ol
+                </Button>
+              </Link>
+              
+              <Link href="/">
+                <Button 
+                  variant="outline" 
+                  className="w-full bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600 hover:text-white font-medium py-3 rounded-xl"
+                >
+                  <Home className="w-5 h-5 mr-2" />
+                  Ana Sayfaya Dön
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
         </motion.div>
       </div>
     );
