@@ -28,6 +28,23 @@ import { z } from "zod";
 import { apiRequest } from "@/lib/queryClient";
 import { motion, AnimatePresence } from "framer-motion";
 
+// TypeScript declarations for hCaptcha
+declare global {
+  interface Window {
+    hcaptcha: {
+      render: (container: string, options: {
+        sitekey: string;
+        theme?: string;
+        size?: string;
+        callback?: (token: string) => void;
+        'expired-callback'?: () => void;
+        'error-callback'?: () => void;
+      }) => void;
+      reset: (id?: string) => void;
+    };
+  }
+}
+
 // Schema definitions with hCaptcha validation
 const loginSchema = z.object({
   username: z.string().min(1, "Kullanıcı adı gerekli"),
@@ -270,12 +287,14 @@ export default function Auth() {
   const [hcaptchaError, setHcaptchaError] = useState(false);
   const { toast } = useToast();
 
-  // Development mode - automatically bypass hCaptcha
+  // hCaptcha site key - development için test key kullanılıyor
+  const HCAPTCHA_SITE_KEY = "10000000-ffff-ffff-ffff-000000000001"; // Test key - production için değiştirin
   const isDevelopment = true; // Set to false in production
   
-  // Custom hCaptcha component with better error handling
-  const CustomHCaptcha = ({ onVerify, fieldName }: { onVerify: (token: string) => void, fieldName: string }) => {
+  // Native HTML hCaptcha component
+  const NativeHCaptcha = ({ onVerify, fieldName }: { onVerify: (token: string) => void, fieldName: string }) => {
     const [captchaCompleted, setCaptchaCompleted] = useState(false);
+    const captchaId = `hcaptcha-${fieldName}-${Date.now()}`;
     
     useEffect(() => {
       // Auto-verify in development mode
@@ -283,8 +302,51 @@ export default function Auth() {
         const testToken = "dev-bypass-token";
         onVerify(testToken);
         setCaptchaCompleted(true);
+        return;
       }
-    }, [onVerify]);
+
+      // Initialize hCaptcha when component mounts
+      const initCaptcha = () => {
+        if (window.hcaptcha && document.getElementById(captchaId)) {
+          try {
+            window.hcaptcha.render(captchaId, {
+              sitekey: HCAPTCHA_SITE_KEY,
+              theme: 'dark',
+              size: 'normal',
+              callback: (token: string) => {
+                onVerify(token);
+                setCaptchaCompleted(true);
+              },
+              'expired-callback': () => {
+                onVerify("");
+                setCaptchaCompleted(false);
+              },
+              'error-callback': () => {
+                onVerify("");
+                setCaptchaCompleted(false);
+              }
+            });
+          } catch (error) {
+            console.error('hCaptcha render error:', error);
+          }
+        }
+      };
+
+      // Wait for hCaptcha script to load
+      if (window.hcaptcha) {
+        initCaptcha();
+      } else {
+        const checkForHCaptcha = setInterval(() => {
+          if (window.hcaptcha) {
+            clearInterval(checkForHCaptcha);
+            initCaptcha();
+          }
+        }, 100);
+        
+        // Cleanup interval after 10 seconds
+        setTimeout(() => clearInterval(checkForHCaptcha), 10000);
+      }
+    }, [onVerify, captchaId]);
 
     if (isDevelopment) {
       return (
@@ -302,23 +364,7 @@ export default function Auth() {
 
     return (
       <div className="flex flex-col items-center space-y-3 p-4 bg-white/5 rounded-2xl border border-white/20 backdrop-blur-sm">
-        <div className="flex items-center space-x-2 text-orange-400">
-          <AlertTriangle className="w-5 h-5" />
-          <span className="text-sm">CAPTCHA servisi geçici olarak kullanılamıyor</span>
-        </div>
-        <Button
-          type="button"
-          size="sm"
-          variant="outline"
-          onClick={() => {
-            const testToken = "manual-bypass-token";
-            onVerify(testToken);
-            setCaptchaCompleted(true);
-          }}
-          className="text-xs text-gray-400 border-gray-600 hover:bg-gray-700"
-        >
-          Manuel Doğrulama (Geçici)
-        </Button>
+        <div id={captchaId} className="h-captcha"></div>
         {captchaCompleted && (
           <div className="text-xs text-green-300">✓ Güvenlik doğrulaması tamamlandı</div>
         )}
@@ -600,8 +646,8 @@ export default function Auth() {
                                     Güvenlik Doğrulaması
                                   </FormLabel>
                                   <FormControl>
-                                    <CustomHCaptcha
-                                      onVerify={(token) => {
+                                    <NativeHCaptcha
+                                      onVerify={(token: string) => {
                                         setLoginCaptcha(token);
                                         field.onChange(token);
                                       }}
@@ -778,8 +824,8 @@ export default function Auth() {
                                     Güvenlik Doğrulaması
                                   </FormLabel>
                                   <FormControl>
-                                    <CustomHCaptcha
-                                      onVerify={(token) => {
+                                    <NativeHCaptcha
+                                      onVerify={(token: string) => {
                                         setRegisterCaptcha(token);
                                         field.onChange(token);
                                       }}
