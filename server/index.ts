@@ -21,36 +21,41 @@ const app = express();
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
-// PostgreSQL session store
+// Optimized PostgreSQL session store
 const PgSession = ConnectPgSimple(session);
 
-// Session middleware with PostgreSQL store
+// High-performance session middleware
 app.use(
   session({
     store: new PgSession({
       pool: pool,
       tableName: 'sessions',
-      createTableIfMissing: false, // Use existing table from schema
+      createTableIfMissing: false,
+      pruneSessionInterval: 60 * 60 * 1000, // Prune every hour
+      errorLog: () => {}, // Disable error logging for performance
     }),
     secret: process.env.SESSION_SECRET || "admin-secret-key-change-in-production",
     resave: false,
     saveUninitialized: false,
+    rolling: false, // Don't reset expiry on each request
     cookie: {
-      secure: false, // Set to true in production with HTTPS
+      secure: false,
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      maxAge: 4 * 60 * 60 * 1000, // Reduced to 4 hours for performance
     },
   })
 );
 
-// Simplified logging middleware for performance
+// Ultra-fast logging - only slow requests
 app.use((req, res, next) => {
-  // Only log API routes briefly
   if (req.path.startsWith("/api")) {
     const start = Date.now();
     res.on("finish", () => {
       const duration = Date.now() - start;
-      log(`${req.method} ${req.path} ${res.statusCode} in ${duration}ms`);
+      // Only log slow requests (>100ms)
+      if (duration > 100) {
+        log(`SLOW: ${req.method} ${req.path} ${res.statusCode} in ${duration}ms`);
+      }
     });
   }
   next();

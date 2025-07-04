@@ -16,9 +16,9 @@ if (!process.env.DATABASE_URL) {
 
 export const pool = new Pool({ 
   connectionString: process.env.DATABASE_URL,
-  max: 1,  // Limit concurrent connections for serverless
-  idleTimeoutMillis: 10000,
-  connectionTimeoutMillis: 10000
+  max: 3,  // Optimized for performance
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 5000
 });
 
 export const db = drizzle({ client: pool, schema });

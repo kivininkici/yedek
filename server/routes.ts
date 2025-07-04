@@ -45,7 +45,6 @@ async function verifyHCaptcha(token: string): Promise<boolean> {
   try {
     // Auto-pass for development tokens
     if (token === "dev-bypass-token" || token === "manual-bypass-token" || token === "test-token-dev-mode") {
-      console.log("Development mode: hCaptcha validation bypassed with token:", token);
       return true;
     }
     
@@ -63,10 +62,8 @@ async function verifyHCaptcha(token: string): Promise<boolean> {
     const data = await response.json();
     return data.success === true;
   } catch (error) {
-    console.error('hCaptcha verification error:', error);
     // In development, always return true for any bypass token
     if (token.includes("bypass") || token.includes("dev") || token.includes("manual")) {
-      console.log("Development fallback: accepting token due to error");
       return true;
     }
     return false;

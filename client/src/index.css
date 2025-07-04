@@ -16,7 +16,6 @@
 ::-webkit-scrollbar-thumb {
   background: hsl(215, 16.3%, 46.9%);
   border-radius: 4px;
-  transition: background 0.2s;
 }
 
 ::-webkit-scrollbar-thumb:hover {
