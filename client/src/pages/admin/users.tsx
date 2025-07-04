@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
-import SimpleAdminLayout from "@/components/admin/SimpleAdminLayout";
+import ModernAdminLayout from "@/components/admin/ModernAdminLayout";
 import StatsCard from "@/components/admin/stats-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -232,7 +232,7 @@ export default function UsersPage() {
   );
 
   return (
-    <SimpleAdminLayout>
+    <ModernAdminLayout title="Kullanıcı Yönetimi">
         <div className="space-y-6">
           {/* Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6 mb-6">
@@ -605,6 +605,6 @@ export default function UsersPage() {
             </CardContent>
           </Card>
         </div>
-    </SimpleAdminLayout>
+    </ModernAdminLayout>
   );
 }
