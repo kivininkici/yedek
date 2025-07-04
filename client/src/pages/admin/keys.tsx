@@ -63,7 +63,8 @@ import {
 
 interface KeyType {
   id: number;
-  keyValue: string;
+  value: string;
+  keyValue?: string; // Backward compatibility
   category: string;
   serviceName: string;
   isUsed: boolean;
@@ -153,7 +154,7 @@ export default function Keys() {
     if (!key) return false;
     
     const searchLower = (searchQuery || '').toLowerCase();
-    const keyValue = key.keyValue || '';
+    const keyValue = key.value || key.keyValue || '';
     const category = key.category || '';
     const serviceName = key.serviceName || '';
     
@@ -180,6 +181,7 @@ export default function Keys() {
   };
 
   const maskKey = (keyValue: string) => {
+    if (!keyValue || typeof keyValue !== 'string') return '';
     if (keyValue.length <= 8) return keyValue;
     const prefix = keyValue.slice(0, 4);
     const suffix = keyValue.slice(-4);
@@ -443,7 +445,7 @@ export default function Keys() {
                       </td>
                       <td className="py-3 px-4">
                         <code className="text-sm bg-slate-800 px-2 py-1 rounded text-slate-300">
-                          {showKeyValues ? key.keyValue : maskKey(key.keyValue)}
+                          {showKeyValues ? (key.value || key.keyValue || '') : maskKey(key.value || key.keyValue || '')}
                         </code>
                       </td>
                       <td className="py-3 px-4">
