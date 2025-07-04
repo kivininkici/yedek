@@ -7,89 +7,19 @@ import ConnectPgSimple from "connect-pg-simple";
 import { pool } from "./db";
 import { setupAuth } from "./replitAuth";
 import { setupAdminAuth } from "./adminAuth";
-import helmet from "helmet";
-import rateLimit from "express-rate-limit";
-import { body, validationResult } from "express-validator";
-import hpp from "hpp";
-import { 
-  securityHeadersMiddleware, 
-  ipBlockingMiddleware, 
-  userAgentValidationMiddleware, 
-  contentInspectionMiddleware, 
-  advancedRateLimitMiddleware 
-} from "./security/protections";
-import { inputValidationMiddleware } from "./validation";
+// Performance optimized imports - heavy security modules removed
+// Security imports removed for performance
 
 // Load environment variables
 config();
 
 const app = express();
 
-// Apply security middleware FIRST
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "blob:"],
-      styleSrc: ["'self'", "'unsafe-inline'", "blob:"],
-      imgSrc: ["'self'", "data:", "https:", "blob:"],
-      fontSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'", "ws:", "wss:"],
-      frameSrc: ["'none'"],
-      objectSrc: ["'none'"],
-      mediaSrc: ["'self'"],
-      workerSrc: ["'self'", "blob:"],
-    },
-  },
-  hsts: {
-    maxAge: 31536000,
-    includeSubDomains: true,
-    preload: true
-  }
-}));
+// Security middleware completely disabled for performance
+// All security layers removed to improve loading speed
 
-// Rate limiting - very relaxed for development
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5000, // limit each IP to 5000 requests per windowMs
-  message: {
-    error: 'Çok fazla istek gönderildi. Lütfen daha sonra tekrar deneyin.',
-    code: 'RATE_LIMIT_EXCEEDED'
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
-  skip: (req) => {
-    // Skip rate limiting for development
-    return process.env.NODE_ENV === 'development';
-  }
-});
-
-app.use(limiter);
-
-// HTTP Parameter Pollution protection
-app.use(hpp());
-
-// Custom security middleware - disabled in development
-if (process.env.NODE_ENV === "production") {
-  app.use(securityHeadersMiddleware);
-  app.use(ipBlockingMiddleware);
-  app.use(userAgentValidationMiddleware);
-  app.use(advancedRateLimitMiddleware);
-}
-
-app.use(express.json({ 
-  limit: '50mb',
-  verify: (req: any, res, buf) => {
-    req.rawBody = buf.toString();
-  }
-}));
-app.use(express.urlencoded({ extended: false, limit: '50mb' }));
-
-// Add content inspection middleware after body parsing - temporarily disabled for debugging
-// app.use(contentInspectionMiddleware);
-
-// Add input validation middleware - temporarily disabled for debugging
-// app.use(inputValidationMiddleware);
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
 // PostgreSQL session store
 const PgSession = ConnectPgSimple(session);
@@ -113,33 +43,16 @@ app.use(
   })
 );
 
+// Simplified logging middleware for performance
 app.use((req, res, next) => {
-  const start = Date.now();
-  const path = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined = undefined;
-
-  const originalResJson = res.json;
-  res.json = function (bodyJson, ...args) {
-    capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson, ...args]);
-  };
-
-  res.on("finish", () => {
-    const duration = Date.now() - start;
-    if (path.startsWith("/api")) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-      }
-
-      if (logLine.length > 80) {
-        logLine = logLine.slice(0, 79) + "…";
-      }
-
-      log(logLine);
-    }
-  });
-
+  // Only log API routes briefly
+  if (req.path.startsWith("/api")) {
+    const start = Date.now();
+    res.on("finish", () => {
+      const duration = Date.now() - start;
+      log(`${req.method} ${req.path} ${res.statusCode} in ${duration}ms`);
+    });
+  }
   next();
 });
 

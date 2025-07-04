@@ -44,15 +44,18 @@ function Router() {
   const { isAuthenticated: isUserAuthenticated, isLoading: isUserLoading } = useAuth();
   const { isAuthenticated: isAdminAuthenticated, isLoading: isAdminLoading } = useAdminAuth();
 
-  // Show loading screen only for initial auth checks (max 2 seconds to prevent infinite loading)
+  // Debug logging removed for performance optimization
+
+  // Simplified loading state - only show for very short time
   const [showLoader, setShowLoader] = useState(true);
   
   useEffect(() => {
+    // Much shorter loading time for better performance
     const timer = setTimeout(() => {
       setShowLoader(false);
-    }, 2000);
+    }, 500);
     
-    // Hide loader early if auth checks complete
+    // Hide loader immediately if auth checks complete
     if (!isUserLoading && !isAdminLoading) {
       setShowLoader(false);
       clearTimeout(timer);
@@ -61,12 +64,13 @@ function Router() {
     return () => clearTimeout(timer);
   }, [isUserLoading, isAdminLoading]);
 
-  if (showLoader && (isUserLoading || isAdminLoading)) {
+  // Show minimal loading only on initial load
+  if (showLoader) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <div className="text-xl font-semibold text-gray-700">OtoKiwi Yükleniyor...</div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
+          <div className="text-sm text-white">Yükleniyor...</div>
         </div>
       </div>
     );
