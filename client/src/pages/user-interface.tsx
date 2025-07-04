@@ -347,55 +347,84 @@ export default function UserInterface() {
         <AnimatedBackground />
         
         <motion.div
-          initial={{ opacity: 0, y: 30, scale: 0.9 }}
+          initial={{ opacity: 0, y: 40, scale: 0.8 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
           className="relative z-10"
         >
-          <Card className="w-full max-w-lg bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl">
-            <CardHeader className="text-center pb-6">
-              <motion.div
-                className="w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4"
-                animate={{
-                  boxShadow: [
-                    "0 0 30px rgba(59, 130, 246, 0.3)",
-                    "0 0 40px rgba(147, 51, 234, 0.4)",
-                    "0 0 30px rgba(59, 130, 246, 0.3)"
-                  ]
-                }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-              >
-                <Key className="w-10 h-10 text-white" />
-              </motion.div>
-              
-              <CardTitle className="text-2xl font-bold text-white mb-2">
-                Giriş Gerekli
-              </CardTitle>
-              <p className="text-blue-200">
-                Key kullanım paneline erişmek için giriş yapmanız gerekiyor
-              </p>
-            </CardHeader>
+          {/* Modern Glass Card */}
+          <div className="relative group">
+            {/* Floating glow effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-500/30 via-purple-500/30 to-pink-500/30 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500 opacity-60 group-hover:opacity-80"></div>
             
-            <CardContent className="space-y-4">
-              <Link href="/auth">
-                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                  <Button className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white py-3">
-                    <User className="w-5 h-5 mr-2" />
-                    Giriş Yap / Kayıt Ol
-                  </Button>
-                </motion.div>
-              </Link>
+            <Card className="relative w-full max-w-md bg-slate-800/80 backdrop-blur-2xl border border-slate-700/50 shadow-2xl rounded-3xl overflow-hidden">
+              {/* Gradient border animation */}
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-3xl opacity-20 animate-pulse"></div>
+              <div className="absolute inset-[1px] bg-slate-800/90 rounded-3xl"></div>
               
-              <Link href="/">
-                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                  <Button variant="outline" className="w-full bg-white/10 border-white/20 text-white hover:bg-white/20">
-                    <Home className="w-5 h-5 mr-2" />
-                    Ana Sayfaya Dön
-                  </Button>
-                </motion.div>
-              </Link>
-            </CardContent>
-          </Card>
+              <div className="relative z-10">
+                <CardHeader className="text-center pt-12 pb-8">
+                  {/* Modern icon container */}
+                  <motion.div
+                    className="relative w-24 h-24 mx-auto mb-8"
+                    animate={{
+                      rotateY: [0, 180, 360],
+                    }}
+                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl rotate-6 opacity-80"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl -rotate-6 opacity-60"></div>
+                    <div className="relative w-full h-full bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-2xl">
+                      <Key className="w-12 h-12 text-white drop-shadow-lg" />
+                    </div>
+                  </motion.div>
+                  
+                  <CardTitle className="text-3xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent mb-4">
+                    Giriş Gerekli
+                  </CardTitle>
+                  
+                  <p className="text-slate-300 text-lg leading-relaxed px-4">
+                    Key kullanım paneline erişmek için giriş yapmanız gerekiyor
+                  </p>
+                </CardHeader>
+                
+                <CardContent className="px-8 pb-8 space-y-4">
+                  {/* Primary Action Button */}
+                  <Link href="/auth">
+                    <motion.div 
+                      whileHover={{ scale: 1.02, y: -2 }} 
+                      whileTap={{ scale: 0.98 }}
+                      className="relative group"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl blur-md opacity-60 group-hover:opacity-80 transition-all duration-300"></div>
+                      <Button className="relative w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-4 text-lg rounded-2xl border border-white/20 shadow-xl">
+                        <User className="w-6 h-6 mr-3" />
+                        Giriş Yap / Kayıt Ol
+                      </Button>
+                    </motion.div>
+                  </Link>
+                  
+                  {/* Secondary Action Button */}
+                  <Link href="/">
+                    <motion.div 
+                      whileHover={{ scale: 1.02, y: -1 }} 
+                      whileTap={{ scale: 0.98 }}
+                      className="relative group"
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-slate-600 to-slate-700 rounded-2xl blur-sm opacity-40 group-hover:opacity-60 transition-all duration-300"></div>
+                      <Button 
+                        variant="outline" 
+                        className="relative w-full bg-slate-700/50 border-slate-600/50 text-slate-200 hover:bg-slate-600/50 hover:border-slate-500/50 font-semibold py-4 text-lg rounded-2xl backdrop-blur-sm"
+                      >
+                        <Home className="w-6 h-6 mr-3" />
+                        Ana Sayfaya Dön
+                      </Button>
+                    </motion.div>
+                  </Link>
+                </CardContent>
+              </div>
+            </Card>
+          </div>
         </motion.div>
       </div>
     );
