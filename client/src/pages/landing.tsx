@@ -123,7 +123,7 @@ export default function Landing() {
                   <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl blur-md opacity-40 group-hover:opacity-60 transition-all duration-300"></div>
                   <Button 
                     onClick={() => setShowFeedback(true)}
-                    className="relative bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold px-4 md:px-6 py-2.5 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 border border-white/20 backdrop-blur-sm"
+                    className="relative bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold px-4 md:px-6 py-2.5 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 border border-white/20 backdrop-blur-sm !important"
                   >
                     <MessageCircle className="w-4 h-4 mr-2" />
                     <span className="hidden sm:inline">Geri Bildirim</span>

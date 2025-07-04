@@ -127,6 +127,9 @@ Changelog:
 - June 29, 2025. Canlı destek referansları kaldırıldı, sipariş sorgulama sistemi eklendi
 
 ## Recent Changes
+- July 4, 2025: Landing page header butonları tamamen yeniden tasarlandı - giriş yapmış/yapmamış kullanıcılar için ayrı tasarımlar
+- Giriş yapmış kullanıcı butonları (Geri Bildirim, Admin Panel, Çıkış, Profil) solid gradient arka plana güncellendi
+- Buton stillerinde tutarlılık sağlandı - tüm butonlar aynı görsel etkiyi veriyor
 - July 4, 2025: Final Replit Agent to Replit environment migration completed successfully
 - PostgreSQL database set up and schema pushed successfully  
 - tsx dependency installed, server running on port 5000
