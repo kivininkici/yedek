@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MessageCircle, Mail, Clock, User, Hash, Frown, Meh, Smile, Reply, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
+import ModernAdminLayout from "@/components/admin/ModernAdminLayout";
 
 interface UserFeedback {
   id: number;
@@ -105,7 +106,8 @@ export default function AdminFeedback() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <ModernAdminLayout title="Geri Dönüşler">
+      <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -337,6 +339,6 @@ export default function AdminFeedback() {
           </motion.div>
         </div>
       )}
-    </div>
+    </ModernAdminLayout>
   );
 }

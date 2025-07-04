@@ -11,7 +11,7 @@ import {
   Database,
   CheckCircle
 } from "lucide-react";
-import SimpleAdminLayout from "@/components/admin/SimpleAdminLayout";
+import ModernAdminLayout from "@/components/admin/ModernAdminLayout";
 
 export default function Dashboard() {
   const { data: stats } = useQuery({
@@ -33,7 +33,7 @@ export default function Dashboard() {
   });
 
   return (
-    <SimpleAdminLayout title="Dashboard">
+    <ModernAdminLayout title="Dashboard">
       <div className="space-y-6">
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -167,6 +167,6 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
-    </SimpleAdminLayout>
+    </ModernAdminLayout>
   );
 }

@@ -3,8 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
-import Sidebar from "@/components/layout/sidebar";
-import Header from "@/components/layout/header";
+import ModernAdminLayout from "@/components/admin/ModernAdminLayout";
 import StatsCard from "@/components/admin/stats-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -89,16 +88,8 @@ export default function Logs() {
   };
 
   return (
-    <div className="min-h-screen flex bg-slate-950">
-      <Sidebar />
-      <main className="flex-1 overflow-hidden">
-        <Header 
-          title="Sistem Logları" 
-          description="Sistem aktivitelerini görüntüleyin" 
-        />
-        
-        <div className="content-area">
-          <div className="p-6 space-y-6">
+    <ModernAdminLayout title="Sistem Logları">
+      <div className="space-y-6">
             {/* Header */}
             <div className="flex items-center justify-between">
               <div>
@@ -214,9 +205,7 @@ export default function Logs() {
                 </div>
               </CardContent>
             </Card>
-          </div>
-        </div>
-      </main>
-    </div>
+      </div>
+    </ModernAdminLayout>
   );
 }

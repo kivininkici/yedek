@@ -3,8 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
-import Sidebar from "@/components/layout/sidebar";
-import Header from "@/components/layout/header";
+import ModernAdminLayout from "@/components/admin/ModernAdminLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -415,16 +414,8 @@ export default function ApiManagement() {
   const maintenanceModeStatus = maintenanceMode as { maintenanceMode: boolean } | undefined;
 
   return (
-    <div className="min-h-screen flex bg-slate-950">
-      <Sidebar />
-      <main className="flex-1 overflow-hidden">
-        <Header 
-          title="API Yönetimi" 
-          description="Harici API'lerden servis içe aktarın" 
-        />
-
-        <div className="content-area">
-          <div className="p-6 space-y-6">
+    <ModernAdminLayout title="API Yönetimi">
+      <div className="space-y-6">
             {/* Header Actions */}
             <div className="flex items-center justify-between">
               <div>
@@ -887,6 +878,6 @@ export default function ApiManagement() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </ModernAdminLayout>
   );
 }
