@@ -131,9 +131,10 @@ Changelog:
 - PostgreSQL database set up and schema pushed successfully  
 - tsx dependency installed, server running on port 5000
 - Admin user created with setup-admin.js script
-- Security restrictions relaxed for development - IP blocking, rate limiting and admin restrictions disabled
+- JSX syntax errors in admin pages fixed (api-management.tsx simplified)
 - OtoKiwi system running production-level in Replit environment
 - All checklist items completed: packages installed, workflow restarted, project verified, migration finalized
+- Admin login credentials: admin/123456, Master password configured
 - July 4, 2025: Admin panel navigation optimized for instant client-side routing
 - Replaced traditional anchor tags with wouter Link components for zero-reload navigation
 - Added active state highlighting with blue background for current page
