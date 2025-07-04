@@ -13,7 +13,7 @@ const SECURITY_CONFIG = {
   MAX_LOGIN_ATTEMPTS: 5,
   LOCKOUT_DURATION: 30 * 60 * 1000, // 30 minutes
   RATE_LIMIT_WINDOW: 15 * 60 * 1000, // 15 minutes
-  MAX_REQUESTS_PER_WINDOW: 1000, // Increased for development
+  MAX_REQUESTS_PER_WINDOW: 10000, // Very high limit for development
   SUSPICIOUS_PATTERNS: [
     /console\./gi,
     /document\./gi,
@@ -174,11 +174,15 @@ export function ipBlockingMiddleware(req: Request, res: Response, next: NextFunc
 export function advancedRateLimitMiddleware(req: Request, res: Response, next: NextFunction) {
   const clientIP = getClientIP(req);
   
-  // Skip rate limiting for development/localhost
+  // Skip rate limiting for development/localhost and all internal IPs
   if (SECURITY_CONFIG.WHITELIST_IPS.has(clientIP) || 
       clientIP.startsWith('192.168.') || 
       clientIP.startsWith('10.') ||
-      clientIP === 'unknown') {
+      clientIP.startsWith('172.') ||
+      clientIP.startsWith('127.') ||
+      clientIP === 'unknown' ||
+      clientIP === '::1' ||
+      process.env.NODE_ENV === 'development') {
     return next();
   }
   

@@ -48,16 +48,20 @@ app.use(helmet({
   }
 }));
 
-// Rate limiting
+// Rate limiting - very relaxed for development
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 1000, // limit each IP to 1000 requests per windowMs
+  max: 5000, // limit each IP to 5000 requests per windowMs
   message: {
     error: 'Çok fazla istek gönderildi. Lütfen daha sonra tekrar deneyin.',
     code: 'RATE_LIMIT_EXCEEDED'
   },
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req) => {
+    // Skip rate limiting for development
+    return process.env.NODE_ENV === 'development';
+  }
 });
 
 app.use(limiter);
