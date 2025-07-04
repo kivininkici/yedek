@@ -11,15 +11,13 @@ interface User {
 }
 
 export function useAuth() {
-  const { data: user, isLoading, error } = useQuery<User | undefined>({
+  const { data: user, isLoading, error, isSuccess } = useQuery<User | undefined>({
     queryKey: ["/api/user"],
     queryFn: getQueryFn({ on401: "returnNull" }),
     retry: false,
     refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-    staleTime: 10 * 60 * 1000, // 10 minutes
-    gcTime: 15 * 60 * 1000, // 15 minutes
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
   });
 
   // If we got a 401 error, we're definitely not authenticated
@@ -27,7 +25,7 @@ export function useAuth() {
 
   return {
     user,
-    isLoading: isLoading && !is401Error,
+    isLoading: isLoading && !is401Error && !isSuccess,
     isAuthenticated: !!user,
   };
 }
