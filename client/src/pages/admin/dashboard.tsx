@@ -24,7 +24,7 @@ import {
   ArrowDownRight,
   Zap
 } from "lucide-react";
-import Sidebar from "@/components/layout/sidebar";
+import NewModernAdminLayout from "@/components/admin/NewModernAdminLayout";
 
 // Enhanced Modern Background Component
 const DashboardBackground = () => {
@@ -562,14 +562,9 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen flex">
+    <NewModernAdminLayout>
       <DashboardBackground />
-      <Sidebar />
-      
-      <div className="flex-1">
-        <DashboardHeader />
-        
-        <div className="container mx-auto px-6 py-8">
+        <div className="space-y-6">
           {/* Welcome Section */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -714,7 +709,6 @@ export default function Dashboard() {
             </Card>
           </motion.div>
         </div>
-      </div>
-    </div>
+    </NewModernAdminLayout>
   );
 }

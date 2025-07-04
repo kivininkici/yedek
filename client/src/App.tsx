@@ -16,6 +16,7 @@ import ForgotPassword from "@/pages/ForgotPassword";
 import ResetPassword from "@/pages/ResetPassword";
 import Dashboard from "@/pages/admin/dashboard";
 import DashboardNew from "@/pages/admin/dashboard-new";
+import NewModernDashboard from "@/pages/admin/NewModernDashboard";
 import Keys from "@/pages/admin/keys";
 import Services from "@/pages/admin/services";
 import Users from "@/pages/admin/users";
@@ -98,12 +99,12 @@ function Router() {
       
       {/* Admin main route - redirect to dashboard */}
       <Route path="/admin">
-        {isAdminAuthenticated ? <Dashboard /> : <AdminLogin />}
+        {isAdminAuthenticated ? <NewModernDashboard /> : <AdminLogin />}
       </Route>
       
       {/* Protected admin routes */}
       <Route path="/admin/dashboard">
-        {isAdminAuthenticated ? <Dashboard /> : <AdminLogin />}
+        {isAdminAuthenticated ? <NewModernDashboard /> : <AdminLogin />}
       </Route>
       <Route path="/admin/keys">
         {isAdminAuthenticated ? <Keys /> : <AdminLogin />}

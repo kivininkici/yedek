@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useToast } from "@/hooks/use-toast";
-import Sidebar from "@/components/layout/sidebar";
-import Header from "@/components/layout/header";
+import NewModernAdminLayout from "@/components/admin/NewModernAdminLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -79,17 +78,9 @@ export default function Services() {
   const paginatedServices = servicesList.slice(startIndex, endIndex);
 
   return (
-    <div className="min-h-screen flex bg-slate-950">
-      <Sidebar />
-      <main className="flex-1 overflow-hidden">
-        <Header 
-          title="Servis Yönetimi" 
-          description="Sosyal Medya Servislerini Yapılandırın" 
-        />
-        
-        <div className="content-area">
-          <div className="p-6 space-y-6">
-            {/* Header Actions */}
+    <NewModernAdminLayout>
+        <div className="space-y-6">
+          {/* Header Actions */}
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-2xl font-bold text-slate-50">Servis Yönetimi</h2>
@@ -215,9 +206,7 @@ export default function Services() {
                 </CardContent>
               </Card>
             )}
-          </div>
         </div>
-      </main>
-    </div>
+    </NewModernAdminLayout>
   );
 }

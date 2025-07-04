@@ -3,8 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
-import Sidebar from "@/components/layout/sidebar";
-import Header from "@/components/layout/header";
+import NewModernAdminLayout from "@/components/admin/NewModernAdminLayout";
 import StatsCard from "@/components/admin/stats-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -233,15 +232,8 @@ export default function UsersPage() {
   );
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      <Sidebar />
-      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
-        <Header 
-          title="Kullanıcı Yönetimi" 
-          description="Sistem kullanıcılarını ve adminleri yönetin"
-        />
-        
-        <main className="flex-1 overflow-x-hidden overflow-y-auto p-4 md:p-6 bg-[#020617]">
+    <NewModernAdminLayout>
+        <div className="space-y-6">
           {/* Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6 mb-6">
             <StatsCard
@@ -612,8 +604,7 @@ export default function UsersPage() {
               )}
             </CardContent>
           </Card>
-        </main>
-      </div>
-    </div>
+        </div>
+    </NewModernAdminLayout>
   );
 }

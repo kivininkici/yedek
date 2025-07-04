@@ -3,8 +3,7 @@ import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useToast } from "@/hooks/use-toast";
-import Sidebar from "@/components/layout/sidebar";
-import Header from "@/components/layout/header";
+import NewModernAdminLayout from "@/components/admin/NewModernAdminLayout";
 import StatsCard from "@/components/admin/stats-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -116,18 +115,10 @@ export default function Orders() {
   };
 
   return (
-    <div className="min-h-screen flex bg-slate-950">
-      <Sidebar />
-      <main className="flex-1 overflow-hidden">
-        <Header 
-          title="Sipariş Yönetimi" 
-          description="Sistem siparişlerini görüntüleyin ve yönetin" 
-        />
-        
-        <div className="content-area">
-          <div className="p-6 space-y-6">
-            {/* Header Actions */}
-            <div className="flex items-center justify-between">
+    <NewModernAdminLayout>
+        <div className="space-y-6">
+          {/* Header Actions */}
+          <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-2xl font-bold text-slate-50">Sipariş Yönetimi</h2>
                 <p className="text-slate-400">Sistem siparişlerini görüntüleyin ve yönetin</p>
@@ -281,9 +272,7 @@ export default function Orders() {
                 </div>
               </CardContent>
             </Card>
-          </div>
         </div>
-      </main>
-    </div>
+    </NewModernAdminLayout>
   );
 }
