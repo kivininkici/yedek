@@ -44,27 +44,14 @@ function Router() {
   const { isAuthenticated: isUserAuthenticated, isLoading: isUserLoading } = useAuth();
   const { isAuthenticated: isAdminAuthenticated, isLoading: isAdminLoading } = useAdminAuth();
 
-  // Loading control - simplified
-  const [initialLoad, setInitialLoad] = useState(true);
-  
-  useEffect(() => {
-    // Quick timeout to avoid loading flash
-    const timer = setTimeout(() => {
-      setInitialLoad(false);
-    }, 300);
-    
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Skip loading screen entirely if not needed
-  if (initialLoad) {
-    return null; // Let browser show content immediately
-  }
+  // No loading delays - show content immediately
 
   return (
     <Switch>
-      {/* Home route - using SimpleLanding */}
-      <Route path="/" component={SimpleLanding} />
+      {/* Home route - conditional based on user auth */}
+      <Route path="/">
+        {isUserAuthenticated ? <Home /> : <SimpleLanding />}
+      </Route>
       
       {/* Public routes */}
       <Route path="/auth" component={Auth} />
