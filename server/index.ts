@@ -69,11 +69,13 @@ app.use(limiter);
 // HTTP Parameter Pollution protection
 app.use(hpp());
 
-// Custom security middleware
-app.use(securityHeadersMiddleware);
-app.use(ipBlockingMiddleware);
-app.use(userAgentValidationMiddleware);
-app.use(advancedRateLimitMiddleware);
+// Custom security middleware - disabled in development
+if (process.env.NODE_ENV === "production") {
+  app.use(securityHeadersMiddleware);
+  app.use(ipBlockingMiddleware);
+  app.use(userAgentValidationMiddleware);
+  app.use(advancedRateLimitMiddleware);
+}
 
 app.use(express.json({ 
   limit: '50mb',
