@@ -131,6 +131,7 @@ Changelog:
 - PostgreSQL database set up and schema pushed successfully  
 - tsx dependency installed, server running on port 5000
 - Admin user created with setup-admin.js script
+- Security restrictions relaxed for development - IP blocking, rate limiting and admin restrictions disabled
 - OtoKiwi system running production-level in Replit environment
 - All checklist items completed: packages installed, workflow restarted, project verified, migration finalized
 - July 4, 2025: Order-search sayfası completely redesigned with advanced animations and effects

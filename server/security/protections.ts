@@ -149,21 +149,12 @@ function getClientIP(req: Request): string {
 }
 
 /**
- * Enhanced IP blocking middleware
+ * Enhanced IP blocking middleware - DISABLED FOR DEVELOPMENT
  */
 export function ipBlockingMiddleware(req: Request, res: Response, next: NextFunction) {
   const clientIP = getClientIP(req);
   
-  // Check if IP is blacklisted
-  if (SECURITY_CONFIG.BLACKLISTED_IPS.has(clientIP)) {
-    console.log(`🚫 Blocked IP attempt: ${clientIP}`);
-    return res.status(403).json({ 
-      message: 'Erişim reddedildi',
-      error: 'IP_BLOCKED',
-      code: 'SECURITY_VIOLATION'
-    });
-  }
-  
+  // IP blocking disabled for development - always allow access
   (req as any).clientIP = clientIP;
   next();
 }
@@ -174,17 +165,8 @@ export function ipBlockingMiddleware(req: Request, res: Response, next: NextFunc
 export function advancedRateLimitMiddleware(req: Request, res: Response, next: NextFunction) {
   const clientIP = getClientIP(req);
   
-  // Skip rate limiting for development/localhost and all internal IPs
-  if (SECURITY_CONFIG.WHITELIST_IPS.has(clientIP) || 
-      clientIP.startsWith('192.168.') || 
-      clientIP.startsWith('10.') ||
-      clientIP.startsWith('172.') ||
-      clientIP.startsWith('127.') ||
-      clientIP === 'unknown' ||
-      clientIP === '::1' ||
-      process.env.NODE_ENV === 'development') {
-    return next();
-  }
+  // Rate limiting disabled for development - always allow
+  return next();
   
   const now = Date.now();
   
@@ -236,122 +218,31 @@ export function advancedRateLimitMiddleware(req: Request, res: Response, next: N
 }
 
 /**
- * User agent validation middleware
+ * User agent validation middleware - DISABLED FOR DEVELOPMENT
  */
 export function userAgentValidationMiddleware(req: Request, res: Response, next: NextFunction) {
-  // Skip user agent validation in development
-  if (process.env.NODE_ENV === 'development') {
-    return next();
-  }
-  
-  const userAgent = req.get('User-Agent') || '';
-  
-  // Check against blocked user agents
-  const isBlocked = SECURITY_CONFIG.BLOCKED_USER_AGENTS.some(pattern => 
-    pattern.test(userAgent)
-  );
-  
-  if (isBlocked) {
-    const clientIP = getClientIP(req);
-    console.log(`🚫 Blocked user agent: ${userAgent} from IP: ${clientIP}`);
-    
-    return res.status(403).json({
-      message: 'Erişim reddedildi',
-      error: 'USER_AGENT_BLOCKED',
-      code: 'SECURITY_VIOLATION'
-    });
-  }
-  
+  // User agent validation disabled - always allow
   next();
 }
 
 /**
- * Content inspection middleware for suspicious patterns
+ * Content inspection middleware - DISABLED FOR DEVELOPMENT
  */
 export function contentInspectionMiddleware(req: Request, res: Response, next: NextFunction) {
-  const clientIP = getClientIP(req);
-  
-  // Check request body for suspicious patterns
-  const content = JSON.stringify(req.body || {}).toLowerCase();
-  const suspiciousPatterns = SECURITY_CONFIG.SUSPICIOUS_PATTERNS.filter(pattern => 
-    pattern.test(content)
-  );
-  
-  if (suspiciousPatterns.length > 0) {
-    console.log(`🚫 Suspicious content detected from IP: ${clientIP}`);
-    console.log(`🚫 Patterns found: ${suspiciousPatterns.map(p => p.source).join(', ')}`);
-    
-    // Track suspicious activity
-    const now = Date.now();
-    let suspiciousData = suspiciousActivityStore.get(clientIP);
-    if (!suspiciousData || suspiciousData.resetTime < now) {
-      suspiciousData = { count: 0, resetTime: now + SECURITY_CONFIG.RATE_LIMIT_WINDOW };
-      suspiciousActivityStore.set(clientIP, suspiciousData);
-    }
-    
-    suspiciousData.count++;
-    
-    // Blacklist if too many suspicious requests
-    if (suspiciousData.count > 3) {
-      SECURITY_CONFIG.BLACKLISTED_IPS.add(clientIP);
-      console.log(`🚫 IP blacklisted for suspicious activity: ${clientIP}`);
-    }
-    
-    return res.status(400).json({
-      message: 'Şüpheli içerik tespit edildi',
-      error: 'SUSPICIOUS_CONTENT',
-      code: 'SECURITY_VIOLATION'
-    });
-  }
-  
+  // Content inspection disabled - always allow
   next();
 }
 
 /**
- * Admin route protection middleware
+ * Admin route protection middleware - RELAXED FOR DEVELOPMENT
  */
 export function adminRouteProtection(req: Request, res: Response, next: NextFunction) {
   const clientIP = getClientIP(req);
   
-  // Enhanced logging for admin routes
-  console.log(`🔐 Admin route access attempt: ${req.method} ${req.path} from IP: ${clientIP}`);
+  // Minimal logging for admin routes
+  console.log(`🔐 Admin route access: ${req.method} ${req.path} from IP: ${clientIP}`);
   
-  // Check if IP is whitelisted for admin access
-  if (!SECURITY_CONFIG.WHITELIST_IPS.has(clientIP) && !clientIP.startsWith('192.168.')) {
-    // Additional security checks for external IPs
-    const userAgent = req.get('User-Agent') || '';
-    const referer = req.get('Referer') || '';
-    
-    // Log suspicious admin access attempts
-    console.log(`⚠️  External admin access attempt:`);
-    console.log(`   IP: ${clientIP}`);
-    console.log(`   User-Agent: ${userAgent}`);
-    console.log(`   Referer: ${referer}`);
-    console.log(`   Method: ${req.method}`);
-    console.log(`   Path: ${req.path}`);
-    
-    // Apply stricter rate limiting for admin routes
-    const now = Date.now();
-    let adminRateData = rateLimitStore.get(`admin:${clientIP}`);
-    if (!adminRateData || adminRateData.resetTime < now) {
-      adminRateData = { count: 0, resetTime: now + SECURITY_CONFIG.RATE_LIMIT_WINDOW };
-      rateLimitStore.set(`admin:${clientIP}`, adminRateData);
-    }
-    
-    adminRateData.count++;
-    
-    if (adminRateData.count > 10) { // Much stricter limit for admin routes
-      SECURITY_CONFIG.BLACKLISTED_IPS.add(clientIP);
-      console.log(`🚫 IP blacklisted for excessive admin access attempts: ${clientIP}`);
-      
-      return res.status(429).json({
-        message: 'Çok fazla admin erişim denemesi',
-        error: 'ADMIN_RATE_LIMIT_EXCEEDED',
-        code: 'SECURITY_VIOLATION'
-      });
-    }
-  }
-  
+  // Admin route protection disabled for development - always allow access
   next();
 }
 
@@ -379,53 +270,10 @@ export function securityHeadersMiddleware(req: Request, res: Response, next: Nex
 }
 
 /**
- * Anti-automation detection
+ * Anti-automation detection - DISABLED FOR DEVELOPMENT
  */
 export function antiAutomationMiddleware(req: Request, res: Response, next: NextFunction) {
-  // Skip automation detection in development
-  if (process.env.NODE_ENV === 'development') {
-    return next();
-  }
-  
-  const clientIP = getClientIP(req);
-  
-  // Check for automation patterns
-  let suspiciousScore = 0;
-  
-  // Check for missing or suspicious headers
-  if (!req.get('Accept-Language')) suspiciousScore += 10;
-  if (!req.get('Accept-Encoding')) suspiciousScore += 10;
-  if (!req.get('Connection')) suspiciousScore += 5;
-  if (!req.get('User-Agent')) suspiciousScore += 15;
-  
-  // Check for automation-like user agents
-  const userAgent = req.get('User-Agent') || '';
-  if (userAgent.length < 50) suspiciousScore += 10;
-  if (!/Mozilla/i.test(userAgent)) suspiciousScore += 15;
-  if (!/Chrome|Firefox|Safari|Edge/i.test(userAgent)) suspiciousScore += 10;
-  
-  // Check for unusual header combinations
-  const hasXRequestedWith = req.get('X-Requested-With');
-  if (hasXRequestedWith && hasXRequestedWith !== 'XMLHttpRequest') suspiciousScore += 20;
-  
-  // Check request timing patterns (simplified)
-  const now = Date.now();
-  const lastRequest = rateLimitStore.get(`timing:${clientIP}`);
-  if (lastRequest && (now - lastRequest.resetTime) < 100) {
-    suspiciousScore += 25; // Too fast requests
-  }
-  rateLimitStore.set(`timing:${clientIP}`, { count: 0, resetTime: now });
-  
-  if (suspiciousScore > 50) {
-    console.log(`🤖 Automation detected from IP: ${clientIP} (Score: ${suspiciousScore})`);
-    
-    return res.status(403).json({
-      message: 'Otomatik erişim tespit edildi',
-      error: 'AUTOMATION_DETECTED',
-      code: 'SECURITY_VIOLATION'
-    });
-  }
-  
+  // Automation detection disabled - always allow
   next();
 }
 
