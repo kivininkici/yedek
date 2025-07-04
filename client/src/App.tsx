@@ -63,10 +63,8 @@ function Router() {
 
   return (
     <Switch>
-      {/* Home route - conditional based on user auth */}
-      <Route path="/">
-        {isUserAuthenticated ? <Home /> : <SimpleLanding />}
-      </Route>
+      {/* Home route - using SimpleLanding */}
+      <Route path="/" component={SimpleLanding} />
       
       {/* Public routes */}
       <Route path="/auth" component={Auth} />
