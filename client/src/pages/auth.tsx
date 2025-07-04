@@ -590,31 +590,33 @@ export default function Auth() {
 
             <CardContent className="px-10 pb-10 relative z-10">
               <div className="w-full">
-                {/* Modern Tab Buttons */}
+                {/* Tab Buttons - Full Width */}
                 <div className="w-full mb-10">
-                  <div className="flex w-full bg-slate-700/60 backdrop-blur-sm rounded-2xl p-2 border border-slate-600/30">
-                    <button
-                      onClick={() => setActiveTab("login")}
-                      className={`flex-1 h-14 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center space-x-2 ${
-                        activeTab === "login"
-                          ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg"
-                          : "text-slate-300 hover:text-white hover:bg-slate-600/40"
-                      }`}
-                    >
-                      <LogIn className="w-5 h-5" />
-                      <span>Giriş Yap</span>
-                    </button>
-                    <button
-                      onClick={() => setActiveTab("register")}
-                      className={`flex-1 h-14 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center space-x-2 ml-2 ${
-                        activeTab === "register"
-                          ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
-                          : "text-slate-300 hover:text-white hover:bg-slate-600/40"
-                      }`}
-                    >
-                      <UserPlus className="w-5 h-5" />
-                      <span>Kayıt Ol</span>
-                    </button>
+                  <div className="bg-slate-700/60 backdrop-blur-sm rounded-2xl p-1 border border-slate-600/30">
+                    <div className="grid grid-cols-2 gap-1 w-full">
+                      <button
+                        onClick={() => setActiveTab("login")}
+                        className={`h-14 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center space-x-2 ${
+                          activeTab === "login"
+                            ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg"
+                            : "text-slate-300 hover:text-white hover:bg-slate-600/40"
+                        }`}
+                      >
+                        <LogIn className="w-5 h-5" />
+                        <span>Giriş Yap</span>
+                      </button>
+                      <button
+                        onClick={() => setActiveTab("register")}
+                        className={`h-14 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center space-x-2 ${
+                          activeTab === "register"
+                            ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
+                            : "text-slate-300 hover:text-white hover:bg-slate-600/40"
+                        }`}
+                      >
+                        <UserPlus className="w-5 h-5" />
+                        <span>Kayıt Ol</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
 
