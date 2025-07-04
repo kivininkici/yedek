@@ -2098,12 +2098,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log(`Fetching and auto-importing services from: ${apiUrl}`);
       
-      // First, fetch services from the API
-      const response = await fetch(`${apiUrl}?key=${apiKey}`, {
-        method: "GET",
+      // First, fetch services from the API using POST method with form data
+      const formData = new URLSearchParams();
+      formData.append('key', apiKey);
+      formData.append('action', 'services');
+      
+      const response = await fetch(apiUrl, {
+        method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
         },
+        body: formData.toString(),
       });
 
       if (!response.ok) {

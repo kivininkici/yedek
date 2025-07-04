@@ -28,6 +28,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import {
   AlertDialog,
@@ -210,6 +211,9 @@ export default function ApiManagement() {
             <DialogContent className="max-w-2xl bg-gray-800 border-gray-700 text-white">
               <DialogHeader>
                 <DialogTitle className="text-white">Yeni API Ekle</DialogTitle>
+                <DialogDescription className="text-gray-400">
+                  Harici API'lerden servis içe aktarmak için API bilgilerini girin
+                </DialogDescription>
               </DialogHeader>
               
               <div className="space-y-4">
