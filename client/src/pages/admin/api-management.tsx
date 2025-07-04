@@ -203,7 +203,7 @@ export default function ApiManagement() {
           
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+              <Button className="bg-gray-700 hover:bg-gray-600 text-white">
                 <Plus className="w-4 h-4 mr-2" />
                 API Ekle
               </Button>
@@ -302,7 +302,7 @@ export default function ApiManagement() {
                       }
                     }}
                     disabled={!apiName || !apiUrl || !apiKey || addApiMutation.isPending}
-                    className="bg-blue-600 hover:bg-blue-700"
+                    className="bg-gray-700 hover:bg-gray-600"
                   >
                     {addApiMutation.isPending ? (
                       <>
@@ -372,7 +372,7 @@ export default function ApiManagement() {
                         onClick={() => autoFetchServicesMutation.mutate({ apiUrl: api.apiUrl, apiKey: api.apiKey })}
                         disabled={autoFetchServicesMutation.isPending}
                         size="sm"
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                        className="w-full bg-gray-700 hover:bg-gray-600 text-white"
                       >
                         {autoFetchServicesMutation.isPending ? (
                           <>

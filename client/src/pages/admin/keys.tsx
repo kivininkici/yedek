@@ -149,10 +149,17 @@ export default function Keys() {
     }
   }
 
-  const filteredKeys = Array.isArray(keys) ? keys.filter((key: KeyType) => {
-    const matchesSearch = key.keyValue.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         key.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         key.serviceName.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredKeys = Array.isArray(keys) && keys.length > 0 ? keys.filter((key: KeyType) => {
+    if (!key) return false;
+    
+    const searchLower = (searchQuery || '').toLowerCase();
+    const keyValue = key.keyValue || '';
+    const category = key.category || '';
+    const serviceName = key.serviceName || '';
+    
+    const matchesSearch = keyValue.toLowerCase().includes(searchLower) ||
+                         category.toLowerCase().includes(searchLower) ||
+                         serviceName.toLowerCase().includes(searchLower);
     const matchesStatus = statusFilter === "all" || 
                          (statusFilter === "used" && key.isUsed) ||
                          (statusFilter === "unused" && !key.isUsed);
