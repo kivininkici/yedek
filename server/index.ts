@@ -25,10 +25,27 @@ config();
 
 const app = express();
 
-// Apply security middleware FIRST (Simplified for development)
+// Apply security middleware FIRST
 app.use(helmet({
-  contentSecurityPolicy: false, // Disabled for development
-  hsts: false // Disabled for development
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "blob:"],
+      styleSrc: ["'self'", "'unsafe-inline'", "blob:"],
+      imgSrc: ["'self'", "data:", "https:", "blob:"],
+      fontSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'", "ws:", "wss:"],
+      frameSrc: ["'none'"],
+      objectSrc: ["'none'"],
+      mediaSrc: ["'self'"],
+      workerSrc: ["'self'", "blob:"],
+    },
+  },
+  hsts: {
+    maxAge: 31536000,
+    includeSubDomains: true,
+    preload: true
+  }
 }));
 
 // Rate limiting - very relaxed for development
@@ -52,11 +69,11 @@ app.use(limiter);
 // HTTP Parameter Pollution protection
 app.use(hpp());
 
-// Custom security middleware - Disabled for development performance
-// app.use(securityHeadersMiddleware);
-// app.use(ipBlockingMiddleware);
-// app.use(userAgentValidationMiddleware);
-// app.use(advancedRateLimitMiddleware);
+// Custom security middleware
+app.use(securityHeadersMiddleware);
+app.use(ipBlockingMiddleware);
+app.use(userAgentValidationMiddleware);
+app.use(advancedRateLimitMiddleware);
 
 app.use(express.json({ 
   limit: '50mb',

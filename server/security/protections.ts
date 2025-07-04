@@ -13,7 +13,7 @@ const SECURITY_CONFIG = {
   MAX_LOGIN_ATTEMPTS: 5,
   LOCKOUT_DURATION: 30 * 60 * 1000, // 30 minutes
   RATE_LIMIT_WINDOW: 15 * 60 * 1000, // 15 minutes
-  MAX_REQUESTS_PER_WINDOW: 50000, // Much higher limit for development
+  MAX_REQUESTS_PER_WINDOW: 10000, // Very high limit for development
   SUSPICIOUS_PATTERNS: [
     /console\./gi,
     /document\./gi,
