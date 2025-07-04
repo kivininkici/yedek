@@ -20,6 +20,7 @@ import {
   Timer,
   TrendingUp,
   Home,
+  Calendar,
   Hash,
   Eye,
   AlertTriangle
@@ -119,7 +120,7 @@ const CleanBackground = () => {
   );
 };
 
-export default function OrderSearchPage() {
+export default function OrderSearchRedesign() {
   const { toast } = useToast();
   const [searchedOrder, setSearchedOrder] = useState<OrderDetails | null>(null);
   const [isSearching, setIsSearching] = useState(false);
