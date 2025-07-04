@@ -590,29 +590,31 @@ export default function Auth() {
 
             <CardContent className="px-10 pb-10 relative z-10">
               <div className="w-full">
-                <div className="flex w-full mb-10 bg-white/10 backdrop-blur-sm rounded-2xl p-1 h-16 border border-white/20">
-                  <button
-                    onClick={() => setActiveTab("login")}
-                    className={`w-full h-12 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center space-x-2 ${
-                      activeTab === "login"
-                        ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg"
-                        : "text-gray-300 hover:text-white hover:bg-white/5"
-                    }`}
-                  >
-                    <LogIn className="w-5 h-5" />
-                    <span>Giriş Yap</span>
-                  </button>
-                  <button
-                    onClick={() => setActiveTab("register")}
-                    className={`w-full h-12 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center space-x-2 ${
-                      activeTab === "register"
-                        ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
-                        : "text-gray-300 hover:text-white hover:bg-white/5"
-                    }`}
-                  >
-                    <UserPlus className="w-5 h-5" />
-                    <span>Kayıt Ol</span>
-                  </button>
+                <div className="w-full mb-10 bg-white/10 backdrop-blur-sm rounded-2xl p-1 h-16 border border-white/20">
+                  <div className="flex w-full h-full gap-0">
+                    <button
+                      onClick={() => setActiveTab("login")}
+                      className={`flex-1 h-12 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center space-x-2 ${
+                        activeTab === "login"
+                          ? "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg"
+                          : "text-gray-300 hover:text-white hover:bg-white/5"
+                      }`}
+                    >
+                      <LogIn className="w-5 h-5" />
+                      <span>Giriş Yap</span>
+                    </button>
+                    <button
+                      onClick={() => setActiveTab("register")}
+                      className={`flex-1 h-12 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center space-x-2 ${
+                        activeTab === "register"
+                          ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg"
+                          : "text-gray-300 hover:text-white hover:bg-white/5"
+                      }`}
+                    >
+                      <UserPlus className="w-5 h-5" />
+                      <span>Kayıt Ol</span>
+                    </button>
+                  </div>
                 </div>
 
                 <div className="min-h-[450px]">
