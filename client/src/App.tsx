@@ -5,7 +5,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
-import SimpleLanding from "@/pages/simple-landing";
+import Landing from "@/pages/landing";
 import Home from "@/pages/home";
 import Auth from "@/pages/auth";
 import UserInterface from "@/pages/user-interface";
@@ -44,13 +44,39 @@ function Router() {
   const { isAuthenticated: isUserAuthenticated, isLoading: isUserLoading } = useAuth();
   const { isAuthenticated: isAdminAuthenticated, isLoading: isAdminLoading } = useAdminAuth();
 
-  // No loading delays - show content immediately
+  // Show loading screen only for initial auth checks (max 2 seconds to prevent infinite loading)
+  const [showLoader, setShowLoader] = useState(true);
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowLoader(false);
+    }, 2000);
+    
+    // Hide loader early if auth checks complete
+    if (!isUserLoading && !isAdminLoading) {
+      setShowLoader(false);
+      clearTimeout(timer);
+    }
+    
+    return () => clearTimeout(timer);
+  }, [isUserLoading, isAdminLoading]);
+
+  if (showLoader && (isUserLoading || isAdminLoading)) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <div className="text-xl font-semibold text-gray-700">OtoKiwi Yükleniyor...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <Switch>
       {/* Home route - conditional based on user auth */}
       <Route path="/">
-        {isUserAuthenticated ? <Home /> : <SimpleLanding />}
+        {isUserAuthenticated ? <Home /> : <Landing />}
       </Route>
       
       {/* Public routes */}

@@ -86,7 +86,7 @@ const SECURITY_CONFIG = {
     /EvalError\./gi,
     /URIError\./gi
   ],
-  BLACKLISTED_IPS: new Set<string>(), // Always empty for development
+  BLACKLISTED_IPS: new Set<string>(),
   WHITELIST_IPS: new Set<string>(['127.0.0.1', '::1', 'localhost']),
   BLOCKED_USER_AGENTS: [
     /bot/gi,
@@ -133,10 +133,6 @@ const SECURITY_CONFIG = {
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
 const suspiciousActivityStore = new Map<string, { count: number; resetTime: number }>();
 
-// Clear all blacklisted IPs on startup for development
-SECURITY_CONFIG.BLACKLISTED_IPS.clear();
-console.log('🔓 All IP bans cleared for development');
-
 /**
  * Get client IP address with proxy support
  */
@@ -164,10 +160,60 @@ export function ipBlockingMiddleware(req: Request, res: Response, next: NextFunc
 }
 
 /**
- * Advanced rate limiting middleware - DISABLED FOR DEVELOPMENT
+ * Advanced rate limiting middleware
  */
 export function advancedRateLimitMiddleware(req: Request, res: Response, next: NextFunction) {
+  const clientIP = getClientIP(req);
+  
   // Rate limiting disabled for development - always allow
+  return next();
+  
+  const now = Date.now();
+  
+  // Clean expired entries
+  const expiredEntries: string[] = [];
+  rateLimitStore.forEach((data, ip) => {
+    if (data.resetTime < now) {
+      expiredEntries.push(ip);
+    }
+  });
+  expiredEntries.forEach(ip => rateLimitStore.delete(ip));
+  
+  // Get or create rate limit data
+  let rateData = rateLimitStore.get(clientIP);
+  if (!rateData || rateData.resetTime < now) {
+    rateData = { count: 0, resetTime: now + SECURITY_CONFIG.RATE_LIMIT_WINDOW };
+    rateLimitStore.set(clientIP, rateData);
+  }
+  
+  // Increment request count
+  rateData.count++;
+  
+  // Check if limit exceeded
+  if (rateData.count > SECURITY_CONFIG.MAX_REQUESTS_PER_WINDOW) {
+    console.log(`🚫 Rate limit exceeded for IP: ${clientIP}`);
+    
+    // Add to blacklist if severely exceeding
+    if (rateData.count > SECURITY_CONFIG.MAX_REQUESTS_PER_WINDOW * 2) {
+      SECURITY_CONFIG.BLACKLISTED_IPS.add(clientIP);
+      console.log(`🚫 IP blacklisted for excessive requests: ${clientIP}`);
+    }
+    
+    return res.status(429).json({
+      message: 'Çok fazla istek. Lütfen daha sonra tekrar deneyin.',
+      error: 'RATE_LIMIT_EXCEEDED',
+      code: 'SECURITY_VIOLATION',
+      retryAfter: Math.ceil((rateData.resetTime - now) / 1000)
+    });
+  }
+  
+  // Add rate limit headers
+  res.set({
+    'X-RateLimit-Limit': SECURITY_CONFIG.MAX_REQUESTS_PER_WINDOW.toString(),
+    'X-RateLimit-Remaining': (SECURITY_CONFIG.MAX_REQUESTS_PER_WINDOW - rateData.count).toString(),
+    'X-RateLimit-Reset': new Date(rateData.resetTime).toISOString()
+  });
+  
   next();
 }
 
