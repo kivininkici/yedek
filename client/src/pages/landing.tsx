@@ -103,39 +103,33 @@ export default function Landing() {
                 </div>
               </div>
               {/* Modern Header Actions */}
-              <div className="flex items-center space-x-2 md:space-x-3">
+              <div className="flex items-center gap-3">
                 
                 {/* Satın Al Button - Always visible */}
-                <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl blur-md opacity-60 group-hover:opacity-80 transition-all duration-300"></div>
-                  <Button 
-                    onClick={() => window.open('https://www.itemsatis.com/p/KiwiPazari', '_blank')}
-                    className="relative bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-bold px-4 md:px-6 py-2.5 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 border border-white/20 backdrop-blur-sm"
-                  >
-                    <ShoppingCart className="w-4 h-4 mr-2" />
-                    <span className="hidden sm:inline">Satın Al</span>
-                    <span className="sm:hidden">Al</span>
-                  </Button>
-                </div>
+                <Button 
+                  onClick={() => window.open('https://www.itemsatis.com/p/KiwiPazari', '_blank')}
+                  className="bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-bold px-6 py-3 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 border border-white/20"
+                >
+                  <ShoppingCart className="w-4 h-4 mr-2" />
+                  <span className="hidden sm:inline">Satın Al</span>
+                  <span className="sm:hidden">Al</span>
+                </Button>
 
                 {/* Geri Bildirim Button - Always visible */}
-                <div className="relative group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl blur-md opacity-40 group-hover:opacity-60 transition-all duration-300"></div>
-                  <Button 
-                    onClick={() => setShowFeedback(true)}
-                    className="relative bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold px-4 md:px-6 py-2.5 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 border border-white/20 backdrop-blur-sm !important"
-                  >
-                    <MessageCircle className="w-4 h-4 mr-2" />
-                    <span className="hidden sm:inline">Geri Bildirim</span>
-                    <span className="sm:hidden">Feedback</span>
-                  </Button>
-                </div>
+                <Button 
+                  onClick={() => setShowFeedback(true)}
+                  className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold px-6 py-3 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 border border-white/20"
+                >
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  <span className="hidden sm:inline">Geri Bildirim</span>
+                  <span className="sm:hidden">Feedback</span>
+                </Button>
 
-                {/* Kullanıcı Adı/Profil - Authenticated users only */}
-                {isAuthenticated && (
-                  <div className="relative group">
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-violet-500 rounded-xl blur-md opacity-40 group-hover:opacity-60 transition-all duration-300"></div>
-                    <div className="relative flex items-center space-x-3 bg-gradient-to-r from-purple-500 to-violet-500 border border-white/20 backdrop-blur-sm px-4 py-2.5 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5">
+                {/* Authenticated User Buttons */}
+                {isAuthenticated ? (
+                  <>
+                    {/* User Profile */}
+                    <div className="bg-gradient-to-r from-purple-500 to-violet-500 hover:from-purple-600 hover:to-violet-600 text-white font-bold px-6 py-3 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 border border-white/20 flex items-center gap-3">
                       <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
                         <Crown className="w-4 h-4 text-white" />
                       </div>
@@ -144,55 +138,42 @@ export default function Landing() {
                         <p className="text-white/80 text-xs">{user?.email || 'Admin'}</p>
                       </div>
                     </div>
-                  </div>
-                )}
 
-                {/* Admin Panel Button - ONLY for admin users */}
-                {isAuthenticated && user?.isAdmin && (
-                  <div className="relative group">
-                    <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl blur-md opacity-40 group-hover:opacity-60 transition-all duration-300"></div>
-                    <Button 
-                      onClick={() => window.location.href = '/admin'}
-                      className="relative bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-bold px-4 md:px-6 py-2.5 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 border border-white/20 backdrop-blur-sm"
-                    >
-                      <Shield className="w-4 h-4 mr-2" />
-                      <span className="hidden sm:inline">Admin Panel</span>
-                      <span className="sm:hidden">Admin</span>
-                    </Button>
-                  </div>
-                )}
+                    {/* Admin Panel Button - ONLY for admin users */}
+                    {user?.isAdmin && (
+                      <Button 
+                        onClick={() => window.location.href = '/admin'}
+                        className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-bold px-6 py-3 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 border border-white/20"
+                      >
+                        <Shield className="w-4 h-4 mr-2" />
+                        <span className="hidden sm:inline">Admin Panel</span>
+                        <span className="sm:hidden">Admin</span>
+                      </Button>
+                    )}
 
-                {/* Çıkış Button - Authenticated users only */}
-                {isAuthenticated && (
-                  <div className="relative group">
-                    <div className="absolute inset-0 bg-gradient-to-r from-gray-500 to-slate-500 rounded-xl blur-md opacity-40 group-hover:opacity-60 transition-all duration-300"></div>
+                    {/* Çıkış Button */}
                     <Button 
                       onClick={() => {
                         fetch('/api/logout', { method: 'POST' })
                           .then(() => window.location.reload());
                       }}
-                      className="relative bg-gradient-to-r from-gray-500 to-slate-500 hover:from-gray-600 hover:to-slate-600 text-white font-bold px-4 md:px-6 py-2.5 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 border border-white/20 backdrop-blur-sm"
+                      className="bg-gradient-to-r from-gray-500 to-slate-500 hover:from-gray-600 hover:to-slate-600 text-white font-bold px-6 py-3 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 border border-white/20"
                     >
                       <LogIn className="w-4 h-4 mr-2 rotate-180" />
                       <span className="hidden sm:inline">Çıkış</span>
                       <span className="sm:hidden">Çık</span>
                     </Button>
-                  </div>
-                )}
-
-                {/* Giriş Yap Button - Non-authenticated users only */}
-                {!isAuthenticated && (
-                  <div className="relative group">
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl blur-md opacity-40 group-hover:opacity-60 transition-all duration-300"></div>
-                    <Button 
-                      onClick={() => window.location.href = '/auth'}
-                      className="relative bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold px-4 md:px-6 py-2.5 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 border border-white/20 backdrop-blur-sm"
-                    >
-                      <LogIn className="w-4 h-4 mr-2" />
-                      <span className="hidden sm:inline">Giriş Yap</span>
-                      <span className="sm:hidden">Giriş</span>
-                    </Button>
-                  </div>
+                  </>
+                ) : (
+                  /* Giriş Yap Button - Non-authenticated users only */
+                  <Button 
+                    onClick={() => window.location.href = '/auth'}
+                    className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold px-6 py-3 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 border border-white/20"
+                  >
+                    <LogIn className="w-4 h-4 mr-2" />
+                    <span className="hidden sm:inline">Giriş Yap</span>
+                    <span className="sm:hidden">Giriş</span>
+                  </Button>
                 )}
               </div>
             </div>
