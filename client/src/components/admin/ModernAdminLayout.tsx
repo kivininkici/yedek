@@ -1,6 +1,7 @@
 import { ReactNode, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from 'wouter';
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Users,
   Key,
@@ -32,6 +33,7 @@ interface ModernAdminLayoutProps {
 export default function ModernAdminLayout({ children, title }: ModernAdminLayoutProps) {
   const [location] = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const queryClient = useQueryClient();
   
   const logout = () => {
     fetch('/api/admin/logout', { method: 'POST' })
@@ -39,6 +41,33 @@ export default function ModernAdminLayout({ children, title }: ModernAdminLayout
   };
 
   const isActive = (path: string) => location === path;
+
+  // Prefetch fonksiyonu - hover'da data'yı önceden yükler
+  const prefetchPageData = async (path: string) => {
+    const dataQueries = {
+      '/admin': ['/api/admin/dashboard/stats', '/api/admin/dashboard/recent-activity'],
+      '/admin/users': ['/api/admin/users'],
+      '/admin/keys': ['/api/admin/keys'],
+      '/admin/orders': ['/api/admin/orders'],
+      '/admin/services': ['/api/admin/services'],
+      '/admin/api-management': ['/api/admin/apis'],
+      '/admin/api-balances': ['/api/admin/apis'],
+      '/admin/logs': ['/api/admin/logs'],
+      '/admin/login-attempts': ['/api/admin/login-attempts'],
+      '/admin/feedback': ['/api/admin/feedback'],
+      '/admin/complaints': ['/api/admin/complaints'],
+    };
+
+    const queries = dataQueries[path as keyof typeof dataQueries];
+    if (queries) {
+      queries.forEach(queryKey => {
+        queryClient.prefetchQuery({
+          queryKey: [queryKey],
+          staleTime: 2 * 60 * 1000, // 2 dakika
+        });
+      });
+    }
+  };
 
   const menuItems = [
     { href: '/admin', icon: BarChart3, label: 'Dashboard', color: 'from-blue-500 to-purple-500' },
@@ -108,11 +137,14 @@ export default function ModernAdminLayout({ children, title }: ModernAdminLayout
                 const active = isActive(item.href);
                 return (
                   <Link key={item.href} href={item.href}>
-                    <div className={`group relative flex items-center px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer ${
-                      active 
-                        ? 'bg-gradient-to-r ' + item.color + ' shadow-lg shadow-purple-500/25 text-white' 
-                        : 'text-gray-300 hover:bg-white/10 hover:text-white'
-                    }`}>
+                    <div 
+                      className={`group relative flex items-center px-4 py-3 rounded-xl transition-all duration-200 cursor-pointer ${
+                        active 
+                          ? 'bg-gradient-to-r ' + item.color + ' shadow-lg shadow-purple-500/25 text-white' 
+                          : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                      }`}
+                      onMouseEnter={() => !active && prefetchPageData(item.href)}
+                    >
                       {active && (
                         <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent rounded-xl" />
                       )}

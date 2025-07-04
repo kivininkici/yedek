@@ -76,12 +76,14 @@ export default function UsersPage() {
   const { data: users, isLoading: usersLoading } = useQuery({
     queryKey: ["/api/admin/users"],
     enabled: !!admin,
+    staleTime: 2 * 60 * 1000, // 2 dakika
   });
 
   // Fetch admin users
   const { data: adminUsers, isLoading: adminUsersLoading } = useQuery({
     queryKey: ["/api/admin/list"],
     enabled: !!admin,
+    staleTime: 2 * 60 * 1000, // 2 dakika
   });
 
   // Create admin mutation

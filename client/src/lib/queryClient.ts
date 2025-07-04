@@ -49,8 +49,8 @@ export const queryClient = new QueryClient({
       refetchOnWindowFocus: false,
       refetchOnMount: false,
       refetchOnReconnect: false,
-      staleTime: 30 * 60 * 1000, // 30 minutes
-      gcTime: 60 * 60 * 1000, // 1 hour
+      staleTime: 30 * 60 * 1000, // 30 dakika - çok uzun cache
+      gcTime: 60 * 60 * 1000, // 1 saat
       retry: false,
       networkMode: 'online',
     },
