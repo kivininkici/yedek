@@ -127,6 +127,8 @@ Changelog:
 - June 29, 2025. Canlı destek referansları kaldırıldı, sipariş sorgulama sistemi eklendi
 
 ## Recent Changes
+- July 4, 2025: Geliştirme performansı optimize edildi - güvenlik middleware'leri development için devre dışı bırakıldı
+- CSP, HSTS, IP blocking, rate limiting geçici olarak kapatıldı - sayfa yükleme hızı büyük ölçüde iyileştirildi
 - July 4, 2025: Landing page header butonları tamamen yeniden tasarlandı - giriş yapmış/yapmamış kullanıcılar için ayrı tasarımlar
 - Giriş yapmış kullanıcı butonları (Geri Bildirim, Admin Panel, Çıkış, Profil) solid gradient arka plana güncellendi
 - Buton stillerinde tutarlılık sağlandı - tüm butonlar aynı görsel etkiyi veriyor
