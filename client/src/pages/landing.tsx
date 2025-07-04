@@ -102,43 +102,96 @@ export default function Landing() {
                   <p className="text-sm text-gray-400">Premium Key Yönetimi</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-2 md:space-x-4">
-                <Button 
-                  onClick={() => window.open('https://www.itemsatis.com/p/KiwiPazari', '_blank')}
-                  className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold px-4 md:px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 flex items-center space-x-2 text-sm md:text-base"
-                >
-                  <ShoppingCart className="w-4 h-4" />
-                  <span className="hidden sm:inline">Satın Al</span>
-                  <span className="sm:hidden">Al</span>
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="border-white/20 bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm"
-                  onClick={() => window.location.href = '/user'}
-                >
-                  <KeyRound className="w-4 h-4 mr-2" />
-                  Kullanıcı Paneli
-                </Button>
-
+              {/* Modern Header Actions */}
+              <div className="flex items-center space-x-2 md:space-x-3">
                 
-                {!isAuthenticated && (
+                {/* Satın Al Button - Always visible */}
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-pink-500 rounded-xl blur-md opacity-60 group-hover:opacity-80 transition-all duration-300"></div>
                   <Button 
-                    onClick={() => setShowFeedback(true)}
-                    className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-semibold px-4 md:px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                    onClick={() => window.open('https://www.itemsatis.com/p/KiwiPazari', '_blank')}
+                    className="relative bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-bold px-4 md:px-6 py-2.5 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 border border-white/20 backdrop-blur-sm"
                   >
-                    <MessageCircle className="w-4 h-4 mr-2" />
-                    <span className="hidden sm:inline">Geri Bildirim</span>
-                    <span className="sm:hidden">Feedback</span>
+                    <ShoppingCart className="w-4 h-4 mr-2" />
+                    <span className="hidden sm:inline">Satın Al</span>
+                    <span className="sm:hidden">Al</span>
                   </Button>
+                </div>
+
+                {/* Kullanıcı Paneli - Always visible */}
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl blur-md opacity-30 group-hover:opacity-50 transition-all duration-300"></div>
+                  <Button 
+                    onClick={() => window.location.href = '/user'}
+                    className="relative bg-gradient-to-r from-blue-500/20 to-cyan-500/20 hover:from-blue-500/30 hover:to-cyan-500/30 text-white font-semibold px-4 md:px-6 py-2.5 rounded-xl border border-blue-400/30 backdrop-blur-sm hover:border-blue-400/50 transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5"
+                  >
+                    <KeyRound className="w-4 h-4 mr-2" />
+                    <span className="hidden sm:inline">Kullanıcı Paneli</span>
+                    <span className="sm:hidden">Panel</span>
+                  </Button>
+                </div>
+
+                {/* Giriş yapmış kullanıcılar için */}
+                {isAuthenticated && (
+                  <>
+                    {/* Geri Bildirim */}
+                    <div className="relative group">
+                      <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl blur-md opacity-30 group-hover:opacity-50 transition-all duration-300"></div>
+                      <Button 
+                        onClick={() => setShowFeedback(true)}
+                        className="relative bg-gradient-to-r from-green-500/20 to-emerald-500/20 hover:from-green-500/30 hover:to-emerald-500/30 text-white font-semibold px-4 md:px-6 py-2.5 rounded-xl border border-green-400/30 backdrop-blur-sm hover:border-green-400/50 transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5"
+                      >
+                        <MessageCircle className="w-4 h-4 mr-2" />
+                        <span className="hidden sm:inline">Geri Bildirim</span>
+                        <span className="sm:hidden">Feedback</span>
+                      </Button>
+                    </div>
+                    
+                    {/* Kullanıcı Bilgisi */}
+                    <div className="relative group">
+                      <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-violet-500 rounded-xl blur-md opacity-30 group-hover:opacity-50 transition-all duration-300"></div>
+                      <div className="relative flex items-center space-x-3 bg-gradient-to-r from-purple-500/20 to-violet-500/20 border border-purple-400/30 backdrop-blur-sm px-4 py-2.5 rounded-xl hover:border-purple-400/50 transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5">
+                        <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-violet-500 rounded-full flex items-center justify-center">
+                          <Crown className="w-4 h-4 text-white" />
+                        </div>
+                        <div className="hidden sm:block">
+                          <p className="text-white font-semibold text-sm">Hoş geldiniz</p>
+                          <p className="text-purple-300 text-xs">{user?.email || 'Kullanıcı'}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </>
                 )}
+
+                {/* Giriş yapmamış kullanıcılar için */}
                 {!isAuthenticated && (
-                  <Button 
-                    onClick={() => setShowAuthModal(true)}
-                    className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-semibold px-6 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300"
-                  >
-                    <LogIn className="w-4 h-4 mr-2" />
-                    Giriş Yap
-                  </Button>
+                  <>
+                    {/* Geri Bildirim */}
+                    <div className="relative group">
+                      <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl blur-md opacity-30 group-hover:opacity-50 transition-all duration-300"></div>
+                      <Button 
+                        onClick={() => setShowFeedback(true)}
+                        className="relative bg-gradient-to-r from-green-500/20 to-emerald-500/20 hover:from-green-500/30 hover:to-emerald-500/30 text-white font-semibold px-4 md:px-6 py-2.5 rounded-xl border border-green-400/30 backdrop-blur-sm hover:border-green-400/50 transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5"
+                      >
+                        <MessageCircle className="w-4 h-4 mr-2" />
+                        <span className="hidden sm:inline">Geri Bildirim</span>
+                        <span className="sm:hidden">Feedback</span>
+                      </Button>
+                    </div>
+                    
+                    {/* Giriş Yap */}
+                    <div className="relative group">
+                      <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl blur-md opacity-40 group-hover:opacity-60 transition-all duration-300"></div>
+                      <Button 
+                        onClick={() => setShowAuthModal(true)}
+                        className="relative bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-bold px-4 md:px-6 py-2.5 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5 border border-white/20 backdrop-blur-sm"
+                      >
+                        <LogIn className="w-4 h-4 mr-2" />
+                        <span className="hidden sm:inline">Giriş Yap</span>
+                        <span className="sm:hidden">Giriş</span>
+                      </Button>
+                    </div>
+                  </>
                 )}
               </div>
             </div>
