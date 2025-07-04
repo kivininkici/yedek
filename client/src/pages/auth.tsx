@@ -350,9 +350,9 @@ export default function Auth() {
 
     if (isDevelopment) {
       return (
-        <div className="flex flex-col items-center space-y-3 p-4 bg-green-500/10 border border-green-500/30 rounded-2xl backdrop-blur-sm">
+        <div className="flex flex-col items-center space-y-2 p-3 bg-green-500/10 border border-green-500/30 rounded-xl backdrop-blur-sm">
           <div className="flex items-center space-x-2 text-green-400">
-            <Shield className="w-5 h-5" />
+            <Shield className="w-4 h-4" />
             <span className="text-sm font-medium">Geliştirme Modu - CAPTCHA Atlandı</span>
           </div>
           {captchaCompleted && (
@@ -363,7 +363,7 @@ export default function Auth() {
     }
 
     return (
-      <div className="flex flex-col items-center space-y-3 p-4 bg-white/5 rounded-2xl border border-white/20 backdrop-blur-sm">
+      <div className="flex flex-col items-center space-y-2 p-3 bg-white/5 rounded-xl border border-white/20 backdrop-blur-sm">
         <div id={captchaId} className="h-captcha"></div>
         {captchaCompleted && (
           <div className="text-xs text-green-300">✓ Güvenlik doğrulaması tamamlandı</div>
@@ -640,9 +640,9 @@ export default function Auth() {
                               control={loginForm.control}
                               name="hcaptcha"
                               render={({ field }) => (
-                                <FormItem className="space-y-3">
-                                  <FormLabel className="text-white font-semibold text-lg flex items-center">
-                                    <Shield className="w-5 h-5 mr-2 text-blue-400" />
+                                <FormItem className="space-y-2">
+                                  <FormLabel className="text-white font-medium text-sm flex items-center">
+                                    <Shield className="w-4 h-4 mr-2 text-blue-400" />
                                     Güvenlik Doğrulaması
                                   </FormLabel>
                                   <FormControl>
@@ -818,9 +818,9 @@ export default function Auth() {
                               control={registerForm.control}
                               name="hcaptcha"
                               render={({ field }) => (
-                                <FormItem className="space-y-3">
-                                  <FormLabel className="text-white font-semibold text-lg flex items-center">
-                                    <Shield className="w-5 h-5 mr-2 text-purple-400" />
+                                <FormItem className="space-y-2">
+                                  <FormLabel className="text-white font-medium text-sm flex items-center">
+                                    <Shield className="w-4 h-4 mr-2 text-purple-400" />
                                     Güvenlik Doğrulaması
                                   </FormLabel>
                                   <FormControl>
