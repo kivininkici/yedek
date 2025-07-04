@@ -60,29 +60,50 @@ interface OrderDetails {
   };
 }
 
-// Advanced Background Component with Enhanced Effects
+// Spectacular Background Component with Visible Effects
 const ModernBackground = () => {
   return (
     <div className="fixed inset-0 overflow-hidden pointer-events-none">
-      {/* Enhanced Base Gradients */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900" />
-      <div className="absolute inset-0 bg-gradient-to-tr from-indigo-950/50 via-transparent to-cyan-950/30" />
-      <div className="absolute inset-0 bg-gradient-to-bl from-pink-900/20 via-transparent to-emerald-900/20" />
+      {/* More Vibrant Base Gradients */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-800 via-blue-800 to-purple-800" />
+      <div className="absolute inset-0 bg-gradient-to-tr from-indigo-900/60 via-transparent to-cyan-800/40" />
+      <div className="absolute inset-0 bg-gradient-to-bl from-pink-800/30 via-transparent to-emerald-800/30" />
       
-      {/* Enhanced Floating Orbs with More Dynamic Movement */}
+      {/* Much More Visible Floating Orbs */}
+      <motion.div 
+        className="absolute w-[600px] h-[600px] rounded-full"
+        style={{
+          background: 'radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, rgba(147, 51, 234, 0.15) 40%, rgba(236, 72, 153, 0.08) 70%, transparent 100%)',
+          filter: 'blur(60px)',
+          top: '5%', 
+          left: '0%'
+        }}
+        animate={{
+          x: [0, 400, -150, 0],
+          y: [0, -200, 150, 0],
+          scale: [1, 1.4, 0.7, 1],
+          rotate: [0, 180, 360, 0],
+        }}
+        transition={{
+          duration: 25,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      />
+      
       <motion.div 
         className="absolute w-[500px] h-[500px] rounded-full"
         style={{
-          background: 'radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(147, 51, 234, 0.08) 40%, rgba(236, 72, 153, 0.03) 70%, transparent 100%)',
-          filter: 'blur(50px)',
-          top: '10%', 
-          left: '5%'
+          background: 'radial-gradient(circle, rgba(236, 72, 153, 0.25) 0%, rgba(168, 85, 247, 0.12) 40%, rgba(59, 130, 246, 0.06) 70%, transparent 100%)',
+          filter: 'blur(55px)',
+          top: '40%', 
+          right: '5%'
         }}
         animate={{
-          x: [0, 300, -100, 0],
-          y: [0, -150, 100, 0],
-          scale: [1, 1.3, 0.8, 1],
-          rotate: [0, 90, 180, 360],
+          x: [0, -300, 200, 0],
+          y: [0, 250, -100, 0],
+          scale: [1.3, 0.6, 1.5, 1.3],
+          rotate: [360, 180, 0, 360],
         }}
         transition={{
           duration: 30,
@@ -90,20 +111,20 @@ const ModernBackground = () => {
           ease: "easeInOut"
         }}
       />
-      
+
       <motion.div 
-        className="absolute w-[400px] h-[400px] rounded-full"
+        className="absolute w-[450px] h-[450px] rounded-full"
         style={{
-          background: 'radial-gradient(circle, rgba(236, 72, 153, 0.12) 0%, rgba(168, 85, 247, 0.06) 40%, rgba(59, 130, 246, 0.03) 70%, transparent 100%)',
-          filter: 'blur(45px)',
-          top: '50%', 
-          right: '10%'
+          background: 'radial-gradient(circle, rgba(34, 197, 94, 0.2) 0%, rgba(59, 130, 246, 0.1) 40%, rgba(168, 85, 247, 0.05) 70%, transparent 100%)',
+          filter: 'blur(50px)',
+          bottom: '15%', 
+          left: '25%'
         }}
         animate={{
-          x: [0, -200, 150, 0],
-          y: [0, 180, -80, 0],
-          scale: [1.2, 0.7, 1.4, 1.2],
-          rotate: [360, 270, 180, 0],
+          x: [0, 180, -250, 0],
+          y: [0, -180, 120, 0],
+          scale: [0.8, 1.6, 0.5, 0.8],
+          rotate: [0, 270, 180, 0],
         }}
         transition={{
           duration: 35,
@@ -112,68 +133,86 @@ const ModernBackground = () => {
         }}
       />
 
+      {/* Visible Grid Pattern */}
       <motion.div 
-        className="absolute w-[350px] h-[350px] rounded-full"
-        style={{
-          background: 'radial-gradient(circle, rgba(34, 197, 94, 0.1) 0%, rgba(59, 130, 246, 0.05) 40%, rgba(168, 85, 247, 0.02) 70%, transparent 100%)',
-          filter: 'blur(40px)',
-          bottom: '20%', 
-          left: '30%'
-        }}
-        animate={{
-          x: [0, 120, -180, 0],
-          y: [0, -120, 80, 0],
-          scale: [0.9, 1.5, 0.6, 0.9],
-        }}
-        transition={{
-          duration: 40,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-      />
-
-      {/* Animated Grid Pattern */}
-      <motion.div 
-        className="absolute inset-0 opacity-[0.03]"
+        className="absolute inset-0 opacity-[0.08]"
         style={{
           backgroundImage: `
-            radial-gradient(circle at 25% 25%, white 1px, transparent 1px),
-            radial-gradient(circle at 75% 75%, white 1px, transparent 1px)
+            radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.4) 2px, transparent 2px),
+            radial-gradient(circle at 75% 75%, rgba(236, 72, 153, 0.3) 1px, transparent 1px)
           `,
-          backgroundSize: '60px 60px, 40px 40px',
+          backgroundSize: '80px 80px, 50px 50px',
         }}
         animate={{
-          backgroundPosition: ['0px 0px, 0px 0px', '60px 60px, 40px 40px'],
+          backgroundPosition: ['0px 0px, 0px 0px', '80px 80px, 50px 50px'],
         }}
         transition={{
-          duration: 20,
+          duration: 15,
           repeat: Infinity,
           ease: "linear"
         }}
       />
 
-      {/* Floating Particles */}
-      {[...Array(8)].map((_, i) => (
+      {/* More Visible Floating Particles */}
+      {[...Array(12)].map((_, i) => (
         <motion.div
           key={i}
-          className="absolute w-2 h-2 bg-white/10 rounded-full"
+          className="absolute rounded-full"
           style={{
+            width: `${4 + Math.random() * 6}px`,
+            height: `${4 + Math.random() * 6}px`,
+            background: `rgba(${Math.random() > 0.5 ? '59, 130, 246' : '236, 72, 153'}, 0.6)`,
             left: `${Math.random() * 100}%`,
             top: `${Math.random() * 100}%`,
+            boxShadow: `0 0 20px rgba(${Math.random() > 0.5 ? '59, 130, 246' : '236, 72, 153'}, 0.8)`
           }}
           animate={{
-            y: [0, -100, 0],
+            y: [0, -150, 0],
+            x: [0, Math.random() * 100 - 50, 0],
             opacity: [0, 1, 0],
-            scale: [0.5, 1, 0.5],
+            scale: [0.3, 1.2, 0.3],
           }}
           transition={{
-            duration: 8 + Math.random() * 4,
+            duration: 6 + Math.random() * 8,
             repeat: Infinity,
             delay: Math.random() * 5,
             ease: "easeInOut"
           }}
         />
       ))}
+
+      {/* Animated Light Beams */}
+      <motion.div 
+        className="absolute top-0 left-1/4 w-1 h-full opacity-20"
+        style={{
+          background: 'linear-gradient(to bottom, transparent, rgba(59, 130, 246, 0.5), transparent)',
+        }}
+        animate={{
+          scaleY: [0, 1, 0],
+          opacity: [0, 0.3, 0],
+        }}
+        transition={{
+          duration: 4,
+          repeat: Infinity,
+          delay: 1,
+        }}
+      />
+      
+      <motion.div 
+        className="absolute top-0 right-1/3 w-1 h-full opacity-20"
+        style={{
+          background: 'linear-gradient(to bottom, transparent, rgba(236, 72, 153, 0.5), transparent)',
+        }}
+        animate={{
+          scaleY: [0, 1, 0],
+          opacity: [0, 0.3, 0],
+        }}
+        transition={{
+          duration: 5,
+          repeat: Infinity,
+          delay: 2.5,
+        }}
+      />
     </div>
   );
 };
@@ -326,32 +365,101 @@ export default function OrderSearchPage() {
       {/* Modern Background */}
       <ModernBackground />
       
-      {/* Header */}
+      {/* Enhanced Header */}
       <motion.header 
-        className="relative z-10 border-b border-white/10 backdrop-blur-2xl bg-black/20"
+        className="relative z-10 border-b border-white/20 backdrop-blur-3xl bg-gradient-to-r from-black/30 via-black/40 to-black/30 shadow-2xl"
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8 }}
       >
-        <div className="container mx-auto px-6 py-6">
+        {/* Header Background Glow */}
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 rounded-b-3xl" />
+        
+        <div className="container mx-auto px-6 py-8 relative z-10">
           <div className="flex items-center justify-between">
             <motion.div 
-              className="flex items-center space-x-4"
+              className="flex items-center space-x-6"
               initial={{ x: -50, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.2 }}
             >
               <motion.div 
-                className="w-12 h-12 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-2xl"
+                className="relative w-16 h-16 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-3xl flex items-center justify-center shadow-2xl"
                 whileHover={{ scale: 1.05, rotate: 5 }}
+                animate={{ 
+                  boxShadow: [
+                    "0 20px 40px rgba(59, 130, 246, 0.3)",
+                    "0 20px 40px rgba(147, 51, 234, 0.3)",
+                    "0 20px 40px rgba(236, 72, 153, 0.3)",
+                    "0 20px 40px rgba(59, 130, 246, 0.3)"
+                  ]
+                }}
+                transition={{ duration: 4, repeat: Infinity }}
               >
-                <Search className="w-6 h-6 text-white" />
+                {/* Icon Glow Effect */}
+                <motion.div 
+                  className="absolute inset-0 rounded-3xl bg-gradient-to-br from-blue-400/20 to-pink-400/20"
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                />
+                <Search className="w-8 h-8 text-white relative z-10" />
+                
+                {/* Floating Sparkles Around Icon */}
+                {[...Array(4)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute w-1 h-1 bg-white rounded-full"
+                    style={{
+                      top: `${15 + i * 20}%`,
+                      left: `${10 + i * 25}%`,
+                    }}
+                    animate={{
+                      scale: [0, 1, 0],
+                      opacity: [0, 1, 0],
+                      rotate: [0, 180, 360],
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      delay: i * 0.5,
+                    }}
+                  />
+                ))}
               </motion.div>
-              <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+              
+              <div className="space-y-2">
+                <motion.h1 
+                  className="text-4xl font-bold bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 bg-clip-text text-transparent"
+                  animate={{
+                    backgroundPosition: ['0%', '100%', '0%'],
+                  }}
+                  transition={{
+                    duration: 6,
+                    repeat: Infinity,
+                    ease: "linear"
+                  }}
+                  style={{
+                    backgroundSize: '200% 200%'
+                  }}
+                >
                   Sipariş Takip
-                </h1>
-                <p className="text-white/60 text-sm">Sipariş durumunu anında sorgulayın</p>
+                </motion.h1>
+                <motion.p 
+                  className="text-white/80 text-lg"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  Sipariş durumunu anında sorgulayın
+                </motion.p>
+                
+                {/* Animated Underline */}
+                <motion.div 
+                  className="h-1 bg-gradient-to-r from-blue-500 to-pink-500 rounded-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: "100%" }}
+                  transition={{ delay: 0.6, duration: 1 }}
+                />
               </div>
             </motion.div>
 
@@ -362,11 +470,26 @@ export default function OrderSearchPage() {
             >
               <Button 
                 onClick={() => window.location.href = '/'}
-                variant="outline"
-                className="border-white/20 bg-white/10 hover:bg-white/20 text-white rounded-xl backdrop-blur-sm"
+                className="relative bg-gradient-to-r from-white/10 to-white/20 hover:from-white/20 hover:to-white/30 text-white border border-white/30 rounded-2xl backdrop-blur-sm px-6 py-3 shadow-xl group overflow-hidden"
               >
-                <Home className="w-4 h-4 mr-2" />
-                Ana Sayfa
+                {/* Button Background Animation */}
+                <motion.div 
+                  className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                />
+                
+                <div className="relative z-10 flex items-center space-x-3">
+                  <motion.div
+                    whileHover={{ scale: 1.1, rotate: -5 }}
+                  >
+                    <Home className="w-5 h-5" />
+                  </motion.div>
+                  <span className="font-semibold">Ana Sayfa</span>
+                </div>
+                
+                {/* Button Shine Effect */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transform translate-x-[-100%] group-hover:translate-x-[100%] transition-all duration-700"
+                />
               </Button>
             </motion.div>
           </div>
@@ -376,32 +499,149 @@ export default function OrderSearchPage() {
       {/* Main Content */}
       <main className="relative z-10 container mx-auto px-6 py-16">
         <div className="max-w-2xl mx-auto">
-          {/* Search Section */}
+          {/* Enhanced Search Section */}
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-center mb-16"
+            className="text-center mb-20"
           >
+            {/* Status Badge */}
             <motion.div
-              className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-full border border-white/20 backdrop-blur-sm mb-6"
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.4 }}
+              className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-500/30 to-purple-500/30 rounded-full border border-white/30 backdrop-blur-sm mb-8 shadow-2xl"
+              initial={{ scale: 0.8, opacity: 0, y: -20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              transition={{ delay: 0.4, type: "spring", stiffness: 200 }}
+              whileHover={{ scale: 1.05, y: -2 }}
             >
-              <Package className="w-4 h-4 text-blue-300 mr-2" />
-              <span className="text-white/90 text-sm font-medium">Anlık Sipariş Durumu</span>
+              <motion.div
+                animate={{ rotate: [0, 360] }}
+                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+              >
+                <Package className="w-5 h-5 text-blue-300 mr-3" />
+              </motion.div>
+              <span className="text-white/90 text-base font-semibold">Anlık Sipariş Durumu</span>
+              <motion.div 
+                className="ml-3 w-2 h-2 bg-green-400 rounded-full"
+                animate={{ 
+                  scale: [1, 1.3, 1],
+                  opacity: [0.7, 1, 0.7] 
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
             </motion.div>
 
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Sipariş Durumu Sorgula
-              </span>
-            </h1>
+            {/* Main Title with Enhanced Animation */}
+            <motion.h1 
+              className="text-5xl md:text-7xl font-bold mb-6 relative"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 1 }}
+            >
+              <motion.span 
+                className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent inline-block"
+                animate={{
+                  backgroundPosition: ['0%', '100%', '0%'],
+                }}
+                transition={{
+                  duration: 8,
+                  repeat: Infinity,
+                  ease: "linear"
+                }}
+                style={{
+                  backgroundSize: '200% 200%'
+                }}
+              >
+                Sipariş Durumu
+              </motion.span>
+              <br />
+              <motion.span 
+                className="bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent inline-block"
+                animate={{
+                  backgroundPosition: ['100%', '0%', '100%'],
+                }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: "linear"
+                }}
+                style={{
+                  backgroundSize: '200% 200%'
+                }}
+              >
+                Sorgula
+              </motion.span>
+              
+              {/* Title Glow Effect */}
+              <motion.div 
+                className="absolute inset-0 bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-pink-400/20 blur-3xl -z-10"
+                animate={{
+                  scale: [1, 1.1, 1],
+                  opacity: [0.3, 0.6, 0.3],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              />
+            </motion.h1>
             
-            <p className="text-xl text-white/70 mb-8">
-              Sipariş numaranızı girerek güncel durumu görüntüleyin
-            </p>
+            {/* Enhanced Description */}
+            <motion.p 
+              className="text-2xl text-white/80 mb-12 max-w-2xl mx-auto leading-relaxed"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.8, duration: 1 }}
+            >
+              <motion.span
+                animate={{ opacity: [0.8, 1, 0.8] }}
+                transition={{ duration: 3, repeat: Infinity }}
+              >
+                Sipariş numaranızı girerek
+              </motion.span>
+              {" "}
+              <motion.span 
+                className="bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent font-semibold"
+                animate={{
+                  backgroundPosition: ['0%', '100%', '0%'],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "linear"
+                }}
+                style={{
+                  backgroundSize: '200% 200%'
+                }}
+              >
+                güncel durumu
+              </motion.span>
+              {" "}görüntüleyin
+            </motion.p>
+
+            {/* Decorative Elements */}
+            {[...Array(6)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-2 h-2 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full"
+                style={{
+                  left: `${20 + i * 12}%`,
+                  top: `${30 + Math.sin(i) * 10}%`,
+                }}
+                animate={{
+                  y: [0, -30, 0],
+                  opacity: [0, 1, 0],
+                  scale: [0.5, 1.2, 0.5],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  delay: i * 0.8,
+                  ease: "easeInOut"
+                }}
+              />
+            ))}
 
             {/* Enhanced Search Form */}
             <form onSubmit={searchForm.handleSubmit(onSearch)} className="space-y-6">
