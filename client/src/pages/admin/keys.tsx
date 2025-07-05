@@ -48,6 +48,7 @@ import {
   Cpu,
   Database,
   Clock,
+  Copy,
   Check,
   X,
   AlertCircle,
@@ -191,6 +192,22 @@ export default function Keys() {
       }
       return newSet;
     });
+  };
+
+  const handleCopyKey = async (keyValue: string) => {
+    try {
+      await navigator.clipboard.writeText(keyValue);
+      toast({
+        title: "Başarılı",
+        description: "Key kopyalandı!",
+      });
+    } catch (err) {
+      toast({
+        title: "Hata",
+        description: "Key kopyalanamadı. Lütfen manuel olarak kopyalayın.",
+        variant: "destructive",
+      });
+    }
   };
 
   const maskKey = (keyValue: string) => {
@@ -484,6 +501,15 @@ export default function Keys() {
                             ) : (
                               <EyeOff className="w-3 h-3 text-slate-400" />
                             )}
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleCopyKey(key.value || key.keyValue || '')}
+                            className="h-6 w-6 p-0 hover:bg-slate-700"
+                            title="Key'i kopyala"
+                          >
+                            <Copy className="w-3 h-3 text-slate-400" />
                           </Button>
                         </div>
                       </td>
