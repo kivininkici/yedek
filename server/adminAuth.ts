@@ -11,12 +11,36 @@ import {
   validateSecurityAnswer,
   ADMIN_CREDENTIALS 
 } from './config/security';
+import './types'; // Import extended session types
 
-// Admin session middleware
+// Admin session middleware with enhanced security
 export const requireAdminAuth: RequestHandler = (req, res, next) => {
   if (!req.session?.adminId) {
     return res.status(401).json({ message: 'Admin girişi gerekli' });
   }
+  
+  // Check session age (2 hours max for tighter security)
+  const sessionAge = Date.now() - (req.session.createdAt || 0);
+  const maxSessionAge = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
+  
+  if (sessionAge > maxSessionAge) {
+    req.session.destroy((err) => {
+      console.log('Session expired for admin:', req.session?.adminUsername);
+    });
+    return res.status(401).json({ message: 'Oturum süresi dolmuş, tekrar giriş yapın' });
+  }
+  
+  // IP validation for additional security (optional - can be disabled for dynamic IPs)
+  const currentIP = req.ip || req.connection.remoteAddress;
+  if (req.session.loginIP && req.session.loginIP !== currentIP) {
+    console.log('IP mismatch for admin session:', req.session.adminUsername, 'Expected:', req.session.loginIP, 'Got:', currentIP);
+    // For development, we'll log but not block - comment out next 4 lines for production
+    // req.session.destroy((err) => {
+    //   console.log('Session destroyed due to IP mismatch');
+    // });
+    // return res.status(401).json({ message: 'Güvenlik nedeniyle oturum sonlandırıldı' });
+  }
+  
   next();
 };
 
@@ -124,9 +148,11 @@ export function setupAdminAuth(app: Express) {
       // Update last login
       await storage.updateAdminLastLogin(admin.id);
 
-      // Set session
+      // Set session with security info
       req.session.adminId = admin.id;
       req.session.adminUsername = admin.username;
+      req.session.loginIP = ipAddress;
+      req.session.createdAt = Date.now();
 
       res.json({ 
         message: 'Giriş başarılı',

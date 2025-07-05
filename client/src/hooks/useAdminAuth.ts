@@ -39,6 +39,8 @@ export function useAdminAuth() {
     refetchOnReconnect: false,
     staleTime: 0, // Always fresh for security
     gcTime: 0,
+    // Auto-refresh every 30 seconds to check session validity
+    refetchInterval: 30000,
   });
 
   const effectiveIsLoading = isLoading;

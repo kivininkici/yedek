@@ -1,8 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import ModernAdminLayout from "@/components/admin/ModernAdminLayout";
 import { Users, Key, ShoppingCart, Server, TrendingUp, Activity, Zap, Star } from "lucide-react";
+import { useSessionTimeout } from "@/hooks/useSessionTimeout";
 
 export default function DashboardSimple() {
+  useSessionTimeout(); // Auto-logout after 2 hours of inactivity
+  
   const { data: stats, isLoading } = useQuery({
     queryKey: ['/api/admin/dashboard/stats'],
     staleTime: 30000,
