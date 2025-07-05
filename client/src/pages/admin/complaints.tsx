@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
+import ModernAdminLayout from "@/components/admin/ModernAdminLayout";
 import { 
   AlertTriangle, 
   Mail, 
@@ -189,45 +190,46 @@ export default function AdminComplaints() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
-      </div>
+      <ModernAdminLayout title="Şikayetler">
+        <div className="flex items-center justify-center py-12">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
+        </div>
+      </ModernAdminLayout>
     );
   }
 
   const unreadCount = complaints.filter((c: Complaint) => !c.isRead).length;
 
   return (
-    <div className="min-h-screen bg-[#091b29]">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="space-y-6">
+    <ModernAdminLayout title="Şikayetler">
+      <div className="space-y-6">
           {/* Header */}
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Şikayetler</h1>
-              <p className="text-gray-500">Kullanıcı şikayetlerini yönetin ve yanıtlayın</p>
+              <h1 className="text-3xl font-bold text-white">Şikayetler</h1>
+              <p className="text-gray-400">Kullanıcı şikayetlerini yönetin ve yanıtlayın</p>
             </div>
           </div>
 
           {/* Statistics */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <Card>
+            <Card className="bg-gray-800 border-gray-700">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Toplam Şikayet</CardTitle>
-                <FileText className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium text-gray-300">Toplam Şikayet</CardTitle>
+                <FileText className="h-4 w-4 text-gray-400" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{complaints.length}</div>
+                <div className="text-2xl font-bold text-white">{complaints.length}</div>
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="bg-gray-800 border-gray-700">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Okunmamış</CardTitle>
-                <Mail className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium text-gray-300">Okunmamış</CardTitle>
+                <Mail className="h-4 w-4 text-gray-400" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-orange-600">{unreadCount}</div>
+                <div className="text-2xl font-bold text-orange-400">{unreadCount}</div>
               </CardContent>
             </Card>
           </div>
@@ -362,7 +364,6 @@ export default function AdminComplaints() {
             </Dialog>
           )}
         </div>
-      </div>
-    </div>
+    </ModernAdminLayout>
   );
 }
