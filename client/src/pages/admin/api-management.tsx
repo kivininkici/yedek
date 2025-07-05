@@ -66,6 +66,7 @@ export default function ApiManagement() {
         description: `API başarıyla eklendi`,
       });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/api-settings"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/services/all"] });
       setIsDialogOpen(false);
       setApiName("");
       setApiUrl("");
@@ -95,7 +96,10 @@ export default function ApiManagement() {
         title: "Başarılı",
         description: `${data.imported || 0} servis otomatik içe aktarıldı`,
       });
+      // Tüm ilgili cache'leri temizle
       queryClient.invalidateQueries({ queryKey: ["/api/admin/services/all"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/services"] });
+      queryClient.refetchQueries({ queryKey: ["/api/admin/services/all"] });
     },
     onError: (error) => {
       if (isUnauthorizedError(error)) {
@@ -152,7 +156,7 @@ export default function ApiManagement() {
   // Data fetch'leri - cache optimized
   const { data: services, isLoading: servicesLoading } = useQuery({
     queryKey: ["/api/admin/services/all"],
-    staleTime: 5 * 60 * 1000, // 5 dakika cache
+    staleTime: 30 * 1000, // 30 saniye cache  
     retry: false,
   });
 
