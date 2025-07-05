@@ -49,6 +49,7 @@ export interface IStorage {
   upsertUser(user: UpsertUser): Promise<User>;
   getAllUsers(): Promise<User[]>;
   updateUserRole(id: string, role: string): Promise<User>;
+  deleteUser(id: string): Promise<boolean>;
 
   // Key operations
   getAllKeys(): Promise<Key[]>;
@@ -261,6 +262,16 @@ export class DatabaseStorage implements IStorage {
     }
 
     throw new Error("User not found");
+  }
+
+  async deleteUser(id: string): Promise<boolean> {
+    try {
+      const result = await db.delete(users).where(eq(users.id, id));
+      return true;
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      return false;
+    }
   }
 
   // Key operations

@@ -362,9 +362,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const newNormalUser = await storage.createNormalUser(normalUserData);
       console.log('✅ Normal user created:', JSON.stringify(newNormalUser, null, 2));
       
-      // Remove admin role from Replit user
-      const updatedAdmin = await storage.updateUser(adminId.toString(), { role: 'user' });
-      console.log('🔄 Updated admin role to user:', JSON.stringify(updatedAdmin, null, 2));
+      // Delete the admin user completely from Replit users table
+      const adminDeleted = await storage.deleteUser(adminId.toString());
+      console.log('🗑️ Admin user deleted from Replit table:', adminDeleted);
       
       res.json({ 
         message: 'Admin kullanıcı başarıyla normal kullanıcıya dönüştürüldü',
