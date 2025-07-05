@@ -66,7 +66,8 @@ export function useAdminAuth() {
     },
   });
 
-  const isAuthenticated = !!admin && admin !== null;
+  // CRITICAL SECURITY: Only authenticate if NOT loading and admin data exists
+  const isAuthenticated = !effectiveIsLoading && !!admin && admin !== null && admin !== undefined;
 
   return {
     admin,
