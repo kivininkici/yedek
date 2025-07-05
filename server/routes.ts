@@ -2143,6 +2143,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       for (const serviceData of formattedServices) {
         try {
+          console.log(`Processing service: ${serviceData.name} (${imported + 1}/${formattedServices.length})`);
+          
           const validated = insertServiceSchema.parse({
             name: serviceData.name || `Service ${serviceData.serviceId || 'Unknown'}`,
             description: serviceData.description || serviceData.name || '',
@@ -2162,14 +2164,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
             minQuantity: serviceData.minQuantity || 1,
             maxQuantity: serviceData.maxQuantity || 10000
           });
+          
           await storage.createService(validated);
           imported++;
+          
+          // Progress logging every 100 services
+          if (imported % 100 === 0) {
+            console.log(`Progress: ${imported}/${formattedServices.length} services imported`);
+          }
         } catch (validationError) {
           console.error("Validation error for service:", serviceData.name, validationError);
           errors.push({
             service: serviceData.name || 'Unknown',
             error: validationError instanceof Error ? validationError.message : 'Validation failed'
           });
+          
+          // Stop on too many errors
+          if (errors.length > 50) {
+            console.error("Too many errors, stopping import");
+            break;
+          }
         }
       }
 
@@ -2321,8 +2335,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let finalPrice = 0;
       
       if (!isNaN(numericPrice)) {
-        // MedyaBayim API returns price directly in TL for 1000 units
-        finalPrice = Math.min(Math.max(0, numericPrice), maxPrice);
+        // MedyaBayim API returns price in kuruş, need to convert to TL
+        if (domain.includes('medyabayim')) {
+          // Convert kuruş to TL by multiplying by 100 (10 kuruş = 10.00 TL for 1000 units)
+          finalPrice = Math.min(Math.max(0, numericPrice * 100), maxPrice);
+        } else {
+          // Other APIs may return price directly in their currency
+          finalPrice = Math.min(Math.max(0, numericPrice), maxPrice);
+        }
       }
       
       const price = finalPrice.toFixed(2);
