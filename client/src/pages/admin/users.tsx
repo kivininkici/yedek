@@ -81,17 +81,21 @@ export default function UsersPage() {
   }, [admin, isLoading]);
 
   // Fetch users
-  const { data: users, isLoading: usersLoading } = useQuery({
+  const { data: users } = useQuery({
     queryKey: ["/api/admin/users"],
     enabled: !!admin,
-    staleTime: 30 * 1000, // 30 saniye - daha hızlı güncelleme
+    staleTime: 10 * 60 * 1000, // 10 dakika - hızlı geçiş için
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
   // Fetch admin users
-  const { data: adminUsers, isLoading: adminUsersLoading } = useQuery({
+  const { data: adminUsers } = useQuery({
     queryKey: ["/api/admin/list"],
     enabled: !!admin,
-    staleTime: 30 * 1000, // 30 saniye - daha hızlı güncelleme
+    staleTime: 10 * 60 * 1000, // 10 dakika - hızlı geçiş için
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
   // Create admin mutation
@@ -471,10 +475,7 @@ export default function UsersPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {adminUsersLoading ? (
-                <div>Loading...</div>
-              ) : (
-                <Table>
+              <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead>Kullanıcı Adı</TableHead>
@@ -559,7 +560,6 @@ export default function UsersPage() {
                     ))}
                   </TableBody>
                 </Table>
-              )}
             </CardContent>
           </Card>
 
@@ -572,10 +572,7 @@ export default function UsersPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {usersLoading ? (
-                <div>Loading...</div>
-              ) : (
-                <Table>
+              <Table>
                   <TableHeader>
                     <TableRow>
                       <TableHead>ID</TableHead>
@@ -679,7 +676,6 @@ export default function UsersPage() {
                     ))}
                   </TableBody>
                 </Table>
-              )}
             </CardContent>
           </Card>
         </div>

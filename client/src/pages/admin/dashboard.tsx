@@ -14,27 +14,29 @@ import {
 import ModernAdminLayout from "@/components/admin/ModernAdminLayout";
 
 export default function Dashboard() {
-  const { data: stats, isLoading: statsLoading } = useQuery({
+  const { data: stats } = useQuery({
     queryKey: ['/api/admin/dashboard/stats'],
     queryFn: async () => {
       const res = await fetch('/api/admin/dashboard/stats');
       if (!res.ok) throw new Error('Failed to fetch stats');
       return res.json();
     },
-    staleTime: 2 * 60 * 1000, // 2 dakika
+    staleTime: 10 * 60 * 1000, // 10 dakika - hızlı geçiş için
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
-  const { data: recentActivity, isLoading: activityLoading } = useQuery({
+  const { data: recentActivity } = useQuery({
     queryKey: ['/api/admin/dashboard/recent-activity'],
     queryFn: async () => {
       const res = await fetch('/api/admin/dashboard/recent-activity');
       if (!res.ok) throw new Error('Failed to fetch recent activity');
       return res.json();
     },
-    staleTime: 2 * 60 * 1000, // 2 dakika
+    staleTime: 10 * 60 * 1000, // 10 dakika - hızlı geçiş için
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
-
-  const isLoading = statsLoading || activityLoading;
 
   return (
     <ModernAdminLayout title="Dashboard">

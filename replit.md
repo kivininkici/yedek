@@ -149,6 +149,12 @@ Changelog:
 - Server kodunda domain-specific fiyat hesaplama mantığı uygulandı
 - Client-side fiyat hesaplama formülü düzeltildi (doğru matematik: price * quantity / 1000)
 - 3,918 yanlış fiyatlı servis silindi, yeniden import için hazır
+- July 5, 2025: Admin panel navigasyon loading ekranları tamamen kaldırıldı
+- Query client 10 dakika stale time ile optimize edildi - sayfalar arası anında geçiş
+- Admin kullanıcı rol dönüştürme duplicate username hatası düzeltildi
+- Existing user kontrolü eklendi - duplicate kayıt yerine mevcut kayıt kullanılıyor
+- deleteUser fonksiyonu storage interface'e eklendi - tam rol dönüşümü sağlandı
+- Loading state'ler kaldırıldı - admin panel artık anında yükleniyor
 - PostgreSQL database set up and schema pushed successfully  
 - tsx dependency installed, server running on port 5000
 - Admin user created with setup-admin.js script
