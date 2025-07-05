@@ -2321,10 +2321,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let finalPrice = 0;
       
       if (!isNaN(numericPrice)) {
-        finalPrice = Math.min(Math.max(0, numericPrice), maxPrice);
+        // MedyaBayim and similar APIs often return price in cents/kuruş
+        // Divide by 100 to convert to TL if price seems too high
+        if (numericPrice > 1000 && domain.includes('medyabayim')) {
+          finalPrice = Math.min(Math.max(0, numericPrice / 100), maxPrice);
+        } else {
+          finalPrice = Math.min(Math.max(0, numericPrice), maxPrice);
+        }
       }
       
-      const price = finalPrice.toString();
+      const price = finalPrice.toFixed(2);
       
       // Detect request format based on successful method
       let apiHeaders = { 'Content-Type': 'application/json' };
