@@ -128,9 +128,17 @@ export default function Services() {
                       </div>
                     </CardHeader>
                     <CardContent className="pt-0">
-                      <p className="text-sm text-slate-400 mb-4">
-                        {service.type}
-                      </p>
+                      <div className="space-y-3 mb-4">
+                        <p className="text-sm text-slate-400">
+                          {service.type}
+                        </p>
+                        <div className="flex justify-between items-center">
+                          <span className="text-xs text-slate-500">Fiyat (1000 adet):</span>
+                          <span className="text-sm font-semibold text-green-400">
+                            ₺{service.price || '0.00'}
+                          </span>
+                        </div>
+                      </div>
                       <div className="flex items-center space-x-2">
                         <Button
                           variant="outline"

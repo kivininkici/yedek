@@ -729,12 +729,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
           name: displayService.name,
           platform: displayService.platform,
           type: displayService.type,
+          price: displayService.price,
           serviceId: displayService.serviceId
         } : {
           id: 1,
           name: "Default Service", 
           platform: "Test",
           type: "followers",
+          price: "0.00",
           serviceId: "1"
         },
         availableServices: availableServices.map(service => ({
@@ -742,6 +744,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           name: service.name,
           platform: service.platform,
           type: service.type,
+          price: service.price,
           serviceId: service.serviceId
         }))
       });

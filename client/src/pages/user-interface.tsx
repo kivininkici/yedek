@@ -547,7 +547,7 @@ export default function UserInterface() {
                       </motion.div>
                       <div className="flex-1">
                         <h3 className="text-lg font-semibold text-white">Key Doğrulandı</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-2">
                           <div>
                             <p className="text-sm text-green-200">Servis</p>
                             <p className="font-medium text-white">{validatedKey.service.name}</p>
@@ -557,6 +557,10 @@ export default function UserInterface() {
                             <Badge variant="secondary" className="bg-blue-500/20 text-[#101930]">
                               {validatedKey.category}
                             </Badge>
+                          </div>
+                          <div>
+                            <p className="text-sm text-green-200">Fiyat (1000 adet)</p>
+                            <p className="font-medium text-white text-lg">₺{validatedKey.service.price || '0.00'}</p>
                           </div>
                           <div>
                             <p className="text-sm text-green-200">Kalan Miktar</p>
@@ -609,6 +613,29 @@ export default function UserInterface() {
                           {orderForm.formState.errors.targetUrl && (
                             <p className="text-red-400 text-sm">{orderForm.formState.errors.targetUrl.message}</p>
                           )}
+                        </div>
+                      </div>
+
+                      {/* Price Calculation */}
+                      <div className="bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-xl border border-blue-400/30 rounded-2xl p-6">
+                        <h4 className="text-lg font-semibold text-white mb-3">💰 Fiyat Hesaplama</h4>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <p className="text-sm text-blue-200">Birim Fiyat (1000 adet)</p>
+                            <p className="text-xl font-bold text-white">₺{validatedKey.service.price || '0.00'}</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-blue-200">Toplam Fiyat</p>
+                            <p className="text-xl font-bold text-green-400">
+                              ₺{(
+                                ((parseFloat(String(validatedKey.service.price || '0')) / 1000) * 
+                                (orderForm.watch('quantity') || 0))
+                              ).toFixed(2)}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="mt-3 text-xs text-blue-300">
+                          * Fiyatlar 1000 adet başına hesaplanmaktadır
                         </div>
                       </div>
                       
