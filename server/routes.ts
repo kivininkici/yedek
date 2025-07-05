@@ -183,7 +183,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Normal user authentication routes
   app.post('/api/auth/register', async (req, res) => {
     try {
-      const { username, email, password, hcaptcha } = userRegisterSchema.parse(req.body);
+      console.log('Registration request body:', req.body);
+      
+      // Enhanced validation with better error handling
+      const validationResult = userRegisterSchema.safeParse(req.body);
+      if (!validationResult.success) {
+        const errors = validationResult.error.issues.map(issue => ({
+          path: issue.path.join('.'),
+          message: issue.message
+        }));
+        console.log('Validation errors:', errors);
+        return res.status(400).json({ 
+          message: 'Girilen bilgilerde hata var',
+          errors: errors 
+        });
+      }
+
+      const { username, email, password, hcaptcha } = validationResult.data;
       
       // Verify hCaptcha
       const isCaptchaValid = await verifyHCaptcha(hcaptcha);
@@ -223,6 +239,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         message: 'Kayıt başarılı' 
       });
     } catch (error: any) {
+      console.error('Registration error:', error);
       res.status(400).json({ message: error.message || 'Kayıt sırasında hata oluştu' });
     }
   });
