@@ -628,8 +628,8 @@ export default function UserInterface() {
                             <p className="text-sm text-blue-200">Toplam Fiyat</p>
                             <p className="text-xl font-bold text-green-400">
                               ₺{(
-                                ((parseFloat(String(validatedKey.service.price || '0')) / 1000) * 
-                                (orderForm.watch('quantity') || 0))
+                                ((parseFloat(String(validatedKey.service.price || '0')) * 
+                                (orderForm.watch('quantity') || 0)) / 1000)
                               ).toFixed(2)}
                             </p>
                           </div>

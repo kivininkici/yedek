@@ -2321,13 +2321,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let finalPrice = 0;
       
       if (!isNaN(numericPrice)) {
-        // MedyaBayim and similar APIs often return price in cents/kuruş
-        // Divide by 100 to convert to TL if price seems too high
-        if (numericPrice > 1000 && domain.includes('medyabayim')) {
-          finalPrice = Math.min(Math.max(0, numericPrice / 100), maxPrice);
-        } else {
-          finalPrice = Math.min(Math.max(0, numericPrice), maxPrice);
-        }
+        // Most SMM APIs return price directly for 1000 units in their currency
+        finalPrice = Math.min(Math.max(0, numericPrice), maxPrice);
       }
       
       const price = finalPrice.toFixed(2);
