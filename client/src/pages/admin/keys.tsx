@@ -410,7 +410,7 @@ export default function Keys() {
                 className="bg-slate-800 border-slate-700 text-slate-100 hover:bg-slate-700"
                 title={visibleKeys.size === paginatedKeys.length ? "Tüm key'leri gizle" : "Tüm key'leri göster"}
               >
-                {visibleKeys.size === paginatedKeys.length ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                {visibleKeys.size === paginatedKeys.length ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
                 <span className="ml-2 text-xs">Toplu</span>
               </Button>
             </div>
