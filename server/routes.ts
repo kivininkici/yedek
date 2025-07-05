@@ -345,22 +345,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Generate random avatar ID (1-24)
       const avatarId = Math.floor(Math.random() * 24) + 1;
       
-      // Create normal user with admin's info but default password
-      const defaultPassword = '123456'; // User will need to change this
-      const hashedPassword = await hashPassword(defaultPassword);
+      // Check if user already exists as normal user
+      const existingNormalUser = await storage.getUserByUsernameOrEmail(
+        adminUser.firstName || adminUser.email?.split('@')[0] || 'user',
+        adminUser.email || 'no-email@example.com'
+      );
       
-      const normalUserData = {
-        username: adminUser.firstName || adminUser.email?.split('@')[0] || 'user',
-        email: adminUser.email || 'no-email@example.com',
-        password: hashedPassword,
-        avatarId,
-      };
+      let newNormalUser;
       
-      console.log('👤 Creating normal user with data:', JSON.stringify(normalUserData, null, 2));
-      
-      // Create normal user
-      const newNormalUser = await storage.createNormalUser(normalUserData);
-      console.log('✅ Normal user created:', JSON.stringify(newNormalUser, null, 2));
+      if (existingNormalUser) {
+        console.log('👤 User already exists as normal user:', JSON.stringify(existingNormalUser, null, 2));
+        newNormalUser = existingNormalUser;
+      } else {
+        // Create normal user with admin's info but default password
+        const defaultPassword = '123456'; // User will need to change this
+        const hashedPassword = await hashPassword(defaultPassword);
+        
+        const normalUserData = {
+          username: adminUser.firstName || adminUser.email?.split('@')[0] || 'user',
+          email: adminUser.email || 'no-email@example.com',
+          password: hashedPassword,
+          avatarId,
+        };
+        
+        console.log('👤 Creating normal user with data:', JSON.stringify(normalUserData, null, 2));
+        
+        // Create normal user
+        newNormalUser = await storage.createNormalUser(normalUserData);
+        console.log('✅ Normal user created:', JSON.stringify(newNormalUser, null, 2));
+      }
       
       // Delete the admin user completely from Replit users table
       const adminDeleted = await storage.deleteUser(adminId.toString());
