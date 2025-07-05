@@ -100,18 +100,27 @@ export default function KeyCreationModal({
         throw new Error("Servis bulunamadı");
       }
 
-      // Determine API based on service platform
+      // Determine API based on service platform - use more flexible matching
       let apiSettingsId;
       if (selectedService.platform === "MedyaBayim") {
         const medyaApi = Array.isArray(apiSettings) ? apiSettings.find(api => 
-          api.name.includes("Media") || api.name.includes("Medya")
+          api.name.includes("MedyaBayim") || 
+          api.name.includes("Media") || 
+          api.name.includes("Medya") || 
+          api.name.toLowerCase().includes("medya") ||
+          api.name.toLowerCase().includes("medsia") // Added for the "medsia" API name
         ) : null;
         apiSettingsId = medyaApi?.id;
       } else if (selectedService.platform === "Resellers") {
         const resellersApi = Array.isArray(apiSettings) ? apiSettings.find(api => 
-          api.name.includes("Reseller") || api.name.includes("Provider")
+          api.name.includes("Reseller") || api.name.includes("Provider") || api.name.toLowerCase().includes("reseller")
         ) : null;
         apiSettingsId = resellersApi?.id;
+      }
+      
+      // Fallback: if no API found by platform, use the service's direct API settings
+      if (!apiSettingsId && selectedService.apiSettingsId) {
+        apiSettingsId = selectedService.apiSettingsId;
       }
 
       if (!apiSettingsId) {

@@ -133,6 +133,7 @@ Changelog:
 - Admin user created with setup-admin.js script
 - User registration validation error fixed with enhanced error handling
 - OtoKiwi system running production-level in Replit environment
+- API lookup issue fixed: MedyaBayim API (medsia) now properly recognized in key creation
 - All checklist items completed: packages installed, workflow restarted, project verified
 - July 5, 2025: Smart admin security system implemented - balanced protection
 - Security controls only active on admin login pages, not authenticated admin panels
