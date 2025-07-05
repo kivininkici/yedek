@@ -394,37 +394,25 @@ export default function Keys() {
                 </SelectContent>
               </Select>
               
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    if (visibleKeys.size === paginatedKeys.length) {
-                      setVisibleKeys(new Set());
-                    } else {
-                      const newSet = new Set<number>();
-                      paginatedKeys.forEach((key: KeyType) => {
-                        newSet.add(key.id);
-                      });
-                      setVisibleKeys(newSet);
-                    }
-                  }}
-                  className="bg-slate-800 border-slate-700 text-slate-100 hover:bg-slate-700"
-                  title={visibleKeys.size === paginatedKeys.length ? "Tüm key'leri gizle" : "Tüm key'leri göster"}
-                >
-                  {visibleKeys.size === paginatedKeys.length ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  <span className="ml-2 text-xs">Toplu</span>
-                </Button>
-                
-                <Button
-                  variant="outline"
-                  onClick={() => setShowKeyValues(!showKeyValues)}
-                  className="bg-slate-800 border-slate-700 text-slate-100 hover:bg-slate-700"
-                  title="Eski görünüm modu"
-                >
-                  {showKeyValues ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  <span className="ml-2 text-xs">Eski</span>
-                </Button>
-              </div>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  if (visibleKeys.size === paginatedKeys.length) {
+                    setVisibleKeys(new Set());
+                  } else {
+                    const newSet = new Set<number>();
+                    paginatedKeys.forEach((key: KeyType) => {
+                      newSet.add(key.id);
+                    });
+                    setVisibleKeys(newSet);
+                  }
+                }}
+                className="bg-slate-800 border-slate-700 text-slate-100 hover:bg-slate-700"
+                title={visibleKeys.size === paginatedKeys.length ? "Tüm key'leri gizle" : "Tüm key'leri göster"}
+              >
+                {visibleKeys.size === paginatedKeys.length ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                <span className="ml-2 text-xs">Toplu</span>
+              </Button>
             </div>
           </CardContent>
         </Card>
@@ -482,7 +470,7 @@ export default function Keys() {
                       <td className="py-3 px-4">
                         <div className="flex items-center gap-2">
                           <code className="text-sm bg-slate-800 px-2 py-1 rounded text-slate-300">
-                            {(visibleKeys.has(key.id) || showKeyValues) ? (key.value || key.keyValue || '') : maskKey(key.value || key.keyValue || '')}
+                            {visibleKeys.has(key.id) ? (key.value || key.keyValue || '') : maskKey(key.value || key.keyValue || '')}
                           </code>
                           <Button
                             variant="ghost"
@@ -491,7 +479,7 @@ export default function Keys() {
                             className="h-6 w-6 p-0 hover:bg-slate-700"
                             title={visibleKeys.has(key.id) ? "Key'i gizle" : "Key'i göster"}
                           >
-                            {(visibleKeys.has(key.id) || showKeyValues) ? (
+                            {visibleKeys.has(key.id) ? (
                               <Eye className="w-3 h-3 text-slate-400" />
                             ) : (
                               <EyeOff className="w-3 h-3 text-slate-400" />
