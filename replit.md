@@ -127,6 +127,11 @@ Changelog:
 - June 29, 2025. Canlı destek referansları kaldırıldı, sipariş sorgulama sistemi eklendi
 
 ## Recent Changes
+- July 5, 2025: Admin panel layout consistency completely fixed - all pages now use ModernAdminLayout
+- API Management, Feedback, Complaints, Settings, and Login Attempts pages updated to dark theme
+- SimpleAdminLayout references removed and replaced with ModernAdminLayout throughout
+- All Card components updated with gray-800 background and white/gray text for consistency
+- Admin panel tasarım bozulması sorunları tamamen çözüldü - tüm sayfalar tutarlı görünüm
 - July 5, 2025: Final Replit Agent to Replit environment migration completed successfully
 - PostgreSQL database set up and schema pushed successfully  
 - tsx dependency installed, server running on port 5000
