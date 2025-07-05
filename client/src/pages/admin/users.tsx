@@ -76,14 +76,14 @@ export default function UsersPage() {
   const { data: users, isLoading: usersLoading } = useQuery({
     queryKey: ["/api/admin/users"],
     enabled: !!admin,
-    staleTime: 2 * 60 * 1000, // 2 dakika
+    staleTime: 30 * 1000, // 30 saniye - daha hızlı güncelleme
   });
 
   // Fetch admin users
   const { data: adminUsers, isLoading: adminUsersLoading } = useQuery({
     queryKey: ["/api/admin/list"],
     enabled: !!admin,
-    staleTime: 2 * 60 * 1000, // 2 dakika
+    staleTime: 30 * 1000, // 30 saniye - daha hızlı güncelleme
   });
 
   // Create admin mutation
@@ -167,7 +167,9 @@ export default function UsersPage() {
         title: "Başarılı!",
         description: "Yeni kullanıcı oluşturuldu.",
       });
+      // Hem users hem de adminUsers cache'ini invalidate et
       queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/list"] });
       setCreateUserOpen(false);
       createUserForm.reset();
     },
@@ -224,7 +226,7 @@ export default function UsersPage() {
   };
 
   const filteredUsers = usersArray.filter((user: any) =>
-    user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
