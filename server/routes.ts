@@ -321,6 +321,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Convert admin to normal user
+  app.post('/api/admin/convert-to-user/:id', requireAdminAuth, async (req, res) => {
+    try {
+      const adminId = parseInt(req.params.id);
+      console.log('🔄 Converting admin to normal user - Admin ID:', adminId);
+      
+      // Get admin user from Replit users table
+      const adminUser = await storage.getUser(adminId.toString());
+      if (!adminUser) {
+        console.log('❌ Admin user not found:', adminId);
+        return res.status(404).json({ message: 'Admin kullanıcı bulunamadı' });
+      }
+      
+      // Don't allow converting the main admin (akivi)
+      if (adminUser.firstName === 'akivi' || adminUser.email?.includes('akivi')) {
+        console.log('❌ Cannot convert main admin akivi');
+        return res.status(400).json({ message: 'Ana admin kullanıcısı dönüştürülemez' });
+      }
+      
+      console.log('📋 Admin user to convert:', JSON.stringify(adminUser, null, 2));
+      
+      // Generate random avatar ID (1-24)
+      const avatarId = Math.floor(Math.random() * 24) + 1;
+      
+      // Create normal user with admin's info but default password
+      const defaultPassword = '123456'; // User will need to change this
+      const hashedPassword = await hashPassword(defaultPassword);
+      
+      const normalUserData = {
+        username: adminUser.firstName || adminUser.email?.split('@')[0] || 'user',
+        email: adminUser.email || 'no-email@example.com',
+        password: hashedPassword,
+        avatarId,
+      };
+      
+      console.log('👤 Creating normal user with data:', JSON.stringify(normalUserData, null, 2));
+      
+      // Create normal user
+      const newNormalUser = await storage.createNormalUser(normalUserData);
+      console.log('✅ Normal user created:', JSON.stringify(newNormalUser, null, 2));
+      
+      // Remove admin role from Replit user
+      const updatedAdmin = await storage.updateUser(adminId.toString(), { role: 'user' });
+      console.log('🔄 Updated admin role to user:', JSON.stringify(updatedAdmin, null, 2));
+      
+      res.json({ 
+        message: 'Admin kullanıcı başarıyla normal kullanıcıya dönüştürüldü',
+        normalUser: {
+          id: newNormalUser.id,
+          username: newNormalUser.username,
+          email: newNormalUser.email,
+          avatarId: newNormalUser.avatarId
+        }
+      });
+      
+    } catch (error: any) {
+      console.error('💥 Convert admin to user error:', error);
+      console.error('💥 Error stack:', error.stack);
+      res.status(500).json({ message: error.message || 'Dönüştürme işlemi başarısız' });
+    }
+  });
+
   // Admin endpoint to create normal users (no hCaptcha required)
   app.post('/api/admin/users/create', requireAdminAuth, async (req, res) => {
     try {

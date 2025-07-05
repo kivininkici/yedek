@@ -36,7 +36,8 @@ import {
   Ban,
   CheckCircle,
   Crown,
-  LogIn
+  LogIn,
+  User
 } from "lucide-react";
 
 // Admin oluşturma formu için schema
@@ -177,6 +178,29 @@ export default function UsersPage() {
       toast({
         title: "Hata!",
         description: error.message || "Kullanıcı oluşturulurken bir hata oluştu.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Convert admin to normal user mutation
+  const convertToUserMutation = useMutation({
+    mutationFn: async (adminId: number) => {
+      const response = await apiRequest("POST", `/api/admin/convert-to-user/${adminId}`, {});
+      return response;
+    },
+    onSuccess: () => {
+      toast({
+        title: "Başarılı!",
+        description: "Admin kullanıcı normal kullanıcıya dönüştürüldü.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/list"] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Hata!",
+        description: error.message || "Dönüştürme işlemi başarısız.",
         variant: "destructive",
       });
     },
@@ -470,29 +494,45 @@ export default function UsersPage() {
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          {admin?.username === "akivi" && adminUser.username !== "akivi" && (
-                            <Button
-                              variant={adminUser.isActive !== false ? "destructive" : "default"}
-                              size="sm"
-                              onClick={() => suspendAdminMutation.mutate({
-                                id: adminUser.id,
-                                suspend: adminUser.isActive !== false
-                              })}
-                              disabled={suspendAdminMutation.isPending}
-                            >
-                              {adminUser.isActive !== false ? (
-                                <>
-                                  <Ban className="w-4 h-4 mr-1" />
-                                  Askıya Al
-                                </>
-                              ) : (
-                                <>
-                                  <CheckCircle className="w-4 h-4 mr-1" />
-                                  Aktif Et
-                                </>
-                              )}
-                            </Button>
-                          )}
+                          <div className="flex gap-2">
+                            {admin?.username === "akivi" && adminUser.username !== "akivi" && (
+                              <Button
+                                variant={adminUser.isActive !== false ? "destructive" : "default"}
+                                size="sm"
+                                onClick={() => suspendAdminMutation.mutate({
+                                  id: adminUser.id,
+                                  suspend: adminUser.isActive !== false
+                                })}
+                                disabled={suspendAdminMutation.isPending}
+                              >
+                                {adminUser.isActive !== false ? (
+                                  <>
+                                    <Ban className="w-4 h-4 mr-1" />
+                                    Askıya Al
+                                  </>
+                                ) : (
+                                  <>
+                                    <CheckCircle className="w-4 h-4 mr-1" />
+                                    Aktif Et
+                                  </>
+                                )}
+                              </Button>
+                            )}
+                            
+                            {/* Convert to normal user button - available for all admins except akivi */}
+                            {adminUser.username !== "akivi" && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => convertToUserMutation.mutate(adminUser.id)}
+                                disabled={convertToUserMutation.isPending}
+                                className="text-blue-600 border-blue-600 hover:bg-blue-50"
+                              >
+                                <User className="w-4 h-4 mr-1" />
+                                Normal Kullanıcıya Çevir
+                              </Button>
+                            )}
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}
