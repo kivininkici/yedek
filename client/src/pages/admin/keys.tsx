@@ -86,6 +86,7 @@ export default function Keys() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedKeys, setSelectedKeys] = useState(new Set<number>());
   const [showKeyValues, setShowKeyValues] = useState(false);
+  const [visibleKeys, setVisibleKeys] = useState(new Set<number>());
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState<'date' | 'category' | 'status'>('date');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
@@ -170,6 +171,18 @@ export default function Keys() {
 
   const handleToggleKey = (id: number) => {
     setSelectedKeys(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
+  const handleToggleKeyVisibility = (id: number) => {
+    setVisibleKeys(prev => {
       const newSet = new Set(prev);
       if (newSet.has(id)) {
         newSet.delete(id);
@@ -444,9 +457,23 @@ export default function Keys() {
                         />
                       </td>
                       <td className="py-3 px-4">
-                        <code className="text-sm bg-slate-800 px-2 py-1 rounded text-slate-300">
-                          {showKeyValues ? (key.value || key.keyValue || '') : maskKey(key.value || key.keyValue || '')}
-                        </code>
+                        <div className="flex items-center gap-2">
+                          <code className="text-sm bg-slate-800 px-2 py-1 rounded text-slate-300">
+                            {visibleKeys.has(key.id) ? (key.value || key.keyValue || '') : maskKey(key.value || key.keyValue || '')}
+                          </code>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleToggleKeyVisibility(key.id)}
+                            className="h-6 w-6 p-0 hover:bg-slate-700"
+                          >
+                            {visibleKeys.has(key.id) ? (
+                              <Eye className="w-3 h-3 text-slate-400" />
+                            ) : (
+                              <EyeOff className="w-3 h-3 text-slate-400" />
+                            )}
+                          </Button>
+                        </div>
                       </td>
                       <td className="py-3 px-4">
                         <Badge variant="outline" className="text-slate-300 border-slate-600">
@@ -525,41 +552,56 @@ export default function Keys() {
 
         {/* Export Modal */}
         <Dialog open={showExportModal} onOpenChange={setShowExportModal}>
-          <DialogContent className="bg-slate-900 border-slate-800">
+          <DialogContent className="bg-slate-900 border-slate-800 max-w-md">
             <DialogHeader>
-              <DialogTitle className="text-slate-100">Toplu Key Export</DialogTitle>
+              <DialogTitle className="text-slate-100 text-xl font-bold">Toplu Key Export</DialogTitle>
             </DialogHeader>
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm text-slate-300 mb-2 block">
+            <div className="space-y-6">
+              <div className="space-y-3">
+                <label className="text-sm text-slate-300 font-medium block">
                   Kategori Seçin:
                 </label>
                 <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                  <SelectTrigger className="bg-slate-800 border-slate-700 text-slate-100">
+                  <SelectTrigger className="bg-slate-800 border-slate-700 text-slate-100 h-12 rounded-xl">
                     <SelectValue placeholder="Kategori seçin..." />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-slate-800 border-slate-700">
                     {getAvailableCategories().map((category) => (
-                      <SelectItem key={category} value={category}>
+                      <SelectItem 
+                        key={category} 
+                        value={category}
+                        className="text-slate-100 hover:bg-slate-700 focus:bg-slate-700"
+                      >
                         {category}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
+              
+              {selectedCategory && (
+                <div className="bg-slate-800 border border-slate-700 rounded-xl p-4">
+                  <div className="flex items-center gap-2 text-slate-300">
+                    <FileText className="w-4 h-4" />
+                    <span className="text-sm">
+                      {Array.isArray(keys) ? keys.filter((key: KeyType) => key.category === selectedCategory).length : 0} key indirilecek
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
-            <DialogFooter>
+            <DialogFooter className="flex gap-3">
               <Button
                 variant="outline"
                 onClick={() => setShowExportModal(false)}
-                className="bg-slate-800 border-slate-700 text-slate-100 hover:bg-slate-700"
+                className="bg-slate-800 border-slate-700 text-slate-100 hover:bg-slate-700 rounded-xl px-6"
               >
                 İptal
               </Button>
               <Button
                 onClick={handleExportKeys}
                 disabled={!selectedCategory}
-                className="bg-green-600 hover:bg-green-700"
+                className="bg-green-600 hover:bg-green-700 text-white rounded-xl px-6"
               >
                 <Download className="w-4 h-4 mr-2" />
                 İndir
