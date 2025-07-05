@@ -55,9 +55,12 @@ function Router() {
   const { isAuthenticated: isUserAuthenticated, isLoading: isUserLoading } = useAuth();
   const { isAuthenticated: isAdminAuthenticated, isLoading: isAdminLoading } = useAdminAuth();
   
-  // Initialize security protection on mount
+  // Initialize security protection only for admin login page
   useEffect(() => {
-    initSecurity();
+    // Only apply security for admin login page, not authenticated admin panels
+    if (window.location.pathname === '/admin/login' || window.location.pathname === '/admin-login') {
+      initSecurity();
+    }
   }, []);
 
 

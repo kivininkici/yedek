@@ -89,15 +89,25 @@ export class SecurityProtection {
   }
 
   private onDevToolsOpen() {
-    // Redirect to login page
-    window.location.href = '/admin/login';
-    
-    // Clear all data
-    sessionStorage.clear();
-    localStorage.clear();
-    
-    // Show alert
-    alert('Güvenlik ihlali tespit edildi. Oturum sonlandırılıyor.');
+    // Only trigger for unauthorized users
+    fetch('/api/admin/me')
+      .then(response => {
+        if (response.status === 401) {
+          // Not authenticated, apply security action
+          window.location.href = '/admin/login';
+          sessionStorage.clear();
+          localStorage.clear();
+          alert('Güvenlik ihlali tespit edildi. Oturum sonlandırılıyor.');
+        }
+        // If authenticated admin, allow DevTools access
+      })
+      .catch(() => {
+        // Error checking auth, apply security action
+        window.location.href = '/admin/login';
+        sessionStorage.clear();
+        localStorage.clear();
+        alert('Güvenlik ihlali tespit edildi. Oturum sonlandırılıyor.');
+      });
   }
 
   private blockConsole() {
@@ -166,8 +176,21 @@ export class SecurityProtection {
   }
   
   private showSecurityWarning() {
-    alert('🚨 GÜVENLİK UYARISI: Yetkisiz konsol erişimi tespit edildi!');
-    this.onDevToolsOpen();
+    // Check if user is authenticated admin before showing warning
+    fetch('/api/admin/me')
+      .then(response => {
+        if (response.status === 401) {
+          // Not authenticated, show warning
+          alert('🚨 GÜVENLİK UYARISI: Yetkisiz konsol erişimi tespit edildi!');
+          this.onDevToolsOpen();
+        }
+        // If authenticated admin, allow console access
+      })
+      .catch(() => {
+        // Error checking auth, show warning
+        alert('🚨 GÜVENLİK UYARISI: Yetkisiz konsol erişimi tespit edildi!');
+        this.onDevToolsOpen();
+      });
   }
 
   private blockContextMenu() {
@@ -297,9 +320,12 @@ export class SecurityProtection {
   }
 }
 
-// Initialize security protection
+// Initialize security protection only for login pages
 export const initSecurity = () => {
-  if (window.location.pathname.startsWith('/admin')) {
+  // Only apply security protection to login pages
+  const loginPaths = ['/admin/login', '/admin-login'];
+  
+  if (loginPaths.includes(window.location.pathname)) {
     SecurityProtection.getInstance();
   }
 };
