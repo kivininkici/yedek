@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
+import { initSecurity } from "@/lib/securityProtection";
 
 // Performance optimization: Lazy load components
 const NotFound = lazy(() => import("@/pages/not-found"));
@@ -53,6 +54,11 @@ const LoadingSpinner = () => (
 function Router() {
   const { isAuthenticated: isUserAuthenticated, isLoading: isUserLoading } = useAuth();
   const { isAuthenticated: isAdminAuthenticated, isLoading: isAdminLoading } = useAdminAuth();
+  
+  // Initialize security protection on mount
+  useEffect(() => {
+    initSecurity();
+  }, []);
 
 
 
