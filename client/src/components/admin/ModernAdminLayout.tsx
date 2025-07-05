@@ -2,6 +2,7 @@ import { ReactNode, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from 'wouter';
 import { useQueryClient } from "@tanstack/react-query";
+import MasterPasswordGuard from "./MasterPasswordGuard";
 import {
   Users,
   Key,
@@ -28,9 +29,10 @@ import {
 interface ModernAdminLayoutProps {
   children: ReactNode;
   title?: string;
+  requireMasterPassword?: boolean;
 }
 
-export default function ModernAdminLayout({ children, title }: ModernAdminLayoutProps) {
+export default function ModernAdminLayout({ children, title, requireMasterPassword = true }: ModernAdminLayoutProps) {
   const [location] = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const queryClient = useQueryClient();
@@ -85,7 +87,8 @@ export default function ModernAdminLayout({ children, title }: ModernAdminLayout
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <MasterPasswordGuard requireMasterPassword={requireMasterPassword}>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Floating orbs background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
@@ -221,6 +224,7 @@ export default function ModernAdminLayout({ children, title }: ModernAdminLayout
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </MasterPasswordGuard>
   );
 }

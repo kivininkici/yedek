@@ -121,59 +121,59 @@ function Router() {
         <Route path="/forgot-password" component={ForgotPassword} />
         <Route path="/reset-password" component={ResetPassword} />
         
-        {/* Admin main route - redirect to dashboard */}
+        {/* Admin main route - CRITICAL: Force login check */}
         <Route path="/admin">
-          {isAdminAuthenticated ? <Dashboard /> : <AdminLogin />}
+          {!isAdminLoading && isAdminAuthenticated ? <Dashboard /> : <AdminLogin />}
         </Route>
         
-        {/* Protected admin routes */}
+        {/* Protected admin routes - CRITICAL: Loading check enforced */}
         <Route path="/admin/dashboard">
-          {isAdminAuthenticated ? <Dashboard /> : <AdminLogin />}
+          {!isAdminLoading && isAdminAuthenticated ? <Dashboard /> : <AdminLogin />}
         </Route>
         <Route path="/admin/keys">
-          {isAdminAuthenticated ? <Keys /> : <AdminLogin />}
+          {!isAdminLoading && isAdminAuthenticated ? <Keys /> : <AdminLogin />}
         </Route>
         <Route path="/admin/services">
-          {isAdminAuthenticated ? <Services /> : <AdminLogin />}
+          {!isAdminLoading && isAdminAuthenticated ? <Services /> : <AdminLogin />}
         </Route>
         <Route path="/admin/api-management">
-          {isAdminAuthenticated ? <ApiManagement /> : <AdminLogin />}
+          {!isAdminLoading && isAdminAuthenticated ? <ApiManagement /> : <AdminLogin />}
         </Route>
         <Route path="/admin/api-balances">
-          {isAdminAuthenticated ? <ApiBalances /> : <AdminLogin />}
+          {!isAdminLoading && isAdminAuthenticated ? <ApiBalances /> : <AdminLogin />}
         </Route>
         <Route path="/admin/users">
-          {isAdminAuthenticated ? <Users /> : <AdminLogin />}
+          {!isAdminLoading && isAdminAuthenticated ? <Users /> : <AdminLogin />}
         </Route>
         <Route path="/admin/logs">
-          {isAdminAuthenticated ? <Logs /> : <AdminLogin />}
+          {!isAdminLoading && isAdminAuthenticated ? <Logs /> : <AdminLogin />}
         </Route>
         <Route path="/admin/settings">
-          {isAdminAuthenticated ? <Settings /> : <AdminLogin />}
+          {!isAdminLoading && isAdminAuthenticated ? <Settings /> : <AdminLogin />}
         </Route>
         <Route path="/admin/orders">
-          {isAdminAuthenticated ? <AdminOrders /> : <AdminLogin />}
+          {!isAdminLoading && isAdminAuthenticated ? <AdminOrders /> : <AdminLogin />}
         </Route>
         <Route path="/admin/order-search">
-          {isAdminAuthenticated ? <AdminOrderSearch /> : <AdminLogin />}
+          {!isAdminLoading && isAdminAuthenticated ? <AdminOrderSearch /> : <AdminLogin />}
         </Route>
         <Route path="/admin/key-stats">
-          {isAdminAuthenticated ? <AdminKeyStats /> : <AdminLogin />}
+          {!isAdminLoading && isAdminAuthenticated ? <AdminKeyStats /> : <AdminLogin />}
         </Route>
         <Route path="/admin/login-attempts">
-          {isAdminAuthenticated ? <LoginAttempts /> : <AdminLogin />}
+          {!isAdminLoading && isAdminAuthenticated ? <LoginAttempts /> : <AdminLogin />}
         </Route>
         <Route path="/admin/feedback">
-          {isAdminAuthenticated ? <AdminFeedback /> : <AdminLogin />}
+          {!isAdminLoading && isAdminAuthenticated ? <AdminFeedback /> : <AdminLogin />}
         </Route>
         <Route path="/admin/complaints">
-          {isAdminAuthenticated ? <AdminComplaints /> : <AdminLogin />}
+          {!isAdminLoading && isAdminAuthenticated ? <AdminComplaints /> : <AdminLogin />}
         </Route>
         <Route path="/admin/password-management">
-          {isAdminAuthenticated ? <PasswordManagement /> : <AdminLogin />}
+          {!isAdminLoading && isAdminAuthenticated ? <PasswordManagement /> : <AdminLogin />}
         </Route>
         <Route path="/admin/master-password-management">
-          {isAdminAuthenticated ? <MasterPasswordManagement /> : <AdminLogin />}
+          {!isAdminLoading && isAdminAuthenticated ? <MasterPasswordManagement /> : <AdminLogin />}
         </Route>
         
         {/* 404 fallback */}
