@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
-import SimpleAdminLayout from "@/components/admin/SimpleAdminLayout";
+import ModernAdminLayout from "@/components/admin/ModernAdminLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -172,9 +172,9 @@ export default function ApiManagement() {
 
   if (isLoading || !admin) {
     return (
-      <SimpleAdminLayout title="API Yönetimi">
+      <ModernAdminLayout title="API Yönetimi">
         <div className="text-center text-gray-400 mt-8">Yükleniyor...</div>
-      </SimpleAdminLayout>
+      </ModernAdminLayout>
     );
   }
 
@@ -192,7 +192,7 @@ export default function ApiManagement() {
   const paginatedServices = filteredServices.slice(startIndex, endIndex);
 
   return (
-    <SimpleAdminLayout title="API Yönetimi">
+    <ModernAdminLayout title="API Yönetimi">
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -527,6 +527,6 @@ export default function ApiManagement() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </SimpleAdminLayout>
+    </ModernAdminLayout>
   );
 }

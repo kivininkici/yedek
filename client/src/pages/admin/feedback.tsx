@@ -111,27 +111,27 @@ export default function AdminFeedback() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Geri Dönüşler</h1>
-          <p className="text-gray-600 mt-2">
+          <h1 className="text-3xl font-bold text-white">Geri Dönüşler</h1>
+          <p className="text-gray-400 mt-2">
             Kullanıcı geri bildirimlerini görüntüleyin ve yanıtlayın
           </p>
         </div>
         <div className="flex space-x-4">
-          <Card className="p-4">
+          <Card className="p-4 bg-gray-800 border-gray-700">
             <div className="flex items-center space-x-2">
-              <MessageCircle className="w-5 h-5 text-blue-500" />
+              <MessageCircle className="w-5 h-5 text-blue-400" />
               <div>
-                <p className="text-sm text-gray-600">Toplam</p>
-                <p className="text-xl font-bold text-gray-900">{totalCount}</p>
+                <p className="text-sm text-gray-400">Toplam</p>
+                <p className="text-xl font-bold text-white">{totalCount}</p>
               </div>
             </div>
           </Card>
-          <Card className="p-4">
+          <Card className="p-4 bg-gray-800 border-gray-700">
             <div className="flex items-center space-x-2">
               <Badge variant="destructive" className="w-3 h-3 p-0 rounded-full" />
               <div>
-                <p className="text-sm text-gray-600">Okunmamış</p>
-                <p className="text-xl font-bold text-red-600">{unreadCount}</p>
+                <p className="text-sm text-gray-400">Okunmamış</p>
+                <p className="text-xl font-bold text-red-400">{unreadCount}</p>
               </div>
             </div>
           </Card>
@@ -141,12 +141,12 @@ export default function AdminFeedback() {
       {/* Feedback List */}
       <div className="grid grid-cols-1 gap-4">
         {feedback.length === 0 ? (
-          <Card className="p-8 text-center">
+          <Card className="p-8 text-center bg-gray-800 border-gray-700">
             <MessageCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-white mb-2">
               Henüz geri bildirim yok
             </h3>
-            <p className="text-gray-600">
+            <p className="text-gray-400">
               Kullanıcılar geri bildirim gönderdiğinde burada görünecek.
             </p>
           </Card>
@@ -156,8 +156,8 @@ export default function AdminFeedback() {
               key={item.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className={`border rounded-lg p-6 hover:shadow-md transition-all cursor-pointer ${
-                !item.isRead ? "border-l-4 border-l-blue-500 bg-blue-50/50" : "border-gray-200"
+              className={`border rounded-lg p-6 hover:shadow-md transition-all cursor-pointer bg-gray-800 border-gray-700 ${
+                !item.isRead ? "border-l-4 border-l-blue-400 bg-blue-900/20" : ""
               }`}
               onClick={() => {
                 setSelectedFeedback(item);
@@ -170,38 +170,38 @@ export default function AdminFeedback() {
                 <div className="flex-1">
                   <div className="flex items-center space-x-4 mb-3">
                     <div className="flex items-center space-x-2">
-                      <User className="w-4 h-4 text-gray-500" />
-                      <span className="font-medium text-gray-900">
+                      <User className="w-4 h-4 text-gray-400" />
+                      <span className="font-medium text-white">
                         {item.userName || "Anonim Kullanıcı"}
                       </span>
                     </div>
                     {item.userEmail && (
                       <div className="flex items-center space-x-2">
-                        <Mail className="w-4 h-4 text-gray-500" />
-                        <span className="text-sm text-gray-600">{item.userEmail}</span>
+                        <Mail className="w-4 h-4 text-gray-400" />
+                        <span className="text-sm text-gray-300">{item.userEmail}</span>
                       </div>
                     )}
                     {item.orderId && (
                       <div className="flex items-center space-x-2">
-                        <Hash className="w-4 h-4 text-gray-500" />
-                        <span className="text-sm text-gray-600">{item.orderId}</span>
+                        <Hash className="w-4 h-4 text-gray-400" />
+                        <span className="text-sm text-gray-300">{item.orderId}</span>
                       </div>
                     )}
                   </div>
 
-                  <p className="text-gray-800 mb-3 line-clamp-3">{item.message}</p>
+                  <p className="text-gray-300 mb-3 line-clamp-3">{item.message}</p>
 
                   <div className="flex items-center space-x-4 text-sm">
                     <div className="flex items-center space-x-2">
-                      <Clock className="w-4 h-4 text-gray-500" />
-                      <span className="text-gray-600">
+                      <Clock className="w-4 h-4 text-gray-400" />
+                      <span className="text-gray-400">
                         {new Date(item.createdAt).toLocaleString("tr-TR")}
                       </span>
                     </div>
                     {item.satisfactionLevel && (
                       <div className="flex items-center space-x-2">
                         {getSatisfactionIcon(item.satisfactionLevel)}
-                        <span className="text-gray-600">
+                        <span className="text-gray-400">
                           {getSatisfactionText(item.satisfactionLevel)}
                         </span>
                       </div>

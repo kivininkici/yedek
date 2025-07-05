@@ -235,9 +235,9 @@ export default function AdminComplaints() {
           </div>
 
           {/* Complaints List */}
-          <Card>
+          <Card className="bg-gray-800 border-gray-700">
             <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
+              <CardTitle className="flex items-center space-x-2 text-white">
                 <AlertTriangle className="w-5 h-5" />
                 <span>Şikayet Listesi ({complaints.length})</span>
               </CardTitle>
@@ -245,18 +245,18 @@ export default function AdminComplaints() {
             <CardContent>
               <div className="space-y-4">
                 {complaints.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
-                    <AlertTriangle className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                  <div className="text-center py-8 text-gray-400">
+                    <AlertTriangle className="w-12 h-12 mx-auto mb-4 text-gray-400" />
                     <p>Henüz şikayet bulunmuyor</p>
                   </div>
                 ) : (
                   complaints.map((complaint: Complaint) => (
                     <div
                       key={complaint.id}
-                      className={`border rounded-lg p-4 cursor-pointer transition-colors ${
+                      className={`border border-gray-600 rounded-lg p-4 cursor-pointer transition-colors ${
                         !complaint.isRead
-                          ? "bg-blue-50 border-blue-200 hover:bg-blue-100"
-                          : "hover:bg-gray-50"
+                          ? "bg-blue-900/20 border-blue-400 hover:bg-blue-900/30"
+                          : "bg-gray-700 hover:bg-gray-600"
                       }`}
                       onClick={() => {
                         setSelectedComplaint(complaint);
@@ -268,7 +268,7 @@ export default function AdminComplaints() {
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center space-x-3 mb-2">
-                            <h3 className="font-semibold text-gray-900">{complaint.subject}</h3>
+                            <h3 className="font-semibold text-white">{complaint.subject}</h3>
                             <Badge className={getPriorityColor(complaint.priority)}>
                               {getPriorityText(complaint.priority)}
                             </Badge>
@@ -279,7 +279,7 @@ export default function AdminComplaints() {
                               <Badge variant="secondary">Yeni</Badge>
                             )}
                           </div>
-                          <div className="flex items-center space-x-4 text-sm text-gray-500 mb-2">
+                          <div className="flex items-center space-x-4 text-sm text-gray-400 mb-2">
                             <div className="flex items-center space-x-1">
                               <User className="w-4 h-4" />
                               <span>{complaint.userName || complaint.userEmail || "Anonim"}</span>
@@ -293,7 +293,7 @@ export default function AdminComplaints() {
                               <span>{new Date(complaint.createdAt).toLocaleString("tr-TR")}</span>
                             </div>
                           </div>
-                          <p className="text-gray-700 line-clamp-2">{complaint.message}</p>
+                          <p className="text-gray-300 line-clamp-2">{complaint.message}</p>
                           <div className="mt-2">
                             <Badge variant="outline">{getCategoryText(complaint.category)}</Badge>
                           </div>
