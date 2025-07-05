@@ -321,6 +321,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   });
 
+  // Admin endpoint to create normal users (no hCaptcha required)
+  app.post('/api/admin/users/create', requireAdminAuth, async (req, res) => {
+    try {
+      console.log('Admin creating user:', req.body);
+      
+      const { username, email, password } = req.body;
+      
+      // Simple validation
+      if (!username || username.length < 3) {
+        return res.status(400).json({ message: 'Kullanıcı adı en az 3 karakter olmalıdır' });
+      }
+      
+      if (!email || !email.includes('@')) {
+        return res.status(400).json({ message: 'Geçerli bir e-posta adresi giriniz' });
+      }
+      
+      if (!password || password.length < 6) {
+        return res.status(400).json({ message: 'Şifre en az 6 karakter olmalıdır' });
+      }
+      
+      // Check if user already exists
+      const existingUser = await storage.getUserByUsernameOrEmail(username, email);
+      if (existingUser) {
+        return res.status(400).json({ message: 'Kullanıcı adı veya email zaten kullanımda' });
+      }
+      
+      // Generate random avatar ID (1-24)
+      const avatarId = Math.floor(Math.random() * 24) + 1;
+
+      // Create user with random avatar
+      const hashedPassword = await hashPassword(password);
+      const user = await storage.createNormalUser({
+        username,
+        email,
+        password: hashedPassword,
+        avatarId,
+      });
+
+      res.status(201).json({ 
+        id: user.id, 
+        username: user.username, 
+        email: user.email,
+        avatarId: user.avatarId,
+        message: 'Kullanıcı başarıyla oluşturuldu' 
+      });
+    } catch (error: any) {
+      console.error('Admin user creation error:', error);
+      res.status(400).json({ message: error.message || 'Kullanıcı oluşturulurken hata oluştu' });
+    }
+  });
+
   // Auto-login endpoint for admin to login as any user
   app.post('/api/auth/auto-login', requireAdminAuth, async (req, res) => {
     try {
