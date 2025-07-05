@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
+import geoip from 'geoip-lite';
 import type { Express, RequestHandler } from 'express';
 import { storage } from './storage';
 import { adminLoginSchema, type AdminLogin } from '@shared/schema';
@@ -54,6 +55,30 @@ export async function comparePassword(password: string, hash: string): Promise<b
   return await bcrypt.compare(password, hash);
 }
 
+// Get location info from IP address
+function getLocationFromIP(ipAddress: string) {
+  try {
+    const geo = geoip.lookup(ipAddress);
+    if (geo) {
+      return {
+        country: geo.country || 'Bilinmeyen',
+        city: geo.city || 'Bilinmeyen',
+        region: geo.region || 'Bilinmeyen',
+        timezone: geo.timezone || 'Bilinmeyen'
+      };
+    }
+  } catch (error) {
+    console.log('Geoip lookup error:', error);
+  }
+  
+  return {
+    country: 'Bilinmeyen',
+    city: 'Bilinmeyen', 
+    region: 'Bilinmeyen',
+    timezone: 'Bilinmeyen'
+  };
+}
+
 // Admin auth routes
 export function setupAdminAuth(app: Express) {
   // Get random security question
@@ -71,6 +96,9 @@ export function setupAdminAuth(app: Express) {
       const ipAddress = req.ip || req.connection.remoteAddress || 'unknown';
       const userAgent = req.get('User-Agent') || '';
       
+      // Get location info from IP
+      const locationInfo = getLocationFromIP(ipAddress);
+
       // Check for recent failed attempts (3 attempts in 15 minutes)
       const recentFailedAttempts = await storage.getRecentFailedAttempts(ipAddress, 15);
       if (recentFailedAttempts >= 3) {
@@ -80,6 +108,7 @@ export function setupAdminAuth(app: Express) {
           username,
           attemptType: 'blocked',
           userAgent,
+          ...locationInfo
         });
         return res.status(429).json({ 
           message: 'Çok fazla hatalı giriş denemesi. 15 dakika sonra tekrar deneyin.' 
@@ -94,6 +123,7 @@ export function setupAdminAuth(app: Express) {
           username,
           attemptType: 'failed_password',
           userAgent,
+          ...locationInfo
         });
         return res.status(401).json({ message: 'Geçersiz kullanıcı adı veya şifre' });
       }
@@ -121,6 +151,7 @@ export function setupAdminAuth(app: Express) {
           username,
           attemptType: 'failed_password',
           userAgent,
+          ...locationInfo
         });
         return res.status(401).json({ message: 'Geçersiz kullanıcı adı veya şifre' });
       }
@@ -133,6 +164,7 @@ export function setupAdminAuth(app: Express) {
           username,
           attemptType: 'failed_security',
           userAgent,
+          ...locationInfo
         });
         return res.status(401).json({ message: 'Güvenlik sorusu cevabı hatalı' });
       }
@@ -143,6 +175,7 @@ export function setupAdminAuth(app: Express) {
         username,
         attemptType: 'success',
         userAgent,
+        ...locationInfo
       });
 
       // Update last login

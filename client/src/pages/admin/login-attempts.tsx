@@ -30,6 +30,10 @@ interface LoginAttempt {
   username?: string;
   attemptType: 'success' | 'failed_password' | 'failed_security' | 'blocked' | 'failed_math' | 'failed_math_register';
   userAgent?: string;
+  country?: string;
+  city?: string;
+  region?: string;
+  timezone?: string;
   createdAt: string;
 }
 
@@ -203,6 +207,7 @@ export default function LoginAttempts() {
                   <TableHead className="text-gray-300">IP Adresi</TableHead>
                   <TableHead className="text-gray-300">Durum</TableHead>
                   <TableHead className="text-gray-300">Kullanıcı</TableHead>
+                  <TableHead className="text-gray-300">Konum</TableHead>
                   <TableHead className="text-gray-300">Tarih</TableHead>
                   <TableHead className="text-gray-300">Tarayıcı</TableHead>
                 </TableRow>
@@ -224,6 +229,15 @@ export default function LoginAttempts() {
                         </div>
                       </TableCell>
                       <TableCell className="text-gray-300">{attempt.username || '-'}</TableCell>
+                      <TableCell className="text-gray-300">
+                        <div className="flex items-center gap-1">
+                          <MapPin className="w-3 h-3 text-gray-500" />
+                          <span className="text-xs">
+                            {attempt.city && attempt.city !== 'Bilinmeyen' ? attempt.city : 'Bilinmeyen'}
+                            {attempt.country && attempt.country !== 'Bilinmeyen' ? `, ${attempt.country}` : ''}
+                          </span>
+                        </div>
+                      </TableCell>
                       <TableCell className="text-gray-300">{formatDate(attempt.createdAt)}</TableCell>
                       <TableCell className="text-gray-400 text-xs">{truncateUserAgent(attempt.userAgent)}</TableCell>
                     </TableRow>

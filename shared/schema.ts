@@ -160,6 +160,10 @@ export const loginAttempts = pgTable("login_attempts", {
   username: varchar("username", { length: 50 }),
   attemptType: varchar("attempt_type", { length: 20 }).notNull(), // 'success', 'failed_password', 'failed_security', 'blocked'
   userAgent: text("user_agent"),
+  country: varchar("country", { length: 100 }), // Ülke bilgisi
+  city: varchar("city", { length: 100 }), // Şehir bilgisi
+  region: varchar("region", { length: 100 }), // Bölge bilgisi
+  timezone: varchar("timezone", { length: 50 }), // Saat dilimi
   createdAt: timestamp("created_at").defaultNow(),
 });
 
