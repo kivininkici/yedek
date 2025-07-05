@@ -324,40 +324,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Admin endpoint to create normal users (no hCaptcha required)
   app.post('/api/admin/users/create', requireAdminAuth, async (req, res) => {
     try {
-      console.log('Admin creating user:', req.body);
+      console.log('🔥 Admin creating user - Request body:', JSON.stringify(req.body, null, 2));
       
       const { username, email, password } = req.body;
       
       // Simple validation
       if (!username || username.length < 3) {
+        console.log('❌ Username validation failed:', username);
         return res.status(400).json({ message: 'Kullanıcı adı en az 3 karakter olmalıdır' });
       }
       
       if (!email || !email.includes('@')) {
+        console.log('❌ Email validation failed:', email);
         return res.status(400).json({ message: 'Geçerli bir e-posta adresi giriniz' });
       }
       
       if (!password || password.length < 6) {
+        console.log('❌ Password validation failed, length:', password?.length);
         return res.status(400).json({ message: 'Şifre en az 6 karakter olmalıdır' });
       }
+      
+      console.log('✅ Validation passed, checking existing user...');
       
       // Check if user already exists
       const existingUser = await storage.getUserByUsernameOrEmail(username, email);
       if (existingUser) {
+        console.log('❌ User already exists:', existingUser);
         return res.status(400).json({ message: 'Kullanıcı adı veya email zaten kullanımda' });
       }
       
+      console.log('✅ No existing user found, creating new user...');
+      
       // Generate random avatar ID (1-24)
       const avatarId = Math.floor(Math.random() * 24) + 1;
+      console.log('🎭 Generated avatar ID:', avatarId);
 
       // Create user with random avatar
       const hashedPassword = await hashPassword(password);
-      const user = await storage.createNormalUser({
+      console.log('🔐 Password hashed successfully');
+      
+      const userData = {
         username,
         email,
         password: hashedPassword,
         avatarId,
-      });
+      };
+      console.log('📋 User data to create:', JSON.stringify(userData, null, 2));
+      
+      const user = await storage.createNormalUser(userData);
+      console.log('🎉 User created successfully:', JSON.stringify(user, null, 2));
 
       res.status(201).json({ 
         id: user.id, 
@@ -367,8 +382,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         message: 'Kullanıcı başarıyla oluşturuldu' 
       });
     } catch (error: any) {
-      console.error('Admin user creation error:', error);
-      res.status(400).json({ message: error.message || 'Kullanıcı oluşturulurken hata oluştu' });
+      console.error('💥 Admin user creation error:', error);
+      console.error('💥 Error stack:', error.stack);
+      res.status(500).json({ message: error.message || 'Kullanıcı oluşturulurken hata oluştu' });
     }
   });
 
