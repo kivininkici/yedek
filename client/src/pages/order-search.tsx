@@ -379,22 +379,18 @@ export default function OrderSearchPage() {
 
                 {/* Order Details Grid */}
                 <div className="grid md:grid-cols-2 gap-6">
-                  {/* Service Info */}
+                  {/* Service Info - Simplified */}
                   <Card className="bg-black/30 border border-white/20 backdrop-blur-xl">
                     <CardHeader>
                       <CardTitle className="flex items-center text-white">
-                        <Globe className="w-5 h-5 mr-2 text-blue-400" />
-                        Servis Bilgileri
+                        <Package className="w-5 h-5 mr-2 text-blue-400" />
+                        Sipariş Bilgileri
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div>
-                        <p className="text-gray-400 text-sm">Platform</p>
-                        <p className="text-white font-medium">{searchedOrder.service.platform}</p>
-                      </div>
-                      <div>
-                        <p className="text-gray-400 text-sm">Servis Adı</p>
-                        <p className="text-white font-medium">{searchedOrder.service.name}</p>
+                        <p className="text-gray-400 text-sm">Kategori</p>
+                        <p className="text-white font-medium">{searchedOrder.key.category}</p>
                       </div>
                       <div>
                         <p className="text-gray-400 text-sm">Miktar</p>
@@ -440,15 +436,20 @@ export default function OrderSearchPage() {
                   </Card>
                 </div>
 
-                {/* Message */}
-                {searchedOrder.message && (
+                {/* Status Message - Filtered for customer privacy */}
+                {searchedOrder.message && !searchedOrder.message.includes('API Order ID') && !searchedOrder.message.includes('charge') && (
                   <Card className="bg-blue-500/10 border border-blue-400/30 backdrop-blur-xl">
                     <CardContent className="p-6">
                       <h3 className="text-lg font-semibold text-blue-300 mb-2 flex items-center">
                         <AlertTriangle className="w-5 h-5 mr-2" />
-                        Sipariş Mesajı
+                        Durum Bilgisi
                       </h3>
-                      <p className="text-white">{searchedOrder.message}</p>
+                      <p className="text-white">
+                        {searchedOrder.message.includes('Sipariş başarıyla oluşturuldu') 
+                          ? 'Siparişiniz başarıyla oluşturuldu ve işleme alındı.'
+                          : searchedOrder.message.split('API')[0].trim() || 'Sipariş durumu güncellendi.'
+                        }
+                      </p>
                     </CardContent>
                   </Card>
                 )}

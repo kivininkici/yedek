@@ -2987,13 +2987,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
           // Check if API response contains order ID
           if (apiResponse.order || apiResponse.order_id) {
             apiOrderId = String(apiResponse.order || apiResponse.order_id);
-            orderMessage = `Sipariş başarıyla gönderildi. API Order ID: ${apiOrderId}`;
+            orderMessage = `Siparişiniz başarıyla oluşturuldu ve işleme alındı.`; // Customer-friendly message without API details
             
             // Start periodic status checking
             setTimeout(() => checkOrderStatusAsync(orderId, apiOrderId!), 30000);
           } else if (apiResponse.error) {
             orderStatus = 'failed';
-            orderMessage = `API Hatası: ${apiResponse.error}`;
+            orderMessage = `Sipariş işlenirken hata oluştu. Lütfen daha sonra tekrar deneyin.`; // Generic error message
           }
 
           // Update order with processing status first

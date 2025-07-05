@@ -616,26 +616,21 @@ export default function UserInterface() {
                         </div>
                       </div>
 
-                      {/* Price Calculation */}
+                      {/* Service Information - Simplified */}
                       <div className="bg-gradient-to-r from-blue-500/20 to-purple-500/20 backdrop-blur-xl border border-blue-400/30 rounded-2xl p-6">
-                        <h4 className="text-lg font-semibold text-white mb-3">💰 Fiyat Hesaplama</h4>
-                        <div className="grid grid-cols-2 gap-4">
+                        <h4 className="text-lg font-semibold text-white mb-3">📋 Sipariş Bilgileri</h4>
+                        <div className="space-y-3">
                           <div>
-                            <p className="text-sm text-blue-200">Birim Fiyat (1000 adet)</p>
-                            <p className="text-xl font-bold text-white">₺{validatedKey.service.price || '0.00'}</p>
+                            <p className="text-sm text-blue-200">Seçilen Kategori</p>
+                            <p className="text-lg font-bold text-white">{validatedKey.category}</p>
                           </div>
                           <div>
-                            <p className="text-sm text-blue-200">Toplam Fiyat</p>
-                            <p className="text-xl font-bold text-green-400">
-                              ₺{(
-                                ((parseFloat(String(validatedKey.service.price || '0')) * 
-                                (orderForm.watch('quantity') || 0)) / 1000)
-                              ).toFixed(2)}
-                            </p>
+                            <p className="text-sm text-blue-200">Kalan Miktar</p>
+                            <p className="text-lg font-bold text-green-400">{validatedKey.remainingQuantity.toLocaleString()} adet</p>
                           </div>
                         </div>
                         <div className="mt-3 text-xs text-blue-300">
-                          * Fiyatlar 1000 adet başına hesaplanmaktadır
+                          * Key kullanım hakkınız sipariş sonrası güncellenecektir
                         </div>
                       </div>
                       
