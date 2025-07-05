@@ -132,12 +132,15 @@ Changelog:
 - SimpleAdminLayout references removed and replaced with ModernAdminLayout throughout
 - All Card components updated with gray-800 background and white/gray text for consistency
 - Admin panel tasarım bozulması sorunları tamamen çözüldü - tüm sayfalar tutarlı görünüm
-- July 5, 2025: Final Replit Agent to Replit environment migration completed successfully
+- July 5, 2025: MedyaBayim API fiyat hesaplama sistemi tamamen düzeltildi
+- API'den gelen fiyatların kuruş cinsinden olduğu tespit edildi ve TL'ye dönüşüm eklendi
+- Server kodunda domain-specific fiyat hesaplama mantığı uygulandı
+- Client-side fiyat hesaplama formülü düzeltildi (doğru matematik: price * quantity / 1000)
+- 3,918 yanlış fiyatlı servis silindi, yeniden import için hazır
 - PostgreSQL database set up and schema pushed successfully  
 - tsx dependency installed, server running on port 5000
 - Admin user created with setup-admin.js script
 - OtoKiwi system running production-level in Replit environment
-- All checklist items completed: packages installed, workflow restarted, project verified, migration finalized
 - July 4, 2025: Final migration completed with key system optimizations
 - PostgreSQL database set up and schema pushed successfully  
 - tsx dependency installed, server running on port 5000
