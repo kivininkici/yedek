@@ -2321,14 +2321,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let finalPrice = 0;
       
       if (!isNaN(numericPrice)) {
-        // MedyaBayim API returns price in kuruş for 1000 units, need to convert to TL
-        if (domain.includes('medyabayim')) {
-          // Convert kuruş to TL (divide by 100)
-          finalPrice = Math.min(Math.max(0, numericPrice / 100), maxPrice);
-        } else {
-          // Other APIs may return price directly in their currency
-          finalPrice = Math.min(Math.max(0, numericPrice), maxPrice);
-        }
+        // MedyaBayim API returns price directly in TL for 1000 units
+        finalPrice = Math.min(Math.max(0, numericPrice), maxPrice);
       }
       
       const price = finalPrice.toFixed(2);
