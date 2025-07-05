@@ -13,6 +13,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -37,7 +43,8 @@ import {
   CheckCircle,
   Crown,
   LogIn,
-  User
+  User,
+  ChevronDown
 } from "lucide-react";
 
 // Admin oluşturma formu için schema
@@ -495,6 +502,34 @@ export default function UsersPage() {
                         </TableCell>
                         <TableCell>
                           <div className="flex gap-2">
+                            {/* Role selector dropdown */}
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="outline" size="sm" className="min-w-32">
+                                  Admin
+                                  <ChevronDown className="ml-1 h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent>
+                                <DropdownMenuItem 
+                                  onClick={() => convertToUserMutation.mutate(adminUser.id)}
+                                  disabled={convertToUserMutation.isPending || adminUser.username === "akivi"}
+                                  className="flex items-center"
+                                >
+                                  <User className="mr-2 h-4 w-4" />
+                                  Normal Üye
+                                </DropdownMenuItem>
+                                <DropdownMenuItem 
+                                  disabled
+                                  className="flex items-center"
+                                >
+                                  <Shield className="mr-2 h-4 w-4" />
+                                  Admin ✓
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                            
+                            {/* Suspend/Activate button for akivi only */}
                             {admin?.username === "akivi" && adminUser.username !== "akivi" && (
                               <Button
                                 variant={adminUser.isActive !== false ? "destructive" : "default"}
@@ -516,20 +551,6 @@ export default function UsersPage() {
                                     Aktif Et
                                   </>
                                 )}
-                              </Button>
-                            )}
-                            
-                            {/* Convert to normal user button - available for all admins except akivi */}
-                            {adminUser.username !== "akivi" && (
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => convertToUserMutation.mutate(adminUser.id)}
-                                disabled={convertToUserMutation.isPending}
-                                className="text-blue-600 border-blue-600 hover:bg-blue-50"
-                              >
-                                <User className="w-4 h-4 mr-1" />
-                                Normal Kullanıcıya Çevir
                               </Button>
                             )}
                           </div>
@@ -585,19 +606,32 @@ export default function UsersPage() {
                           }
                         </TableCell>
                         <TableCell>
-                          <Select
-                            value={user.role || 'user'}
-                            onValueChange={(role) => updateUserRoleMutation.mutate({ id: user.id, role })}
-                            disabled={updateUserRoleMutation.isPending}
-                          >
-                            <SelectTrigger className="w-32">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="user">Normal Üye</SelectItem>
-                              <SelectItem value="admin">Admin</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          {/* Role selector dropdown */}
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="outline" size="sm" className="min-w-32">
+                                Normal Üye
+                                <ChevronDown className="ml-1 h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              <DropdownMenuItem 
+                                disabled
+                                className="flex items-center"
+                              >
+                                <User className="mr-2 h-4 w-4" />
+                                Normal Üye ✓
+                              </DropdownMenuItem>
+                              <DropdownMenuItem 
+                                onClick={() => updateUserRoleMutation.mutate({ id: user.id, role: 'admin' })}
+                                disabled={updateUserRoleMutation.isPending}
+                                className="flex items-center"
+                              >
+                                <Shield className="mr-2 h-4 w-4" />
+                                Admin
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </TableCell>
                         <TableCell>
                           <Button
