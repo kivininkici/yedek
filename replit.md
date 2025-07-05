@@ -127,6 +127,11 @@ Changelog:
 - June 29, 2025. Canlı destek referansları kaldırıldı, sipariş sorgulama sistemi eklendi
 
 ## Recent Changes
+- July 5, 2025: Enhanced bulk key export system with modern UI/UX design
+- Improved "Toplu Key.txt" button with gradient backgrounds and smooth animations
+- Redesigned export modal with centered layout, progress indicators, and status badges
+- Added individual key visibility toggles - each key can be shown/hidden independently
+- Enhanced user experience with professional shadows, gradients, and smooth transitions
 - July 5, 2025: Admin panel layout consistency completely fixed - all pages now use ModernAdminLayout
 - API Management, Feedback, Complaints, Settings, and Login Attempts pages updated to dark theme
 - SimpleAdminLayout references removed and replaced with ModernAdminLayout throughout

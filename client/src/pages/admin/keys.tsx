@@ -323,19 +323,18 @@ export default function Keys() {
           <div className="flex items-center gap-3">
             <Button
               onClick={() => setShowExportModal(true)}
-              variant="outline"
-              className="bg-red-600 hover:bg-red-700 text-white border-red-600"
+              className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 px-6 py-2.5"
             >
               <Download className="w-4 h-4 mr-2" />
-              Toplu Key.txt
+              <span className="font-medium">Toplu Key.txt</span>
             </Button>
             
             <Button
               onClick={() => setShowCreateModal(true)}
-              className="bg-blue-600 hover:bg-blue-700"
+              className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 px-6 py-2.5"
             >
               <Plus className="w-4 h-4 mr-2" />
-              Yeni Key
+              <span className="font-medium">Yeni Key</span>
             </Button>
           </div>
         </div>
@@ -552,59 +551,93 @@ export default function Keys() {
 
         {/* Export Modal */}
         <Dialog open={showExportModal} onOpenChange={setShowExportModal}>
-          <DialogContent className="bg-slate-900 border-slate-800 max-w-md">
-            <DialogHeader>
-              <DialogTitle className="text-slate-100 text-xl font-bold">Toplu Key Export</DialogTitle>
+          <DialogContent className="bg-slate-900 border-slate-700 max-w-md shadow-2xl rounded-2xl">
+            <DialogHeader className="text-center pb-4">
+              <div className="mx-auto bg-red-500/20 p-4 rounded-full w-16 h-16 flex items-center justify-center mb-4">
+                <Download className="w-8 h-8 text-red-500" />
+              </div>
+              <DialogTitle className="text-slate-100 text-2xl font-bold">Toplu Key Export</DialogTitle>
+              <p className="text-slate-400 text-sm mt-2">İstediğiniz kategori için tüm key'leri indirin</p>
             </DialogHeader>
+            
             <div className="space-y-6">
-              <div className="space-y-3">
-                <label className="text-sm text-slate-300 font-medium block">
-                  Kategori Seçin:
-                </label>
-                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                  <SelectTrigger className="bg-slate-800 border-slate-700 text-slate-100 h-12 rounded-xl">
-                    <SelectValue placeholder="Kategori seçin..." />
-                  </SelectTrigger>
-                  <SelectContent className="bg-slate-800 border-slate-700">
-                    {getAvailableCategories().map((category) => (
-                      <SelectItem 
-                        key={category} 
-                        value={category}
-                        className="text-slate-100 hover:bg-slate-700 focus:bg-slate-700"
-                      >
-                        {category}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm text-slate-300 font-semibold block">
+                    📁 Kategori Seçin:
+                  </label>
+                  <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                    <SelectTrigger className="bg-slate-800 border-slate-600 text-slate-100 h-12 rounded-xl hover:bg-slate-700 transition-colors">
+                      <SelectValue placeholder="Kategori seçin..." />
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-800 border-slate-600 rounded-xl">
+                      {getAvailableCategories().map((category) => (
+                        <SelectItem 
+                          key={category} 
+                          value={category}
+                          className="text-slate-100 hover:bg-slate-700 focus:bg-slate-700 rounded-lg"
+                        >
+                          <div className="flex items-center gap-2">
+                            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                            {category}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                {selectedCategory && (
+                  <div className="bg-gradient-to-r from-slate-800 to-slate-750 border border-slate-600 rounded-xl p-4 shadow-lg">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-blue-500/20 p-2 rounded-lg">
+                          <FileText className="w-4 h-4 text-blue-500" />
+                        </div>
+                        <div>
+                          <p className="text-slate-200 font-medium">
+                            {Array.isArray(keys) ? keys.filter((key: KeyType) => key.category === selectedCategory).length : 0} key bulundu
+                          </p>
+                          <p className="text-slate-400 text-xs">
+                            {selectedCategory} kategorisinde
+                          </p>
+                        </div>
+                      </div>
+                      <div className="bg-green-500/20 px-3 py-1 rounded-full">
+                        <span className="text-green-400 text-xs font-medium">Hazır</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
               
-              {selectedCategory && (
-                <div className="bg-slate-800 border border-slate-700 rounded-xl p-4">
-                  <div className="flex items-center gap-2 text-slate-300">
-                    <FileText className="w-4 h-4" />
+              {!selectedCategory && (
+                <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4">
+                  <div className="flex items-center gap-2 text-amber-400">
+                    <AlertCircle className="w-4 h-4" />
                     <span className="text-sm">
-                      {Array.isArray(keys) ? keys.filter((key: KeyType) => key.category === selectedCategory).length : 0} key indirilecek
+                      Lütfen indirmek istediğiniz kategoriyi seçin
                     </span>
                   </div>
                 </div>
               )}
             </div>
-            <DialogFooter className="flex gap-3">
+            
+            <DialogFooter className="flex gap-3 pt-6">
               <Button
                 variant="outline"
                 onClick={() => setShowExportModal(false)}
-                className="bg-slate-800 border-slate-700 text-slate-100 hover:bg-slate-700 rounded-xl px-6"
+                className="bg-slate-800 border-slate-600 text-slate-100 hover:bg-slate-700 rounded-xl px-6 py-2.5 transition-all duration-200"
               >
                 İptal
               </Button>
               <Button
                 onClick={handleExportKeys}
                 disabled={!selectedCategory}
-                className="bg-green-600 hover:bg-green-700 text-white rounded-xl px-6"
+                className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white rounded-xl px-6 py-2.5 shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Download className="w-4 h-4 mr-2" />
-                İndir
+                <span className="font-medium">İndir</span>
               </Button>
             </DialogFooter>
           </DialogContent>
