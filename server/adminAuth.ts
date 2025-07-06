@@ -25,15 +25,9 @@ export const requireAdminAuth: RequestHandler = (req, res, next) => {
     return res.status(401).json({ message: 'Master şifre doğrulaması gerekli' });
   }
   
-  // Check master password verification time (require re-verification every hour)
-  const masterPasswordAge = Date.now() - (req.session.masterPasswordVerifiedAt || 0);
-  const maxMasterPasswordAge = 60 * 60 * 1000; // 1 hour in milliseconds
-  
-  if (masterPasswordAge > maxMasterPasswordAge) {
-    req.session.masterPasswordVerified = false;
-    req.session.masterPasswordVerifiedAt = undefined;
-    return res.status(401).json({ message: 'Master şifre doğrulaması yenilenmeli' });
-  }
+  // ULTRA SECURITY: Require master password verification for EVERY admin panel access
+  // No time-based expiry - every single admin action requires master password
+  // This provides maximum security where master password is always required
   
   // Check session age (2 hours max for tighter security)
   const sessionAge = Date.now() - (req.session.createdAt || 0);
@@ -56,6 +50,11 @@ export const requireAdminAuth: RequestHandler = (req, res, next) => {
     // });
     // return res.status(401).json({ message: 'Güvenlik nedeniyle oturum sonlandırıldı' });
   }
+  
+  // ULTRA SECURITY: Clear master password verification after each request
+  // This forces re-verification for every single admin panel access
+  req.session.masterPasswordVerified = false;
+  req.session.masterPasswordVerifiedAt = undefined;
   
   next();
 };

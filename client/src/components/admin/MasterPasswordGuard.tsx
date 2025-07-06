@@ -24,26 +24,13 @@ export default function MasterPasswordGuard({
 
   useEffect(() => {
     if (requireMasterPassword) {
-      // Always check with server for master password verification
+      // ULTRA SECURITY: Always check with server for master password verification
+      // No periodic checks needed - every page access requires master password
       checkServerMasterPasswordStatus();
-      
-      // Set up periodic check every 5 minutes to ensure master password hasn't expired
-      intervalRef.current = setInterval(() => {
-        if (isVerified && !isModalOpen) {
-          checkServerMasterPasswordStatus();
-        }
-      }, 5 * 60 * 1000); // Check every 5 minutes
     } else {
       setIsVerified(true);
     }
-
-    // Cleanup interval on unmount
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [requireMasterPassword, isVerified, isModalOpen]);
+  }, [requireMasterPassword]);
 
   const checkServerMasterPasswordStatus = async () => {
     try {
@@ -97,7 +84,8 @@ export default function MasterPasswordGuard({
         setIsModalOpen(false);
         setPassword("");
         
-        // Server now handles verification state - no need for sessionStorage
+        // ULTRA SECURITY: One-time verification for this specific page access only
+        // No persistent verification - each new page will require master password again
         
         toast({
           title: "Başarılı",
@@ -194,7 +182,7 @@ export default function MasterPasswordGuard({
           
           <div className="text-center mt-4">
             <p className="text-xs text-gray-500">
-              Güvenlik nedeniyle her 1 saatte bir doğrulama gerekir
+              Maksimum güvenlik: Her admin panel erişiminde doğrulama gerekir
             </p>
           </div>
         </DialogContent>
