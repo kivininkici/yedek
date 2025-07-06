@@ -7,17 +7,14 @@ import ConnectPgSimple from "connect-pg-simple";
 import { pool } from "./db";
 import { setupAuth } from "./replitAuth";
 import { setupAdminAuth } from "./adminAuth";
-// Performance optimized imports - heavy security modules removed
-// Security imports removed for performance
+import { setupComprehensiveSecurity } from "./security/comprehensive";
 
 // Load environment variables
 config();
 
 const app = express();
 
-// Security middleware completely disabled for performance
-// All security layers removed to improve loading speed
-
+// Basic request parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: false, limit: '10mb' }));
 
@@ -45,6 +42,9 @@ app.use(
     },
   })
 );
+
+// Setup comprehensive security protection
+setupComprehensiveSecurity(app);
 
 // Ultra-fast logging - only slow requests
 app.use((req, res, next) => {

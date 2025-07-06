@@ -5,6 +5,7 @@ import { setupAdminAuth, requireAdminAuth, hashPassword, comparePassword } from 
 import { getCurrentMasterPassword, updateMasterPassword } from "./config/security";
 import { db } from "./db";
 import { desc, eq, sql } from "drizzle-orm";
+import { getSecurityStatus } from "./security/comprehensive";
 import fs from 'fs';
 import path from 'path';
 import { sendFeedbackResponse, sendComplaintResponse, sendPasswordResetEmailNew } from './emailService';
@@ -17,7 +18,7 @@ import {
   adminRouteProtection, 
   antiAutomationMiddleware, 
   getConsoleProtectionScript, 
-  getSecurityStatus 
+  getSecurityStatus as getProtectionStatus 
 } from './security/protections';
 
 // Using admin session-based authentication only
@@ -4119,6 +4120,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Master password update error:', error);
       res.status(500).json({ error: 'Master şifre güncellenemedi' });
+    }
+  });
+
+  // Security Status API endpoint
+  app.get('/api/admin/security-status', requireAdminAuth, async (req, res) => {
+    try {
+      const securityStatus = getSecurityStatus();
+      res.json(securityStatus);
+    } catch (error) {
+      console.error('Security status error:', error);
+      res.status(500).json({ error: 'Güvenlik durumu alınamadı' });
     }
   });
 
