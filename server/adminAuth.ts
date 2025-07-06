@@ -20,6 +20,21 @@ export const requireAdminAuth: RequestHandler = (req, res, next) => {
     return res.status(401).json({ message: 'Admin girişi gerekli' });
   }
   
+  // Check if master password was verified for this session
+  if (!req.session?.masterPasswordVerified) {
+    return res.status(401).json({ message: 'Master şifre doğrulaması gerekli' });
+  }
+  
+  // Check master password verification time (require re-verification every hour)
+  const masterPasswordAge = Date.now() - (req.session.masterPasswordVerifiedAt || 0);
+  const maxMasterPasswordAge = 60 * 60 * 1000; // 1 hour in milliseconds
+  
+  if (masterPasswordAge > maxMasterPasswordAge) {
+    req.session.masterPasswordVerified = false;
+    req.session.masterPasswordVerifiedAt = undefined;
+    return res.status(401).json({ message: 'Master şifre doğrulaması yenilenmeli' });
+  }
+  
   // Check session age (2 hours max for tighter security)
   const sessionAge = Date.now() - (req.session.createdAt || 0);
   const maxSessionAge = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
@@ -181,11 +196,12 @@ export function setupAdminAuth(app: Express) {
       // Update last login
       await storage.updateAdminLastLogin(admin.id);
 
-      // Set session with security info
+      // Set session with security info (but do NOT set master password verification here)
       req.session.adminId = admin.id;
       req.session.adminUsername = admin.username;
       req.session.loginIP = ipAddress;
       req.session.createdAt = Date.now();
+      // Master password verification intentionally NOT set here - requires separate verification
 
       res.json({ 
         message: 'Giriş başarılı',
@@ -255,6 +271,12 @@ export function setupAdminAuth(app: Express) {
       
       if (inputPassword !== correctMasterPassword) {
         return res.status(401).json({ message: 'Hatalı master şifre' });
+      }
+
+      // Set master password verification in session
+      if (req.session) {
+        req.session.masterPasswordVerified = true;
+        req.session.masterPasswordVerifiedAt = Date.now();
       }
 
       res.json({ message: 'Master şifre doğrulandı' });

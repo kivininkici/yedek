@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -20,26 +20,57 @@ export default function MasterPasswordGuard({
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (requireMasterPassword) {
-      // Check if master password was verified in this session
-      const verified = sessionStorage.getItem('masterPasswordVerified');
-      const verifiedTime = sessionStorage.getItem('masterPasswordTime');
-      const now = Date.now();
+      // Always check with server for master password verification
+      checkServerMasterPasswordStatus();
       
-      // Master password verification expires after 30 minutes
-      if (verified && verifiedTime && (now - parseInt(verifiedTime)) < 30 * 60 * 1000) {
-        setIsVerified(true);
-      } else {
-        setIsModalOpen(true);
-        sessionStorage.removeItem('masterPasswordVerified');
-        sessionStorage.removeItem('masterPasswordTime');
-      }
+      // Set up periodic check every 5 minutes to ensure master password hasn't expired
+      intervalRef.current = setInterval(() => {
+        if (isVerified && !isModalOpen) {
+          checkServerMasterPasswordStatus();
+        }
+      }, 5 * 60 * 1000); // Check every 5 minutes
     } else {
       setIsVerified(true);
     }
-  }, [requireMasterPassword]);
+
+    // Cleanup interval on unmount
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [requireMasterPassword, isVerified, isModalOpen]);
+
+  const checkServerMasterPasswordStatus = async () => {
+    try {
+      // Make a test request to any admin endpoint to check master password status
+      const response = await fetch('/api/admin/me', {
+        credentials: 'include'
+      });
+      
+      if (response.status === 401) {
+        const errorData = await response.json();
+        // Check if error is specifically about master password
+        if (errorData.message?.includes('Master şifre') || errorData.message?.includes('master')) {
+          setIsModalOpen(true);
+          setIsVerified(false);
+        } else {
+          // Other auth errors, redirect to login
+          window.location.href = '/admin/login';
+        }
+      } else if (response.ok) {
+        setIsVerified(true);
+      }
+    } catch (error) {
+      console.error('Error checking master password status:', error);
+      setIsModalOpen(true);
+      setIsVerified(false);
+    }
+  };
 
   const handleVerifyPassword = async () => {
     if (!password.trim()) {
@@ -66,9 +97,7 @@ export default function MasterPasswordGuard({
         setIsModalOpen(false);
         setPassword("");
         
-        // Store verification in session
-        sessionStorage.setItem('masterPasswordVerified', 'true');
-        sessionStorage.setItem('masterPasswordTime', Date.now().toString());
+        // Server now handles verification state - no need for sessionStorage
         
         toast({
           title: "Başarılı",
@@ -165,7 +194,7 @@ export default function MasterPasswordGuard({
           
           <div className="text-center mt-4">
             <p className="text-xs text-gray-500">
-              Güvenlik nedeniyle her 30 dakikada bir doğrulama gerekir
+              Güvenlik nedeniyle her 1 saatte bir doğrulama gerekir
             </p>
           </div>
         </DialogContent>

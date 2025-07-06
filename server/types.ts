@@ -8,6 +8,8 @@ declare module 'express-session' {
     userId?: number;
     username?: string;
     isAdmin?: boolean;
+    masterPasswordVerified?: boolean;
+    masterPasswordVerifiedAt?: number;
   }
 }
 
