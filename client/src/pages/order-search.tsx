@@ -225,6 +225,172 @@ export default function OrderSearchPage() {
     });
   };
 
+  // Modern Progress Tracker Component
+  const renderProgressTracker = (status: string) => {
+    const steps = [
+      { 
+        id: 'received', 
+        label: 'Sipariş Alındı', 
+        icon: CheckCircle,
+        statuses: ['pending', 'processing', 'in_progress', 'completed', 'partial', 'failed', 'cancelled']
+      },
+      { 
+        id: 'processing', 
+        label: 'İşleniyor', 
+        icon: Activity,
+        statuses: ['processing', 'in_progress', 'completed', 'partial']
+      },
+      { 
+        id: 'progress', 
+        label: 'Devam Ediyor', 
+        icon: TrendingUp,
+        statuses: ['in_progress', 'completed', 'partial']
+      },
+      { 
+        id: 'completed', 
+        label: 'Tamamlandı', 
+        icon: Package,
+        statuses: ['completed']
+      }
+    ];
+
+    const getCurrentStepIndex = () => {
+      if (status === 'completed') return 3;
+      if (status === 'in_progress' || status === 'partial') return 2;
+      if (status === 'processing') return 1;
+      return 0;
+    };
+
+    const currentStep = getCurrentStepIndex();
+
+    return (
+      <div className="relative">
+        {/* Progress Line */}
+        <div className="absolute top-6 left-6 right-6 h-1 bg-gray-700 rounded-full">
+          <motion.div 
+            className="h-full bg-gradient-to-r from-green-500 to-blue-500 rounded-full"
+            initial={{ width: '0%' }}
+            animate={{ 
+              width: status === 'failed' || status === 'cancelled' ? '25%' : `${(currentStep / 3) * 100}%` 
+            }}
+            transition={{ duration: 1, ease: "easeInOut" }}
+          />
+        </div>
+
+        {/* Steps */}
+        <div className="relative flex justify-between">
+          {steps.map((step, index) => {
+            const isActive = index <= currentStep;
+            const isCurrent = index === currentStep;
+            const isCompleted = index < currentStep || status === 'completed';
+            const isFailed = (status === 'failed' || status === 'cancelled') && index > 0;
+            
+            const IconComponent = step.icon;
+
+            return (
+              <motion.div
+                key={step.id}
+                className="flex flex-col items-center relative z-10"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: index * 0.2, duration: 0.5 }}
+              >
+                {/* Step Circle */}
+                <motion.div
+                  className={`w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-500 ${
+                    isFailed
+                      ? 'bg-gray-600 border-gray-500'
+                      : isCompleted
+                      ? 'bg-green-500 border-green-400 shadow-lg shadow-green-500/30'
+                      : isCurrent
+                      ? 'bg-blue-500 border-blue-400 shadow-lg shadow-blue-500/30'
+                      : isActive
+                      ? 'bg-blue-500/20 border-blue-400'
+                      : 'bg-gray-700 border-gray-600'
+                  }`}
+                  animate={isCurrent ? {
+                    scale: [1, 1.05, 1],
+                    boxShadow: [
+                      '0 0 20px rgba(59, 130, 246, 0.3)',
+                      '0 0 30px rgba(59, 130, 246, 0.5)',
+                      '0 0 20px rgba(59, 130, 246, 0.3)'
+                    ]
+                  } : {}}
+                  transition={isCurrent ? {
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  } : {}}
+                >
+                  <IconComponent 
+                    className={`w-6 h-6 transition-colors duration-300 ${
+                      isFailed
+                        ? 'text-gray-400'
+                        : isCompleted
+                        ? 'text-white'
+                        : isCurrent
+                        ? 'text-white'
+                        : isActive
+                        ? 'text-blue-300'
+                        : 'text-gray-500'
+                    }`} 
+                  />
+                </motion.div>
+
+                {/* Step Label */}
+                <motion.div 
+                  className="mt-3 text-center"
+                  initial={{ y: 10, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: index * 0.2 + 0.3 }}
+                >
+                  <p className={`text-sm font-medium transition-colors duration-300 ${
+                    isFailed
+                      ? 'text-gray-500'
+                      : isActive
+                      ? 'text-white'
+                      : 'text-gray-400'
+                  }`}>
+                    {step.label}
+                  </p>
+                </motion.div>
+
+                {/* Current Step Indicator */}
+                {isCurrent && !isFailed && (
+                  <motion.div
+                    className="absolute -bottom-6 left-1/2 transform -translate-x-1/2"
+                    initial={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.8 }}
+                  >
+                    <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse" />
+                  </motion.div>
+                )}
+              </motion.div>
+            );
+          })}
+        </div>
+
+        {/* Status Message */}
+        {(status === 'failed' || status === 'cancelled') && (
+          <motion.div
+            className="mt-6 text-center"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1 }}
+          >
+            <div className="flex items-center justify-center space-x-2 text-red-400">
+              <XCircle className="w-5 h-5" />
+              <span className="font-medium">
+                {status === 'failed' ? 'Sipariş başarısız oldu' : 'Sipariş iptal edildi'}
+              </span>
+            </div>
+          </motion.div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen text-white relative">
       <CleanBackground />
@@ -379,6 +545,19 @@ export default function OrderSearchPage() {
 
                 {/* Order Details Grid */}
                 <div className="grid md:grid-cols-2 gap-6">
+                  {/* Order Progress Tracker */}
+                  <Card className="bg-black/30 border border-white/20 backdrop-blur-xl md:col-span-2">
+                    <CardHeader>
+                      <CardTitle className="flex items-center text-white">
+                        <Activity className="w-5 h-5 mr-2 text-blue-400" />
+                        Sipariş Durumu
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-6">
+                      {renderProgressTracker(searchedOrder.status)}
+                    </CardContent>
+                  </Card>
+
                   {/* Service Info - Simplified */}
                   <Card className="bg-black/30 border border-white/20 backdrop-blur-xl">
                     <CardHeader>
