@@ -1,0 +1,15 @@
+# Upload dosyaları için güvenlik
+# Sadece belirli dosya türlerine izin ver
+<FilesMatch "\.(php|phtml|php3|php4|php5|pl|py|jsp|asp|sh|cgi)$">
+    Deny from all
+</FilesMatch>
+
+# Apache 2.4+ için
+<FilesMatch "\.(php|phtml|php3|php4|php5|pl|py|jsp|asp|sh|cgi)$">
+    <RequireAll>
+        Require all denied
+    </RequireAll>
+</FilesMatch>
+
+# Maksimum dosya boyutu (Apache düzeyinde)
+LimitRequestBody 10485760  # 10MB

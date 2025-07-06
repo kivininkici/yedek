@@ -1,0 +1,8 @@
+# Log dosyaları için güvenlik
+# Direkt erişimi engelle
+Deny from all
+
+# Apache 2.4+ için
+<RequireAll>
+    Require all denied
+</RequireAll>
