@@ -1,335 +1,212 @@
 <?php
-/**
- * Authentication API Endpoints
- * OtoKiwi cPanel Compatible Version
- */
+// Authentication API endpoints for cPanel version
+session_start();
+require_once '../config/database.php';
+require_once '../includes/security.php';
 
-header('Content-Type: application/json; charset=utf-8');
+header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
+// Handle preflight requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    exit(0);
+    http_response_code(200);
+    exit();
 }
 
-require_once '../config/config.php';
-
+$db = new Database();
 $method = $_SERVER['REQUEST_METHOD'];
-$path = $_GET['path'] ?? '';
+$path = $_SERVER['REQUEST_URI'];
+
+// Parse the path to get the endpoint
+$pathParts = explode('/', trim($path, '/'));
+$endpoint = end($pathParts);
 
 try {
     switch ($method) {
         case 'POST':
-            handlePost($path);
+            if ($endpoint === 'login') {
+                handleLogin($db);
+            } elseif ($endpoint === 'register') {
+                handleRegister($db);
+            } elseif ($endpoint === 'logout') {
+                handleLogout($db);
+            } else {
+                throw new Exception('Endpoint not found');
+            }
             break;
+            
         case 'GET':
-            handleGet($path);
+            if ($endpoint === 'me') {
+                handleGetUser($db);
+            } else {
+                throw new Exception('Endpoint not found');
+            }
             break;
-        case 'DELETE':
-            handleDelete($path);
-            break;
+            
         default:
-            sendErrorResponse('Method not allowed', 405);
+            throw new Exception('Method not allowed');
     }
 } catch (Exception $e) {
-    error_log("Auth API Error: " . $e->getMessage());
-    sendErrorResponse('Internal server error', 500);
+    http_response_code(400);
+    echo json_encode(['error' => $e->getMessage()]);
 }
 
-function handlePost($path) {
+function handleLogin($db) {
     $input = json_decode(file_get_contents('php://input'), true);
     
-    switch ($path) {
-        case 'login':
-            handleLogin($input);
-            break;
-        case 'register':
-            handleRegister($input);
-            break;
-        case 'verify-math':
-            handleMathVerification($input);
-            break;
-        case 'auto-login':
-            handleAutoLogin($input);
-            break;
-        default:
-            sendErrorResponse('Endpoint not found', 404);
-    }
-}
-
-function handleGet($path) {
-    switch ($path) {
-        case 'user':
-            getCurrentUser();
-            break;
-        case 'math-question':
-            getMathQuestion();
-            break;
-        default:
-            sendErrorResponse('Endpoint not found', 404);
-    }
-}
-
-function handleDelete($path) {
-    switch ($path) {
-        case 'logout':
-            handleLogout();
-            break;
-        default:
-            sendErrorResponse('Endpoint not found', 404);
-    }
-}
-
-function handleLogin($input) {
-    $username = sanitizeInput($input['username'] ?? '');
-    $password = $input['password'] ?? '';
-    $mathAnswer = $input['mathAnswer'] ?? '';
-    $questionId = $input['questionId'] ?? '';
-    
-    $ip = $_SERVER['REMOTE_ADDR'];
-    
-    // Check if IP is blocked
-    if (checkLoginAttempts($ip, 'user')) {
-        logLoginAttempt($ip, $username, 'user', 'blocked');
-        sendErrorResponse('Çok fazla başarısız deneme. 15 dakika sonra tekrar deneyin.', 429);
+    if (!isset($input['username']) || !isset($input['password'])) {
+        throw new Exception('Username and password are required');
     }
     
-    // Validate math question
-    if (!validateMathAnswer($mathAnswer, $questionId)) {
-        logLoginAttempt($ip, $username, 'user', 'failed_math');
-        sendErrorResponse('Matematik sorusu yanlış yanıtlandı.', 400);
+    $username = sanitizeInput($input['username']);
+    $password = $input['password'];
+    
+    // Log login attempt
+    logLoginAttempt($db, $username, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], 'attempt');
+    
+    // Check rate limiting
+    if (isRateLimited($db, $_SERVER['REMOTE_ADDR'])) {
+        throw new Exception('Too many login attempts. Please try again later.');
     }
     
-    if (empty($username) || empty($password)) {
-        sendErrorResponse('Kullanıcı adı ve şifre gerekli', 400);
+    // Find user
+    $user = $db->fetchOne(
+        'SELECT * FROM users WHERE username = ? OR email = ?',
+        [$username, $username]
+    );
+    
+    if (!$user || !password_verify($password, $user['password'])) {
+        logLoginAttempt($db, $username, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], 'failed_password');
+        throw new Exception('Invalid credentials');
     }
     
-    try {
-        $db = getDB();
-        $user = $db->fetchOne(
-            "SELECT * FROM users WHERE username = ? OR email = ?",
-            [$username, $username]
-        );
-        
-        if (!$user || !verifyPassword($password, $user['password'])) {
-            logLoginAttempt($ip, $username, 'user', 'failed_password');
-            sendErrorResponse('Geçersiz kullanıcı adı veya şifre', 401);
-        }
-        
-        // Create session
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['username'] = $user['username'];
-        $_SESSION['role'] = $user['role'];
-        
-        logLoginAttempt($ip, $username, 'user', 'success');
-        logActivity('user_login', 'User logged in', ['username' => $username], $user['id']);
-        
-        sendSuccessResponse('Giriş başarılı', [
-            'user' => [
-                'id' => $user['id'],
-                'username' => $user['username'],
-                'email' => $user['email'],
-                'role' => $user['role']
-            ]
-        ]);
-        
-    } catch (Exception $e) {
-        error_log("Login error: " . $e->getMessage());
-        sendErrorResponse('Giriş sırasında hata oluştu', 500);
-    }
-}
-
-function handleRegister($input) {
-    $username = sanitizeInput($input['username'] ?? '');
-    $email = sanitizeInput($input['email'] ?? '');
-    $password = $input['password'] ?? '';
-    $confirmPassword = $input['confirmPassword'] ?? '';
-    $mathAnswer = $input['mathAnswer'] ?? '';
-    $questionId = $input['questionId'] ?? '';
+    // Create session
+    $_SESSION['user_id'] = $user['id'];
+    $_SESSION['username'] = $user['username'];
+    $_SESSION['role'] = $user['role'];
+    $_SESSION['login_time'] = time();
     
-    // Validate math question
-    if (!validateMathAnswer($mathAnswer, $questionId)) {
-        sendErrorResponse('Matematik sorusu yanlış yanıtlandı.', 400);
-    }
+    logLoginAttempt($db, $username, $_SERVER['REMOTE_ADDR'], $_SERVER['HTTP_USER_AGENT'], 'success');
     
-    // Validation
-    if (empty($username) || empty($email) || empty($password)) {
-        sendErrorResponse('Tüm alanlar gerekli', 400);
-    }
-    
-    if ($password !== $confirmPassword) {
-        sendErrorResponse('Şifreler eşleşmiyor', 400);
-    }
-    
-    if (strlen($password) < 6) {
-        sendErrorResponse('Şifre en az 6 karakter olmalıdır', 400);
-    }
-    
-    if (!validateEmail($email)) {
-        sendErrorResponse('Geçerli bir e-posta adresi girin', 400);
-    }
-    
-    try {
-        $db = getDB();
-        
-        // Check if user exists
-        $existingUser = $db->fetchOne(
-            "SELECT id FROM users WHERE username = ? OR email = ?",
-            [$username, $email]
-        );
-        
-        if ($existingUser) {
-            sendErrorResponse('Bu kullanıcı adı veya e-posta zaten kullanımda', 409);
-        }
-        
-        // Create user
-        $hashedPassword = hashPassword($password);
-        $userId = $db->insert('users', [
-            'username' => $username,
-            'email' => $email,
-            'password' => $hashedPassword,
-            'role' => 'user'
-        ]);
-        
-        // Auto login after registration
-        $_SESSION['user_id'] = $userId;
-        $_SESSION['username'] = $username;
-        $_SESSION['role'] = 'user';
-        
-        logActivity('user_register', 'New user registered', ['username' => $username], $userId);
-        
-        sendSuccessResponse('Kayıt başarılı', [
-            'user' => [
-                'id' => $userId,
-                'username' => $username,
-                'email' => $email,
-                'role' => 'user'
-            ]
-        ]);
-        
-    } catch (Exception $e) {
-        error_log("Registration error: " . $e->getMessage());
-        sendErrorResponse('Kayıt sırasında hata oluştu', 500);
-    }
-}
-
-function handleAutoLogin($input) {
-    requireAdmin();
-    
-    $userId = $input['userId'] ?? '';
-    
-    if (empty($userId)) {
-        sendErrorResponse('Kullanıcı ID gerekli', 400);
-    }
-    
-    try {
-        $db = getDB();
-        $user = $db->fetchOne("SELECT * FROM users WHERE id = ?", [$userId]);
-        
-        if (!$user) {
-            sendErrorResponse('Kullanıcı bulunamadı', 404);
-        }
-        
-        // Create new session for the user
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['username'] = $user['username'];
-        $_SESSION['role'] = $user['role'];
-        
-        logActivity('admin_auto_login', 'Admin logged in as user', ['target_user' => $user['username']]);
-        
-        sendSuccessResponse('Otomatik giriş başarılı', [
-            'user' => [
-                'id' => $user['id'],
-                'username' => $user['username'],
-                'email' => $user['email'],
-                'role' => $user['role']
-            ]
-        ]);
-        
-    } catch (Exception $e) {
-        error_log("Auto login error: " . $e->getMessage());
-        sendErrorResponse('Otomatik giriş sırasında hata oluştu', 500);
-    }
-}
-
-function getCurrentUser() {
-    if (!isLoggedIn()) {
-        sendErrorResponse('Giriş yapılmamış', 401);
-    }
-    
-    try {
-        $db = getDB();
-        $user = $db->fetchOne("SELECT * FROM users WHERE id = ?", [$_SESSION['user_id']]);
-        
-        if (!$user) {
-            session_destroy();
-            sendErrorResponse('Kullanıcı bulunamadı', 404);
-        }
-        
-        sendSuccessResponse('Kullanıcı bilgileri', [
-            'user' => [
-                'id' => $user['id'],
-                'username' => $user['username'],
-                'email' => $user['email'],
-                'role' => $user['role']
-            ]
-        ]);
-        
-    } catch (Exception $e) {
-        error_log("Get user error: " . $e->getMessage());
-        sendErrorResponse('Kullanıcı bilgileri alınamadı', 500);
-    }
-}
-
-function getMathQuestion() {
-    $questions = MATH_QUESTIONS;
-    $randomQuestion = $questions[array_rand($questions)];
-    
-    $questionId = md5($randomQuestion['question'] . time());
-    $_SESSION['math_question'] = [
-        'id' => $questionId,
-        'answer' => $randomQuestion['answer'],
-        'timestamp' => time()
-    ];
-    
-    sendSuccessResponse('Matematik sorusu', [
-        'question' => $randomQuestion['question'],
-        'questionId' => $questionId
+    echo json_encode([
+        'user' => [
+            'id' => $user['id'],
+            'username' => $user['username'],
+            'email' => $user['email'],
+            'role' => $user['role'],
+            'avatar_id' => $user['avatar_id']
+        ]
     ]);
 }
 
-function validateMathAnswer($answer, $questionId) {
-    if (!isset($_SESSION['math_question'])) {
-        return false;
+function handleRegister($db) {
+    $input = json_decode(file_get_contents('php://input'), true);
+    
+    if (!isset($input['username']) || !isset($input['email']) || !isset($input['password'])) {
+        throw new Exception('Username, email and password are required');
     }
     
-    $storedQuestion = $_SESSION['math_question'];
+    $username = sanitizeInput($input['username']);
+    $email = sanitizeInput($input['email']);
+    $password = $input['password'];
     
-    // Check if question ID matches and hasn't expired (5 minutes)
-    if ($storedQuestion['id'] !== $questionId || 
-        (time() - $storedQuestion['timestamp']) > 300) {
-        return false;
+    // Validate input
+    if (strlen($username) < 3) {
+        throw new Exception('Username must be at least 3 characters');
     }
     
-    return intval($answer) === $storedQuestion['answer'];
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        throw new Exception('Invalid email format');
+    }
+    
+    if (strlen($password) < 6) {
+        throw new Exception('Password must be at least 6 characters');
+    }
+    
+    // Check if user exists
+    $existingUser = $db->fetchOne(
+        'SELECT id FROM users WHERE username = ? OR email = ?',
+        [$username, $email]
+    );
+    
+    if ($existingUser) {
+        throw new Exception('Username or email already exists');
+    }
+    
+    // Create user
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    $avatarId = rand(1, 24); // Random avatar
+    
+    $success = $db->insert('users', [
+        'username' => $username,
+        'email' => $email,
+        'password' => $hashedPassword,
+        'role' => 'user',
+        'avatar_id' => $avatarId
+    ]);
+    
+    if (!$success) {
+        throw new Exception('Failed to create user');
+    }
+    
+    $userId = $db->lastInsertId();
+    
+    // Auto-login after registration
+    $_SESSION['user_id'] = $userId;
+    $_SESSION['username'] = $username;
+    $_SESSION['role'] = 'user';
+    $_SESSION['login_time'] = time();
+    
+    echo json_encode([
+        'user' => [
+            'id' => $userId,
+            'username' => $username,
+            'email' => $email,
+            'role' => 'user',
+            'avatar_id' => $avatarId
+        ]
+    ]);
 }
 
-function handleMathVerification($input) {
-    $answer = $input['answer'] ?? '';
-    $questionId = $input['questionId'] ?? '';
-    
-    $isValid = validateMathAnswer($answer, $questionId);
-    
-    sendSuccessResponse('Matematik doğrulama', ['valid' => $isValid]);
-}
-
-function handleLogout() {
-    if (isLoggedIn()) {
-        logActivity('user_logout', 'User logged out', ['username' => $_SESSION['username']]);
-    }
-    
+function handleLogout($db) {
     session_destroy();
-    sendSuccessResponse('Çıkış başarılı');
+    echo json_encode(['message' => 'Logged out successfully']);
+}
+
+function handleGetUser($db) {
+    if (!isset($_SESSION['user_id'])) {
+        throw new Exception('Not authenticated');
+    }
+    
+    $user = $db->fetchOne(
+        'SELECT id, username, email, role, avatar_id FROM users WHERE id = ?',
+        [$_SESSION['user_id']]
+    );
+    
+    if (!$user) {
+        throw new Exception('User not found');
+    }
+    
+    echo json_encode(['user' => $user]);
+}
+
+function logLoginAttempt($db, $username, $ip, $userAgent, $status) {
+    $db->insert('login_attempts', [
+        'username' => $username,
+        'ip_address' => $ip,
+        'user_agent' => $userAgent,
+        'status' => $status
+    ]);
+}
+
+function isRateLimited($db, $ip) {
+    $attempts = $db->fetchOne(
+        'SELECT COUNT(*) as count FROM login_attempts WHERE ip_address = ? AND status IN ("failed_password", "failed_security") AND created_at > DATE_SUB(NOW(), INTERVAL 15 MINUTE)',
+        [$ip]
+    );
+    
+    return $attempts['count'] >= 5;
 }
 ?>

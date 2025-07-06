@@ -1,17 +1,75 @@
-# KeyPanel .htaccess Configuration
-# cPanel Compatible Version
+# OtoKiwi cPanel .htaccess Configuration
+
+# Enable URL Rewriting
+RewriteEngine On
 
 # Security Headers
 <IfModule mod_headers.c>
-    Header always set X-Content-Type-Options nosniff
-    Header always set X-Frame-Options DENY
+    # Prevent MIME type sniffing
+    Header always set X-Content-Type-Options "nosniff"
+    
+    # Prevent clickjacking
+    Header always set X-Frame-Options "DENY"
+    
+    # Enable XSS protection
     Header always set X-XSS-Protection "1; mode=block"
-    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
-    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; font-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self'"
-    Header always set Referrer-Policy strict-origin-when-cross-origin
+    
+    # Referrer Policy
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Content Security Policy
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' cdn.jsdelivr.net cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' cdn.jsdelivr.net cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' cdn.jsdelivr.net cdnjs.cloudflare.com; connect-src 'self'"
+    
+    # HSTS (if using HTTPS)
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" env=HTTPS
+    
+    # Feature Policy
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
 </IfModule>
 
-# Enable Compression
+# Disable server signature
+ServerSignature Off
+
+# Hide Apache version
+<IfModule mod_security.c>
+    SecServerSignature Off
+</IfModule>
+
+# Disable directory browsing
+Options -Indexes
+
+# Protect sensitive files
+<FilesMatch "\.(htaccess|htpasswd|ini|log|sh|sql|conf|config)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Protect config and includes directories
+<IfModule mod_rewrite.c>
+    RewriteRule ^(config|includes|database)/ - [F,L]
+</IfModule>
+
+# Block access to PHP files in uploads directory (if exists)
+<IfModule mod_rewrite.c>
+    RewriteRule ^uploads/.*\.php$ - [F,L]
+</IfModule>
+
+# API Routing
+<IfModule mod_rewrite.c>
+    # Route API requests to appropriate PHP files
+    RewriteRule ^api/auth/(.*)$ api/auth.php [QSA,L]
+    RewriteRule ^api/admin/(.*)$ api/admin.php [QSA,L]
+    RewriteRule ^api/user/(.*)$ api/user.php [QSA,L]
+    RewriteRule ^api/public/(.*)$ api/public.php [QSA,L]
+    
+    # Route all other requests to index.php (SPA)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} !^/api/
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
+
+# Gzip Compression
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/plain
     AddOutputFilterByType DEFLATE text/html
@@ -28,145 +86,119 @@
 # Browser Caching
 <IfModule mod_expires.c>
     ExpiresActive On
+    
+    # Images
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType image/webp "access plus 1 month"
+    
+    # CSS and JavaScript
     ExpiresByType text/css "access plus 1 month"
     ExpiresByType application/javascript "access plus 1 month"
     ExpiresByType application/x-javascript "access plus 1 month"
-    ExpiresByType text/javascript "access plus 1 month"
-    ExpiresByType image/png "access plus 1 year"
-    ExpiresByType image/jpg "access plus 1 year"
-    ExpiresByType image/jpeg "access plus 1 year"
-    ExpiresByType image/gif "access plus 1 year"
-    ExpiresByType image/svg+xml "access plus 1 year"
-    ExpiresByType image/ico "access plus 1 year"
-    ExpiresByType image/icon "access plus 1 year"
-    ExpiresByType text/plain "access plus 1 month"
+    
+    # Fonts
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/ttf "access plus 1 year"
+    ExpiresByType application/font-woff "access plus 1 year"
+    
+    # Other files
     ExpiresByType application/pdf "access plus 1 month"
-    ExpiresByType text/html "access plus 1 day"
+    ExpiresByType text/html "access plus 0 seconds"
 </IfModule>
 
-# URL Rewriting
-RewriteEngine On
-
-# API Routing
-RewriteRule ^api/auth/(.*)$ api/auth.php?path=$1 [QSA,L]
-RewriteRule ^api/admin/(.*)$ api/admin.php?path=$1 [QSA,L]
-RewriteRule ^api/keys/(.*)$ api/keys.php?path=$1 [QSA,L]
-RewriteRule ^api/orders/(.*)$ api/orders.php?path=$1 [QSA,L]
-
-# SPA Routing - Redirect all non-file requests to index.html
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_URI} !^/api/
-RewriteCond %{REQUEST_URI} !^/admin/
-RewriteRule ^(.*)$ index.html [QSA,L]
-
-# Protect sensitive files
-<Files "*.php">
-    Order Allow,Deny
-    Allow from all
-</Files>
-
-<Files "config.php">
-    Order Deny,Allow
-    Deny from all
-</Files>
-
-<Files "database.php">
-    Order Deny,Allow
-    Deny from all
-</Files>
-
-<Files ".htaccess">
-    Order Deny,Allow
-    Deny from all
-</Files>
-
-<Files "*.log">
-    Order Deny,Allow
-    Deny from all
-</Files>
-
-# Prevent access to hidden files
-<FilesMatch "^\.">
-    Order Deny,Allow
-    Deny from all
-</FilesMatch>
-
-# Block access to backup files
-<FilesMatch "\.(bak|backup|old|tmp|temp)$">
-    Order Deny,Allow
-    Deny from all
-</FilesMatch>
-
-# Prevent SQL injection attempts
-<IfModule mod_rewrite.c>
-    RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
-    RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
-    RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2}) [OR]
-    RewriteCond %{QUERY_STRING} (\<|%3C).*iframe.*(\>|%3E) [NC,OR]
-    RewriteCond %{QUERY_STRING} (<|%3C)([^s]*s)+cript.*(>|%3E) [NC,OR]
-    RewriteCond %{QUERY_STRING} (<|%3C).*embed.*(>|%3E) [NC,OR]
-    RewriteCond %{QUERY_STRING} (<|%3C).*object.*(>|%3E) [NC,OR]
-    RewriteCond %{QUERY_STRING} (<|%3C).*applet.*(>|%3E) [NC,OR]
-    RewriteCond %{QUERY_STRING} (;|<|>|'|"|\)|%0A|%0D|%22|%27|%3C|%3E|%00) [NC]
-    RewriteRule .* - [F,L]
-</IfModule>
-
-# Block common attack patterns
-<IfModule mod_rewrite.c>
-    RewriteCond %{HTTP_USER_AGENT} (libwww-perl|wget|python|nikto|curl|scan|java|winhttp|clshttp|loader) [NC,OR]
-    RewriteCond %{HTTP_USER_AGENT} (%0A|%0D|%27|%3C|%3E|%00) [NC,OR]
-    RewriteCond %{HTTP_USER_AGENT} (;|<|>|'|"|\)|\(|%0A|%0D|%22|%27|%28|%3C|%3E|%00).*(libwww-perl|wget|python|nikto|curl|scan|java|winhttp|HTTrack|clshttp|archiver|loader|email|harvest|extract|grab|miner) [NC,OR]
-    RewriteCond %{THE_REQUEST} (\?|\*|%2a)+(%20+|\\s+|%20+\\s+|\\s+%20+|\\s+%20+\\s+)(http|https)(:/|/) [NC,OR]
-    RewriteCond %{THE_REQUEST} etc/passwd [NC,OR]
-    RewriteCond %{THE_REQUEST} cgi-bin [NC,OR]
-    RewriteCond %{THE_REQUEST} (%0A|%0D) [NC,OR]
-    RewriteCond %{REQUEST_URI} owssvr\.dll [NC,OR]
-    RewriteCond %{HTTP_REFERER} (%0A|%0D|%27|%3C|%3E|%00) [NC,OR]
-    RewriteCond %{HTTP_REFERER} \.opendirviewer\. [NC,OR]
-    RewriteCond %{HTTP_REFERER} users\.skynet\.be.* [NC,OR]
-    RewriteCond %{QUERY_STRING} [a-zA-Z0-9_]=http:// [OR]
-    RewriteCond %{QUERY_STRING} [a-zA-Z0-9_]=(\.\.//?)+ [OR]
-    RewriteCond %{QUERY_STRING} [a-zA-Z0-9_]=/([a-z0-9_.]//?)+ [NC,OR]
-    RewriteCond %{QUERY_STRING} \=PHP[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12} [NC,OR]
-    RewriteCond %{QUERY_STRING} (\.\./|\.\.) [OR]
-    RewriteCond %{QUERY_STRING} ftp\: [NC,OR]
-    RewriteCond %{QUERY_STRING} http\: [NC,OR]
-    RewriteCond %{QUERY_STRING} https\: [NC,OR]
-    RewriteCond %{QUERY_STRING} \=\|w\| [NC,OR]
-    RewriteCond %{QUERY_STRING} ^(.*)/self/(.*)$ [NC,OR]
-    RewriteCond %{QUERY_STRING} ^(.*)cPath=http://(.*)$ [NC,OR]
-    RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
-    RewriteCond %{QUERY_STRING} (<|%3C)([^s]*s)+cript.*(>|%3E) [NC,OR]
-    RewriteCond %{QUERY_STRING} (\<|%3C).*embed.*(\>|%3E) [NC,OR]
-    RewriteCond %{QUERY_STRING} (<|%3C).*object.*(>|%3E) [NC,OR]
-    RewriteCond %{QUERY_STRING} (<|%3C).*iframe.*(>|%3E) [NC,OR]
-    RewriteCond %{QUERY_STRING} (\<|%3C).*applet.*(\>|%3E) [NC,OR]
-    RewriteCond %{QUERY_STRING} (\<|%3C).*meta.*(\>|%3E) [NC,OR]
-    RewriteCond %{QUERY_STRING} (\<|%3C).*style.*(\>|%3E) [NC,OR]
-    RewriteCond %{QUERY_STRING} (\<|%3C).*form.*(\>|%3E) [NC,OR]
-    RewriteCond %{QUERY_STRING} (\<|%3C).*img.*(\>|%3E) [NC,OR]
-    RewriteCond %{QUERY_STRING} %0A|%0D [NC,OR]
-    RewriteCond %{REQUEST_METHOD} ^(TRACE|DELETE|TRACK) [NC]
-    RewriteRule .* - [F,L]
+# Cache Control Headers
+<IfModule mod_headers.c>
+    # Cache static assets
+    <FilesMatch "\.(css|js|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot)$">
+        Header set Cache-Control "max-age=2592000, public"
+    </FilesMatch>
+    
+    # Don't cache HTML, API responses, and dynamic content
+    <FilesMatch "\.(html|php)$">
+        Header set Cache-Control "no-cache, no-store, must-revalidate"
+        Header set Pragma "no-cache"
+        Header set Expires "0"
+    </FilesMatch>
 </IfModule>
 
 # Limit file upload size (adjust as needed)
-LimitRequestBody 10485760
+php_value upload_max_filesize 10M
+php_value post_max_size 10M
+php_value max_execution_time 300
+php_value max_input_time 300
 
-# Error Pages
-ErrorDocument 400 /error.html
-ErrorDocument 401 /error.html
-ErrorDocument 403 /error.html
-ErrorDocument 404 /error.html
-ErrorDocument 500 /error.html
-
-# Disable server signature
-ServerSignature Off
-
-# Hide Apache version
-<IfModule mod_headers.c>
-    Header unset Server
-    Header always unset X-Powered-By
-    Header unset X-Powered-By
+# Error handling
+<IfModule mod_rewrite.c>
+    # Custom error pages
+    ErrorDocument 400 /error.php?code=400
+    ErrorDocument 401 /error.php?code=401
+    ErrorDocument 403 /error.php?code=403
+    ErrorDocument 404 /error.php?code=404
+    ErrorDocument 500 /error.php?code=500
+    ErrorDocument 502 /error.php?code=502
+    ErrorDocument 503 /error.php?code=503
 </IfModule>
+
+# Prevent access to log files
+<FilesMatch "\.log$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Block common attack patterns
+<IfModule mod_rewrite.c>
+    # Block SQL injection attempts
+    RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
+    RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
+    RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2}) [OR]
+    RewriteCond %{QUERY_STRING} proc/self/environ [OR]
+    RewriteCond %{QUERY_STRING} mosConfig_[a-zA-Z_]{1,21}(=|\%3D) [OR]
+    RewriteCond %{QUERY_STRING} base64_(en|de)code[^(]*\([^)]*\) [OR]
+    RewriteCond %{QUERY_STRING} (<|%3C)([^s]*s)+cript.*(>|%3E) [NC,OR]
+    RewriteCond %{QUERY_STRING} (\<|%3C).*iframe.*(\>|%3E) [NC,OR]
+    RewriteCond %{QUERY_STRING} (<|%3C)([^e]*e)+mbed.*(>|%3E) [NC,OR]
+    RewriteCond %{QUERY_STRING} (<|%3C)([^o]*o)+bject.*(>|%3E) [NC,OR]
+    RewriteCond %{QUERY_STRING} (<|%3C)([^a]*a)+pplet.*(>|%3E) [NC,OR]
+    RewriteCond %{QUERY_STRING} \b(union|select|insert|cast|set|declare|drop|update|md5|benchmark|or|and)\b [NC]
+    RewriteRule ^(.*)$ - [F,L]
+    
+    # Block file injection attempts
+    RewriteCond %{REQUEST_METHOD} GET
+    RewriteCond %{QUERY_STRING} [a-zA-Z0-9_]=http:// [OR]
+    RewriteCond %{QUERY_STRING} [a-zA-Z0-9_]=https:// [OR]
+    RewriteCond %{QUERY_STRING} [a-zA-Z0-9_]=(\.\.//?)+ [OR]
+    RewriteCond %{QUERY_STRING} [a-zA-Z0-9_]=/([a-z0-9_.]//?)+ [NC]
+    RewriteRule ^(.*)$ - [F,L]
+</IfModule>
+
+# Rate limiting (basic protection)
+<IfModule mod_evasive24.c>
+    DOSHashTableSize    2048
+    DOSPageCount        20
+    DOSPageInterval     1
+    DOSRequestCount     300
+    DOSRequestInterval  1
+    DOSBlockingPeriod   600
+</IfModule>
+
+# Content type settings
+AddType application/javascript .js
+AddType text/css .css
+AddType image/svg+xml .svg
+AddType font/woff2 .woff2
+
+# Force UTF-8 encoding
+AddDefaultCharset UTF-8
+
+# Remove www (optional - uncomment if needed)
+# RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+# RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+
+# Force HTTPS (optional - uncomment if you have SSL)
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
