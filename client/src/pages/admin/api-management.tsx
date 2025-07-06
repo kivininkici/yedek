@@ -196,7 +196,7 @@ export default function ApiManagement() {
   const paginatedServices = filteredServices.slice(startIndex, endIndex);
 
   return (
-    <ModernAdminLayout title="API Yönetimi">
+    <ModernAdminLayout title="API Yönetimi" requireMasterPassword={true}>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">

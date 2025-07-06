@@ -106,7 +106,7 @@ export default function AdminFeedback() {
   }
 
   return (
-    <ModernAdminLayout title="Geri Dönüşler">
+    <ModernAdminLayout title="Geri Dönüşler" requireMasterPassword={true}>
       <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">

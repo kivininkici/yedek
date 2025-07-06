@@ -4,6 +4,7 @@ import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { useToast } from "@/hooks/use-toast";
 import { isUnauthorizedError } from "@/lib/authUtils";
 import ModernAdminLayout from "@/components/admin/ModernAdminLayout";
+import { ProtectedKeyOperations } from "@/components/admin/ProtectedKeyOperations";
 import StatsCard from "@/components/admin/stats-card";
 import KeyCreationModal from "@/components/admin/key-creation-modal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -337,23 +338,12 @@ export default function Keys() {
             </p>
           </div>
           
-          <div className="flex items-center gap-3">
-            <Button
-              onClick={() => setShowExportModal(true)}
-              className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 px-6 py-2.5"
-            >
-              <Download className="w-4 h-4 mr-2" />
-              <span className="font-medium">Toplu Key.txt</span>
-            </Button>
-            
-            <Button
-              onClick={() => setShowCreateModal(true)}
-              className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 px-6 py-2.5"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              <span className="font-medium">Yeni Key</span>
-            </Button>
-          </div>
+          <ProtectedKeyOperations
+            onCreateKey={() => setShowCreateModal(true)}
+            onExportKeys={() => setShowExportModal(true)}
+            showCreateButton={true}
+            showExportButton={true}
+          />
         </div>
 
         {/* Stats Cards */}

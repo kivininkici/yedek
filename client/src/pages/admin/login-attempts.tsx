@@ -133,7 +133,7 @@ export default function LoginAttempts() {
 
   if (isLoading) {
     return (
-      <ModernAdminLayout title="Giriş Denemeleri">
+      <ModernAdminLayout title="Giriş Denemeleri" requireMasterPassword={true}>
         <div className="flex items-center justify-center py-12">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
         </div>
@@ -142,7 +142,7 @@ export default function LoginAttempts() {
   }
 
   return (
-    <ModernAdminLayout title="Giriş Denemeleri">
+    <ModernAdminLayout title="Giriş Denemeleri" requireMasterPassword={true}>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">

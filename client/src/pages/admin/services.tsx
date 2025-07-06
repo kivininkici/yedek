@@ -78,7 +78,7 @@ export default function Services() {
   const paginatedServices = servicesList.slice(startIndex, endIndex);
 
   return (
-    <ModernAdminLayout title="Servis Yönetimi">
+    <ModernAdminLayout title="Servis Yönetimi" requireMasterPassword={true}>
         <div className="space-y-6">
           {/* Header Actions */}
             <div className="flex items-center justify-between">

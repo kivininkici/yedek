@@ -190,7 +190,7 @@ export default function AdminComplaints() {
 
   if (isLoading) {
     return (
-      <ModernAdminLayout title="Şikayetler">
+      <ModernAdminLayout title="Şikayetler" requireMasterPassword={true}>
         <div className="flex items-center justify-center py-12">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-500"></div>
         </div>
@@ -201,7 +201,7 @@ export default function AdminComplaints() {
   const unreadCount = complaints.filter((c: Complaint) => !c.isRead).length;
 
   return (
-    <ModernAdminLayout title="Şikayetler">
+    <ModernAdminLayout title="Şikayetler" requireMasterPassword={true}>
       <div className="space-y-6">
           {/* Header */}
           <div className="flex items-center justify-between">

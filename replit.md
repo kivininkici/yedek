@@ -127,6 +127,12 @@ Changelog:
 - June 29, 2025. Canlı destek referansları kaldırıldı, sipariş sorgulama sistemi eklendi
 
 ## Recent Changes
+- July 6, 2025: Master password protection system implemented for admin panel
+- API Management, Services, Key Creation, Feedback, Complaints, and Login Attempts now require master password
+- Master password: m;rf_oj78cMGbO+0)Ai8e@JAAq=C2Wl)6xoQ_K42mQivX1DjvJ)
+- Protected key operations component created for secure key management
+- Session-based master password authentication with 30-minute validity
+- Admin credentials: admin/123456
 - July 5, 2025: Final Replit Agent to Replit environment migration completed successfully
 - PostgreSQL database set up and schema pushed successfully  
 - tsx dependency installed, server running on port 5000

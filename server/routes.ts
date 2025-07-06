@@ -4063,6 +4063,65 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Master Password Verification API endpoint
+  app.post('/api/admin/verify-master-password', async (req, res) => {
+    try {
+      const { masterPassword } = req.body;
+      
+      if (!masterPassword) {
+        return res.status(400).json({ error: 'Master şifre gereklidir' });
+      }
+
+      const currentMasterPassword = getCurrentMasterPassword();
+      
+      if (masterPassword === currentMasterPassword) {
+        res.json({ success: true, message: 'Master şifre doğrulandı' });
+      } else {
+        res.status(401).json({ error: 'Yanlış master şifre' });
+      }
+    } catch (error) {
+      console.error('Master password verification error:', error);
+      res.status(500).json({ error: 'Sunucu hatası' });
+    }
+  });
+
+  // Master Password Info API endpoint
+  app.get('/api/admin/master-password-info', requireAdminAuth, async (req, res) => {
+    try {
+      const currentMasterPassword = getCurrentMasterPassword();
+      res.json({ 
+        masterPassword: currentMasterPassword,
+        message: 'Master şifre başarıyla alındı' 
+      });
+    } catch (error) {
+      console.error('Master password info error:', error);
+      res.status(500).json({ error: 'Master şifre bilgisi alınamadı' });
+    }
+  });
+
+  // Update Master Password API endpoint
+  app.post('/api/admin/update-master-password', requireAdminAuth, async (req, res) => {
+    try {
+      const { currentPassword, newPassword } = req.body;
+      
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({ error: 'Mevcut şifre ve yeni şifre gereklidir' });
+      }
+
+      const currentMasterPassword = getCurrentMasterPassword();
+      
+      if (currentPassword !== currentMasterPassword) {
+        return res.status(401).json({ error: 'Mevcut master şifre yanlış' });
+      }
+
+      updateMasterPassword(newPassword);
+      res.json({ success: true, message: 'Master şifre başarıyla güncellendi' });
+    } catch (error) {
+      console.error('Master password update error:', error);
+      res.status(500).json({ error: 'Master şifre güncellenemedi' });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
