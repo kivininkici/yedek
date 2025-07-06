@@ -20,14 +20,39 @@ export const requireAdminAuth: RequestHandler = (req, res, next) => {
     return res.status(401).json({ message: 'Admin girişi gerekli' });
   }
   
-  // Check if master password was verified for this session
-  if (!req.session?.masterPasswordVerified) {
-    return res.status(401).json({ message: 'Master şifre doğrulaması gerekli' });
-  }
+  // SELECTIVE SECURITY: Master password only required for sensitive pages
+  // Key creation, deletion, and normal admin operations don't require master password
+  // Only sensitive pages like API Management, Feedback, etc. require master password
+  const sensitiveRoutes = [
+    '/api/admin/api-settings',
+    '/api/admin/api-management',
+    '/api/admin/apis',
+    '/api/admin/feedback',
+    '/api/admin/complaints',
+    '/api/admin/login-attempts',
+    '/api/admin/master-password'
+  ];
   
-  // ULTRA SECURITY: Require master password verification for EVERY admin panel access
-  // No time-based expiry - every single admin action requires master password
-  // This provides maximum security where master password is always required
+  const requiresMasterPassword = sensitiveRoutes.some(route => 
+    req.path.startsWith(route)
+  );
+
+  if (requiresMasterPassword) {
+    // Check if master password was verified
+    if (!req.session?.masterPasswordVerified) {
+      return res.status(401).json({ message: 'Master şifre doğrulaması gerekli' });
+    }
+    
+    // Check master password verification time (expire after 30 minutes)
+    const masterPasswordAge = Date.now() - (req.session.masterPasswordVerifiedAt || 0);
+    const maxMasterPasswordAge = 30 * 60 * 1000; // 30 minutes in milliseconds
+    
+    if (masterPasswordAge > maxMasterPasswordAge) {
+      req.session.masterPasswordVerified = false;
+      req.session.masterPasswordVerifiedAt = undefined;
+      return res.status(401).json({ message: 'Master şifre doğrulaması yenilenmeli' });
+    }
+  }
   
   // Check session age (2 hours max for tighter security)
   const sessionAge = Date.now() - (req.session.createdAt || 0);
@@ -50,11 +75,6 @@ export const requireAdminAuth: RequestHandler = (req, res, next) => {
     // });
     // return res.status(401).json({ message: 'Güvenlik nedeniyle oturum sonlandırıldı' });
   }
-  
-  // ULTRA SECURITY: Clear master password verification after each request
-  // This forces re-verification for every single admin panel access
-  req.session.masterPasswordVerified = false;
-  req.session.masterPasswordVerifiedAt = undefined;
   
   next();
 };

@@ -32,10 +32,25 @@ interface ModernAdminLayoutProps {
   requireMasterPassword?: boolean;
 }
 
-export default function ModernAdminLayout({ children, title, requireMasterPassword = true }: ModernAdminLayoutProps) {
+export default function ModernAdminLayout({ children, title, requireMasterPassword }: ModernAdminLayoutProps) {
   const [location] = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const queryClient = useQueryClient();
+  
+  // Determine if current page requires master password
+  // Only sensitive pages like API Management, Feedback, etc. require master password
+  // Key creation, deletion, and normal admin operations don't require master password
+  const sensitivePages = [
+    '/admin/api-settings',
+    '/admin/api-management',
+    '/admin/apis',
+    '/admin/feedback', 
+    '/admin/complaints',
+    '/admin/login-attempts',
+    '/admin/master-password-management'
+  ];
+  
+  const needsMasterPassword = requireMasterPassword ?? sensitivePages.some(path => location.startsWith(path));
   
   const logout = () => {
     fetch('/api/admin/logout', { method: 'POST' })
@@ -87,7 +102,7 @@ export default function ModernAdminLayout({ children, title, requireMasterPasswo
   ];
 
   return (
-    <MasterPasswordGuard requireMasterPassword={requireMasterPassword}>
+    <MasterPasswordGuard requireMasterPassword={needsMasterPassword}>
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
       {/* Floating orbs background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">

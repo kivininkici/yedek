@@ -84,8 +84,8 @@ export default function MasterPasswordGuard({
         setIsModalOpen(false);
         setPassword("");
         
-        // ULTRA SECURITY: One-time verification for this specific page access only
-        // No persistent verification - each new page will require master password again
+        // SELECTIVE SECURITY: Master password verification persists for the session
+        // Once verified, user can access other sensitive pages without re-entering
         
         toast({
           title: "Başarılı",
@@ -182,7 +182,7 @@ export default function MasterPasswordGuard({
           
           <div className="text-center mt-4">
             <p className="text-xs text-gray-500">
-              Maksimum güvenlik: Her admin panel erişiminde doğrulama gerekir
+              Seçici güvenlik: Sadece hassas sayfalar için doğrulama gerekir (30 dakika geçerli)
             </p>
           </div>
         </DialogContent>
