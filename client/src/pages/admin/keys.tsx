@@ -460,6 +460,7 @@ export default function Keys() {
                     <th className="text-left py-3 px-4 text-slate-300">Key</th>
                     <th className="text-left py-3 px-4 text-slate-300">Kategori</th>
                     <th className="text-left py-3 px-4 text-slate-300">Servis</th>
+                    <th className="text-left py-3 px-4 text-slate-300">Kalan Limit</th>
                     <th className="text-left py-3 px-4 text-slate-300">Durum</th>
                     <th className="text-left py-3 px-4 text-slate-300">Oluşturma</th>
                     <th className="text-left py-3 px-4 text-slate-300">İşlemler</th>
@@ -510,6 +511,16 @@ export default function Keys() {
                       </td>
                       <td className="py-3 px-4 text-slate-300">
                         {key.serviceName}
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="text-slate-300">
+                          <span className="font-medium text-blue-400">
+                            {((key.maxQuantity || 0) - (key.usedQuantity || 0)).toLocaleString()}
+                          </span>
+                          <span className="text-slate-500 text-sm ml-1">
+                            / {(key.maxQuantity || 0).toLocaleString()}
+                          </span>
+                        </div>
                       </td>
                       <td className="py-3 px-4">
                         {key.isUsed ? (
