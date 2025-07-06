@@ -633,31 +633,7 @@ export default function UserInterface() {
                       transition={{ duration: 0.5 }}
                       className="space-y-6"
                     >
-                      {/* Key Info Card */}
-                      <Card className="border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20">
-                        <CardContent className="p-6">
-                          <div className="flex items-center space-x-4">
-                            <div className="w-12 h-12 bg-green-600 rounded-xl flex items-center justify-center">
-                              <CheckCircle className="w-6 h-6 text-white" />
-                            </div>
-                            <div className="flex-1">
-                              <h3 className="font-bold text-green-800 dark:text-green-400 text-lg">
-                                Key Doğrulandı
-                              </h3>
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
-                                <div>
-                                  <p className="text-sm text-green-600 dark:text-green-400">Kategori</p>
-                                  <p className="font-semibold text-green-800 dark:text-green-300">{validatedKey.category}</p>
-                                </div>
-                                <div>
-                                  <p className="text-sm text-green-600 dark:text-green-400">Kalan Miktar</p>
-                                  <p className="font-semibold text-green-800 dark:text-green-300">{validatedKey.remainingQuantity.toLocaleString()}</p>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
+
 
                       {/* Order Form Card */}
                       <Card className="shadow-xl border-0 overflow-hidden">

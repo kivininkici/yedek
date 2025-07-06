@@ -535,42 +535,7 @@ export default function UserInterface() {
                 transition={{ duration: 0.3 }}
                 className="space-y-6"
               >
-                {/* Key Info Card */}
-                <Card className="bg-gradient-to-r from-green-500/20 to-blue-500/20 backdrop-blur-xl border border-green-400/30">
-                  <CardContent className="p-6">
-                    <div className="flex items-center space-x-4">
-                      <motion.div
-                        className="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center"
-                        whileHover={{ scale: 1.1 }}
-                      >
-                        <CheckCircle className="w-6 h-6 text-white" />
-                      </motion.div>
-                      <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-white">Key Doğrulandı</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-2">
-                          <div>
-                            <p className="text-sm text-green-200">Servis</p>
-                            <p className="font-medium text-white">{validatedKey.service.name}</p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-green-200">Kategori</p>
-                            <Badge variant="secondary" className="bg-blue-500/20 text-[#101930]">
-                              {validatedKey.category}
-                            </Badge>
-                          </div>
-                          <div>
-                            <p className="text-sm text-green-200">Fiyat (1000 adet)</p>
-                            <p className="font-medium text-white text-lg">₺{validatedKey.service.price || '0.00'}</p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-green-200">Kalan Miktar</p>
-                            <p className="font-medium text-white">{validatedKey.remainingQuantity}</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+
 
                 {/* Order Form Card */}
                 <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl">
