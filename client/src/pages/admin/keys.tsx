@@ -459,7 +459,7 @@ export default function Keys() {
                     </th>
                     <th className="text-left py-3 px-4 text-slate-300">Key</th>
                     <th className="text-left py-3 px-4 text-slate-300">Kategori</th>
-                    <th className="text-left py-3 px-4 text-slate-300">Servis</th>
+                    <th className="text-left py-3 px-4 text-slate-300">Key Adı</th>
                     <th className="text-left py-3 px-4 text-slate-300">Kalan Limit</th>
                     <th className="text-left py-3 px-4 text-slate-300">Durum</th>
                     <th className="text-left py-3 px-4 text-slate-300">Oluşturma</th>
@@ -510,7 +510,7 @@ export default function Keys() {
                         </Badge>
                       </td>
                       <td className="py-3 px-4 text-slate-300">
-                        {key.serviceName}
+                        {key.name}
                       </td>
                       <td className="py-3 px-4">
                         <div className="text-slate-300">
