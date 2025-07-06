@@ -1,0 +1,74 @@
+<?php
+// cPanel MySQL bağlantısı için yapılandırılmış sınıf
+class Database {
+    private $host = 'localhost';                      // Genelde localhost olur
+    private $dbname = 'smmkiwic_otokiwi_db';          // Veritabanı adı (cpanel'den alınır)
+    private $username = 'smmkiwic_kiwi';              // Veritabanı kullanıcı adı
+    private $password = '6xB^U?QR_NrDohQ{';         // Şifren buraya (çift tırnakla)
+    private $pdo = null;
+
+    // Veritabanına bağlan
+    public function connect() {
+        if ($this->pdo === null) {
+            try {
+                $dsn = "mysql:host={$this->host};dbname={$this->dbname};charset=utf8mb4";
+                $this->pdo = new PDO($dsn, $this->username, $this->password, [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_EMULATE_PREPARES => false,
+                ]);
+            } catch (PDOException $e) {
+                die("Veritabanı bağlantı hatası: " . $e->getMessage());
+            }
+        }
+        return $this->pdo;
+    }
+
+    // Sorgu çalıştır (prepare + execute)
+    public function query($sql, $params = []) {
+        $stmt = $this->connect()->prepare($sql);
+        $stmt->execute($params);
+        return $stmt;
+    }
+
+    // Tüm verileri getir
+    public function fetchAll($sql, $params = []) {
+        return $this->query($sql, $params)->fetchAll();
+    }
+
+    // Tek bir satır getir
+    public function fetchOne($sql, $params = []) {
+        return $this->query($sql, $params)->fetch();
+    }
+
+    // Veri ekle
+    public function insert($table, $data) {
+        $columns = implode(', ', array_keys($data));
+        $placeholders = ':' . implode(', :', array_keys($data));
+        $sql = "INSERT INTO {$table} ({$columns}) VALUES ({$placeholders})";
+        return $this->query($sql, $data);
+    }
+
+    // Veri güncelle
+    public function update($table, $data, $where, $whereParams = []) {
+        $setParts = [];
+        foreach ($data as $key => $value) {
+            $setParts[] = "$key = :$key";
+        }
+        $setClause = implode(', ', $setParts);
+        $sql = "UPDATE {$table} SET {$setClause} WHERE {$where}";
+        return $this->query($sql, array_merge($data, $whereParams));
+    }
+
+    // Veri sil
+    public function delete($table, $where, $params = []) {
+        $sql = "DELETE FROM {$table} WHERE {$where}";
+        return $this->query($sql, $params);
+    }
+
+    // Son eklenen ID'yi getir
+    public function lastInsertId() {
+        return $this->connect()->lastInsertId();
+    }
+}
+?>

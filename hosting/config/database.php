@@ -8,13 +8,11 @@ class Database {
     private $pdo;
     
     public function __construct() {
-        // cPanel MySQL Configuration
-        // ÖNEMLI: Bu bilgileri cPanel'deki gerçek veritabanı bilgilerinizle güncelleyin
-        
-        $this->host = 'localhost';  // Genelde localhost
-        $this->dbname = 'KULLANICI_otokiwi';  // Örnek: kivi_otokiwi
-        $this->username = 'KULLANICI_otokiwi_user';  // Örnek: kivi_otokiwi_user  
-        $this->password = 'GUCLU_SIFRE_BURAYA';  // MySQL kullanıcı şifresi
+        // cPanel MySQL Configuration - Gerçek bilgilerle güncellendi
+        $this->host = 'localhost';
+        $this->dbname = 'smmkiwic_otokiwi_db';
+        $this->username = 'smmkiwic_kiwi';
+        $this->password = '6xB^U?QR_NrDohQ{';
         
         // Alternatif: Environment variables kullanımı
         if (isset($_ENV['DB_HOST'])) {

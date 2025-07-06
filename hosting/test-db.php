@@ -7,11 +7,11 @@ ini_set('display_errors', 1);
 
 echo "<h2>🔧 OtoKiwi Veritabanı Bağlantı Testi</h2>";
 
-// cPanel MySQL bilgilerinizi buraya girin
+// cPanel MySQL bilgileriniz - otomatik dolduruldu
 $host = 'localhost';
-$dbname = 'KULLANICI_otokiwi';  // Gerçek veritabanı adınızı yazın (örn: kivi_otokiwi)
-$username = 'KULLANICI_otokiwi_user';  // Gerçek kullanıcı adınızı yazın (örn: kivi_otokiwi_user)
-$password = 'GUCLU_SIFRE_BURAYA';  // Gerçek şifrenizi yazın
+$dbname = 'smmkiwic_otokiwi_db';
+$username = 'smmkiwic_kiwi';
+$password = '6xB^U?QR_NrDohQ{';
 
 echo "<strong>Test edilen bilgiler:</strong><br>";
 echo "Host: " . $host . "<br>";
