@@ -357,9 +357,7 @@ export default function AdminLogin() {
                         <Lock className="w-6 h-6 text-white" />
                       </div>
                       <h3 className="text-xl font-semibold text-white mb-2">Şifreyi Girin</h3>
-                      <p className="text-slate-400 text-sm">
-                        Lütfen ürün teslimati için satın alım yaptığınız satıcının adını yazın ve seçin.
-                      </p>
+                      <p className="text-slate-400 text-sm">Lütfen Giriş Yapmak İçin Admin Panel Giriş Şifresini Girin.</p>
                     </div>
 
                     <div className="space-y-2">
