@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OtoKiwi Admin - Basit Giriş</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+        
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: #5a67d8;
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .error {
+            background: #fee;
+            color: #c53030;
+            border: 1px solid #feb2b2;
+        }
+        
+        .success {
+            background: #f0fff4;
+            color: #2f855a;
+            border: 1px solid #9ae6b4;
+        }
+        
+        .loading {
+            background: #e2e8f0;
+            color: #4a5568;
+            border: 1px solid #cbd5e0;
+        }
+        
+        .step {
+            display: none;
+        }
+        
+        .step.active {
+            display: block;
+        }
+        
+        .step-indicator {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 OtoKiwi Admin</h1>
+        
+        <div id="step1" class="step active">
+            <div class="step-indicator">Adım 1/2: Master Şifre</div>
+            <div class="form-group">
+                <label for="masterPassword">Master Şifre:</label>
+                <input type="password" id="masterPassword" value="OtoKiwi2025" required>
+            </div>
+            <button class="btn" onclick="verifyMaster()">Doğrula</button>
+        </div>
+        
+        <div id="step2" class="step">
+            <div class="step-indicator">Adım 2/2: Admin Giriş</div>
+            <div class="form-group">
+                <label for="username">Kullanıcı Adı:</label>
+                <input type="text" id="username" value="admin" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Şifre:</label>
+                <input type="password" id="password" value="admin123" required>
+            </div>
+            <button class="btn" onclick="adminLogin()">Giriş Yap</button>
+        </div>
+        
+        <div id="message"></div>
+    </div>
+
+    <script>
+        function showMessage(text, type = 'loading') {
+            const messageDiv = document.getElementById('message');
+            messageDiv.className = 'message ' + type;
+            messageDiv.textContent = text;
+            messageDiv.style.display = 'block';
+        }
+        
+        function hideMessage() {
+            document.getElementById('message').style.display = 'none';
+        }
+        
+        function showStep(stepNum) {
+            document.querySelectorAll('.step').forEach(step => {
+                step.classList.remove('active');
+            });
+            document.getElementById('step' + stepNum).classList.add('active');
+        }
+        
+        function verifyMaster() {
+            const masterPassword = document.getElementById('masterPassword').value;
+            
+            if (!masterPassword) {
+                showMessage('Master şifre gerekli!', 'error');
+                return;
+            }
+            
+            showMessage('Master şifre doğrulanıyor...', 'loading');
+            
+            // Direkt kontrolü
+            if (masterPassword === 'OtoKiwi2025') {
+                showMessage('Master şifre doğrulandı!', 'success');
+                setTimeout(() => {
+                    hideMessage();
+                    showStep(2);
+                }, 1000);
+            } else {
+                showMessage('Yanlış master şifre!', 'error');
+            }
+        }
+        
+        function adminLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (!username || !password) {
+                showMessage('Tüm alanlar gerekli!', 'error');
+                return;
+            }
+            
+            showMessage('Giriş yapılıyor...', 'loading');
+            
+            // Direkt kontrolü
+            if (username === 'admin' && password === 'admin123') {
+                showMessage('Giriş başarılı! Yönlendiriliyor...', 'success');
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+            } else {
+                showMessage('Yanlış kullanıcı adı veya şifre!', 'error');
+            }
+        }
+        
+        // Enter tuşu ile form gönderimi
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const step1 = document.getElementById('step1');
+                const step2 = document.getElementById('step2');
+                
+                if (step1.classList.contains('active')) {
+                    verifyMaster();
+                } else if (step2.classList.contains('active')) {
+                    adminLogin();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
