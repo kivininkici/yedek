@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OtoKiwi Admin - Yeni Başlangıç</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: #2a2a2a;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid #444;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #3b82f6;
+            font-size: 28px;
+        }
+        
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #333;
+            border-radius: 8px;
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .section h3 {
+            margin-top: 0;
+            color: #3b82f6;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #ccc;
+            font-weight: 500;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px;
+            background: #444;
+            border: 1px solid #555;
+            border-radius: 6px;
+            color: #fff;
+            font-size: 14px;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .status {
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .success { background: #10b981; color: white; }
+        .error { background: #ef4444; color: white; }
+        .warning { background: #f59e0b; color: white; }
+        .info { background: #3b82f6; color: white; }
+        
+        .code {
+            background: #1e1e1e;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        
+        .steps {
+            counter-reset: step-counter;
+        }
+        
+        .step {
+            counter-increment: step-counter;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #444;
+            border-radius: 6px;
+            position: relative;
+            padding-left: 50px;
+        }
+        
+        .step::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 15px;
+            top: 15px;
+            background: #3b82f6;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        
+        .link {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 OtoKiwi - Yeni Başlangıç</h1>
+        
+        <div class="section">
+            <h3>📋 Kurulum Adımları</h3>
+            <div class="steps">
+                <div class="step">
+                    <strong>Database Ayarları:</strong>
+                    <div class="code">config/database.php dosyasını düzenleyin</div>
+                </div>
+                <div class="step">
+                    <strong>Admin Hesabı:</strong>
+                    <div class="code">Kullanıcı: admin | Şifre: admin123</div>
+                </div>
+                <div class="step">
+                    <strong>Master Şifre:</strong>
+                    <div class="code">OtoKiwi2025</div>
+                </div>
+                <div class="step">
+                    <strong>Kurulum:</strong>
+                    <a href="../install/setup.php" class="link">Kurulum Sihirbazını Başlat</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h3>🔧 Hızlı Giriş</h3>
+            <form id="quickLogin">
+                <div class="form-group">
+                    <label>Master Şifre:</label>
+                    <input type="password" id="masterPass" value="OtoKiwi2025" required>
+                </div>
+                <div class="form-group">
+                    <label>Kullanıcı Adı:</label>
+                    <input type="text" id="username" value="admin" required>
+                </div>
+                <div class="form-group">
+                    <label>Şifre:</label>
+                    <input type="password" id="password" value="admin123" required>
+                </div>
+                <button type="submit" class="btn">Giriş Yap</button>
+            </form>
+            <div id="loginStatus"></div>
+        </div>
+        
+        <div class="section">
+            <h3>🛠️ Alternatif Giriş Yöntemleri</h3>
+            <div style="display: grid; gap: 10px;">
+                <a href="ultra-simple-login.html" class="link">Ultra Basit Giriş</a>
+                <a href="simple-login.html" class="link">Basit Giriş</a>
+                <a href="debug-login.html" class="link">Debug Giriş</a>
+                <a href="index.html" class="link">Normal Giriş</a>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h3>📊 Sistem Durumu</h3>
+            <div id="systemStatus">
+                <div class="info">Sistem kontrol ediliyor...</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Sistem durumu kontrolü
+        function checkSystemStatus() {
+            const statusDiv = document.getElementById('systemStatus');
+            
+            // Database test
+            fetch('../test-db.php')
+                .then(response => response.text())
+                .then(data => {
+                    if (data.includes('başarılı') || data.includes('success')) {
+                        statusDiv.innerHTML = '<div class="success">✅ Database bağlantısı başarılı</div>';
+                    } else {
+                        statusDiv.innerHTML = '<div class="error">❌ Database bağlantısı başarısız</div>';
+                    }
+                })
+                .catch(error => {
+                    statusDiv.innerHTML = '<div class="error">❌ Sistem kontrolü başarısız</div>';
+                });
+        }
+        
+        // Hızlı giriş
+        document.getElementById('quickLogin').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const masterPass = document.getElementById('masterPass').value;
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const statusDiv = document.getElementById('loginStatus');
+            
+            statusDiv.innerHTML = '<div class="info">Giriş yapılıyor...</div>';
+            
+            // Basit doğrulama
+            if (masterPass === 'OtoKiwi2025' && username === 'admin' && password === 'admin123') {
+                statusDiv.innerHTML = '<div class="success">✅ Giriş başarılı! Yönlendiriliyor...</div>';
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+            } else {
+                statusDiv.innerHTML = '<div class="error">❌ Giriş bilgileri hatalı!</div>';
+            }
+        });
+        
+        // Sayfa yüklendiğinde sistem durumunu kontrol et
+        checkSystemStatus();
+    </script>
+</body>
+</html>

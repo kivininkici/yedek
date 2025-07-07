@@ -131,6 +131,7 @@ Changelog:
 - July 7, 2025. Hosting klasörü master şifre yapılandırma sistemi ile güncellendi
 - July 7, 2025. Master password sorunları çözüldü - API endpoint parametresi düzeltildi, basit şifre "OtoKiwi2025" kullanılıyor
 - July 7, 2025. Basit admin giriş sayfası (simple-login.html) oluşturuldu ve master password doğrulaması başarıyla çalışıyor
+- July 7, 2025. Sıfırdan başlangıç sistemi oluşturuldu - fresh-start.html, ultra-simple-login.html ve auto-setup.php hazırlandı
 
 ## Recent Changes
 - July 6, 2025: Complete cPanel hosting compatibility package created
