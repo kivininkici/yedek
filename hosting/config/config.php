@@ -14,7 +14,7 @@ ini_set('display_errors', 1);
 date_default_timezone_set('Europe/Istanbul');
 
 // Security Configuration
-define('MASTER_PASSWORD', 'm;rf_oj78cMGbO+0)Ai8e@JAAq=C2Wl)6xoQ_K42mQivX1DjvJ)');
+define('MASTER_PASSWORD', 'OtoKiwi2025');
 define('SESSION_LIFETIME', 3600); // 1 hour
 define('LOGIN_ATTEMPTS_LIMIT', 3);
 define('LOGIN_BLOCK_DURATION', 900); // 15 minutes
