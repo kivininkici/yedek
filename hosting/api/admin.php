@@ -151,7 +151,7 @@ function handleDelete($path) {
 }
 
 function verifyMasterPassword($input) {
-    $password = $input['password'] ?? '';
+    $password = $input['masterPassword'] ?? $input['password'] ?? '';
     
     if ($password === MASTER_PASSWORD) {
         $_SESSION['master_verified'] = true;
