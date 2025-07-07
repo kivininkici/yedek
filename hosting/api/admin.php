@@ -181,8 +181,8 @@ function handleAdminLogin($input) {
         sendErrorResponse('Çok fazla başarısız deneme. 15 dakika sonra tekrar deneyin.', 429);
     }
     
-    if (empty($username) || empty($password) || empty($securityAnswer)) {
-        sendErrorResponse('Tüm alanlar gerekli', 400);
+    if (empty($username) || empty($password)) {
+        sendErrorResponse('Kullanıcı adı ve şifre gerekli', 400);
     }
     
     // Validate credentials
@@ -191,11 +191,7 @@ function handleAdminLogin($input) {
         sendErrorResponse('Geçersiz kullanıcı adı veya şifre', 401);
     }
     
-    // Validate security answer
-    if (!validateSecurityAnswer($securityAnswer)) {
-        logLoginAttempt($ip, $username, 'admin', 'failed_security');
-        sendErrorResponse('Güvenlik sorusu yanlış yanıtlandı', 401);
-    }
+    // Skip security answer validation for simple login
     
     // Create admin session
     $_SESSION['user_id'] = 1;
