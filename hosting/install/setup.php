@@ -42,6 +42,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $result = createAdminUser($_POST);
             if ($result['success']) {
                 $success = $result['message'];
+                header('Location: setup.php?step=master');
+                exit;
+            } else {
+                $error = $result['message'];
+            }
+            break;
+            
+        case 'master':
+            $result = setupMasterPassword($_POST);
+            if ($result['success']) {
+                $success = $result['message'];
                 header('Location: setup.php?step=complete');
                 exit;
             } else {
@@ -154,13 +165,47 @@ function createAdminUser($data) {
             ]);
         }
         
-        // Create installation lock file
-        file_put_contents('../config/installed.lock', date('Y-m-d H:i:s'));
-        
         return ['success' => true, 'message' => 'Admin kullanıcısı başarıyla oluşturuldu'];
         
     } catch (Exception $e) {
         return ['success' => false, 'message' => 'Admin oluşturma hatası: ' . $e->getMessage()];
+    }
+}
+
+function setupMasterPassword($data) {
+    $masterPassword = $data['masterPassword'] ?? '';
+    $confirmPassword = $data['confirmPassword'] ?? '';
+    
+    if (empty($masterPassword) || strlen($masterPassword) < 8) {
+        return ['success' => false, 'message' => 'Master şifre en az 8 karakter olmalıdır'];
+    }
+    
+    if ($masterPassword !== $confirmPassword) {
+        return ['success' => false, 'message' => 'Master şifreler uyuşmuyor'];
+    }
+    
+    try {
+        // Update config.php with new master password
+        $configPath = '../config/config.php';
+        $configContent = file_get_contents($configPath);
+        
+        // Replace master password line
+        $newLine = "define('MASTER_PASSWORD', '$masterPassword');";
+        $configContent = preg_replace(
+            "/define\('MASTER_PASSWORD',\s*'[^']*'\);/",
+            $newLine,
+            $configContent
+        );
+        
+        file_put_contents($configPath, $configContent);
+        
+        // Create installation lock file
+        file_put_contents('../config/installed.lock', date('Y-m-d H:i:s'));
+        
+        return ['success' => true, 'message' => 'Master şifre başarıyla ayarlandı'];
+        
+    } catch (Exception $e) {
+        return ['success' => false, 'message' => 'Master şifre ayarlama hatası: ' . $e->getMessage()];
     }
 }
 ?>
@@ -262,12 +307,16 @@ function createAdminUser($data) {
                             <div class="step-number">3</div>
                             <div class="step-title">Tablolar</div>
                         </div>
-                        <div class="step <?= $step === 'admin' ? 'active' : ($step === 'complete' ? 'completed' : '') ?>">
+                        <div class="step <?= $step === 'admin' ? 'active' : (in_array($step, ['master', 'complete']) ? 'completed' : '') ?>">
                             <div class="step-number">4</div>
                             <div class="step-title">Admin</div>
                         </div>
-                        <div class="step <?= $step === 'complete' ? 'active' : '' ?>">
+                        <div class="step <?= $step === 'master' ? 'active' : ($step === 'complete' ? 'completed' : '') ?>">
                             <div class="step-number">5</div>
+                            <div class="step-title">Master Şifre</div>
+                        </div>
+                        <div class="step <?= $step === 'complete' ? 'active' : '' ?>">
+                            <div class="step-number">6</div>
                             <div class="step-title">Tamamlandı</div>
                         </div>
                     </div>
@@ -404,6 +453,36 @@ function createAdminUser($data) {
                                 <div class="d-flex justify-content-between">
                                     <a href="setup.php?step=tables" class="btn btn-outline-secondary">Geri</a>
                                     <button type="submit" class="btn btn-primary">Admin Oluştur</button>
+                                </div>
+                            </form>
+                        </div>
+
+                    <?php break; case 'master': ?>
+                        <div>
+                            <h3>Master Şifre Ayarla</h3>
+                            <p class="text-muted mb-4">Admin paneline erişim için master şifre belirleyin.</p>
+                            
+                            <form method="POST">
+                                <div class="mb-3">
+                                    <label for="masterPassword" class="form-label">Master Şifre</label>
+                                    <input type="password" class="form-control" id="masterPassword" name="masterPassword" required minlength="8">
+                                    <div class="form-text">En az 8 karakter olmalıdır</div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label for="confirmPassword" class="form-label">Master Şifre Tekrar</label>
+                                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required minlength="8">
+                                    <div class="form-text">Master şifreyi tekrar girin</div>
+                                </div>
+                                
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Önemli:</strong> Master şifre admin paneline erişim için gereklidir. Güvenli bir şifre seçin ve unutmayın!
+                                </div>
+                                
+                                <div class="d-flex justify-content-between">
+                                    <a href="setup.php?step=admin" class="btn btn-outline-secondary">Geri</a>
+                                    <button type="submit" class="btn btn-primary">Kurulumu Tamamla</button>
                                 </div>
                             </form>
                         </div>

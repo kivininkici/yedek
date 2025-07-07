@@ -125,6 +125,10 @@ Changelog:
 - June 28, 2025. Initial setup
 - June 29, 2025. Admin oluşturma ve askıya alma sistemi eklendi, MedyaBayim API entegrasyonu
 - June 29, 2025. Canlı destek referansları kaldırıldı, sipariş sorgulama sistemi eklendi
+- July 7, 2025. Replit Agent'tan Replit environment'a final migration tamamlandı
+- July 7, 2025. PostgreSQL database kuruldu, tsx dependency yüklendi, port 5000'de çalışıyor
+- July 7, 2025. cPanel hosting setup.php dosyası düzeltildi - master şifre adımı eklendi
+- July 7, 2025. Hosting klasörü master şifre yapılandırma sistemi ile güncellendi
 
 ## Recent Changes
 - July 6, 2025: Complete cPanel hosting compatibility package created
