@@ -43,6 +43,18 @@ try {
 function handlePost($path) {
     $input = json_decode(file_get_contents('php://input'), true);
     
+    // Debug endpoint
+    if (isset($input['action']) && $input['action'] === 'session_check') {
+        echo json_encode([
+            'session_started' => session_status() === PHP_SESSION_ACTIVE,
+            'session_id' => session_id(),
+            'master_verified' => $_SESSION['master_verified'] ?? false,
+            'admin_logged_in' => $_SESSION['admin_logged_in'] ?? false,
+            'time' => date('Y-m-d H:i:s')
+        ]);
+        exit;
+    }
+    
     switch ($path) {
         case 'login':
             handleAdminLogin($input);
@@ -63,7 +75,12 @@ function handlePost($path) {
             addQuickApi($input);
             break;
         default:
-            sendErrorResponse('Endpoint not found', 404);
+            // Handle action-based routing for backward compatibility
+            if (isset($input['action'])) {
+                handleActionBasedRouting($input);
+            } else {
+                sendErrorResponse('Endpoint not found', 404);
+            }
     }
 }
 
@@ -788,6 +805,31 @@ function addQuickApi($input) {
     } catch (Exception $e) {
         error_log("Add quick API error: " . $e->getMessage());
         sendErrorResponse('Hızlı API eklenemedi', 500);
+    }
+}
+
+// Action-based routing for backward compatibility
+function handleActionBasedRouting($input) {
+    $action = $input['action'] ?? '';
+    
+    switch ($action) {
+        case 'verify_master_password':
+            verifyMasterPassword($input);
+            break;
+        case 'admin_login':
+            handleAdminLogin($input);
+            break;
+        case 'session_check':
+            echo json_encode([
+                'session_started' => session_status() === PHP_SESSION_ACTIVE,
+                'session_id' => session_id(),
+                'master_verified' => $_SESSION['master_verified'] ?? false,
+                'admin_logged_in' => $_SESSION['admin_logged_in'] ?? false,
+                'time' => date('Y-m-d H:i:s')
+            ]);
+            exit;
+        default:
+            sendErrorResponse('Unknown action', 404);
     }
 }
 ?>
