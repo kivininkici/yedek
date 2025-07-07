@@ -179,7 +179,42 @@
 
         // Initialize admin login
         document.addEventListener('DOMContentLoaded', function() {
-            initializeAdminLogin();
+            // Master password form handler
+            const masterForm = document.getElementById('masterPasswordForm');
+            if (masterForm) {
+                masterForm.onsubmit = async function(e) {
+                    e.preventDefault();
+                    const password = document.getElementById('masterPassword').value;
+                    
+                    if (!password) {
+                        alert('Master şifre girin');
+                        return;
+                    }
+                    
+                    try {
+                        const response = await fetch('/api/admin.php?path=verify-master-password', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ masterPassword: password })
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (result.success) {
+                            // Hide master password card
+                            document.getElementById('masterPasswordCard').style.display = 'none';
+                            // Show admin login card
+                            document.getElementById('adminLoginCard').style.display = 'block';
+                            loadSecurityQuestion();
+                        } else {
+                            alert('Master şifre yanlış: ' + (result.message || 'Bilinmeyen hata'));
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('Bağlantı hatası');
+                    }
+                };
+            }
         });
 
         function initializeAdminLogin() {
