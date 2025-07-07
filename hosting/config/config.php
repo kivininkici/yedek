@@ -71,6 +71,11 @@ if (!is_dir(LOGS_PATH)) {
 require_once BASE_PATH . '/config/database.php';
 require_once BASE_PATH . '/includes/functions.php';
 
+// Database Helper Function
+function getDB() {
+    return Database::getInstance();
+}
+
 // Helper Functions
 function isLoggedIn() {
     return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);

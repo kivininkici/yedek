@@ -1,7 +1,6 @@
 <?php
 // Database Configuration for cPanel MySQL
 class Database {
-    private static $instance = null;
     private $host;
     private $dbname;
     private $username;
@@ -9,13 +8,13 @@ class Database {
     private $pdo;
     
     public function __construct() {
-        // cPanel MySQL Configuration - Gerçek bilgilerle güncellendi
+        // cPanel MySQL Configuration - Ger癟ek bilgilerle g羹ncellendi
         $this->host = 'localhost';
         $this->dbname = 'smmkiwic_otokiwi_db';
         $this->username = 'smmkiwic_kiwi';
         $this->password = '6xB^U?QR_NrDohQ{';
         
-        // Alternatif: Environment variables kullanımı
+        // Alternatif: Environment variables kullan覺m覺
         if (isset($_ENV['DB_HOST'])) {
             $this->host = $_ENV['DB_HOST'];
             $this->dbname = $_ENV['DB_NAME'];
@@ -83,24 +82,8 @@ class Database {
         return $stmt->execute($params);
     }
     
-    public function getConnection() {
-        return $this->connect();
-    }
-    
     public function lastInsertId() {
         return $this->connect()->lastInsertId();
     }
-    
-    // Singleton Pattern
-    public static function getInstance() {
-        if (self::$instance === null) {
-            self::$instance = new self();
-        }
-        return self::$instance;
-    }
-    
-    // Prevent cloning and serialization
-    private function __clone() {}
-    private function __wakeup() {}
 }
 ?>

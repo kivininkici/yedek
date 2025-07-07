@@ -100,7 +100,7 @@ function createDatabaseTables() {
     try {
         require_once '../config/database.php';
         $db = Database::getInstance();
-        $pdo = $db->getConnection();
+        $pdo = $db->connect();
         
         // Read and execute SQL file
         $sql = file_get_contents('database.sql');
