@@ -11,9 +11,9 @@ class Database {
     public function __construct() {
         // cPanel MySQL Configuration - Gerçek bilgilerle güncellendi
         $this->host = 'localhost';
-        $this->dbname = 'smmkiwic_otokiwi_db';
-        $this->username = 'smmkiwic_kiwi';
-        $this->password = '6xB^U?QR_NrDohQ{';
+        $this->dbname = 'your_database_name';
+        $this->username = 'your_database_user';
+        $this->password = 'your_database_password';
         
         // Alternatif: Environment variables kullanımı
         if (isset($_ENV['DB_HOST'])) {
@@ -101,6 +101,6 @@ class Database {
     
     // Prevent cloning and serialization
     private function __clone() {}
-    private function __wakeup() {}
+    public function __wakeup() {}
 }
 ?>
