@@ -29,7 +29,11 @@ export const getQueryFn: <T>(options: {
 }) => QueryFunction<T> =
   ({ on401: unauthorizedBehavior }) =>
   async ({ queryKey }) => {
+<<<<<<< HEAD
     const res = await fetch(queryKey[0] as string, {
+=======
+    const res = await fetch(queryKey.join("/") as string, {
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)
       credentials: "include",
     });
 
@@ -47,6 +51,7 @@ export const queryClient = new QueryClient({
       queryFn: getQueryFn({ on401: "throw" }),
       refetchInterval: false,
       refetchOnWindowFocus: false,
+<<<<<<< HEAD
       refetchOnMount: false,
       refetchOnReconnect: false,
       staleTime: 10 * 60 * 1000, // 10 dakika cache - daha hızlı
@@ -57,6 +62,13 @@ export const queryClient = new QueryClient({
     mutations: {
       retry: false,
       networkMode: 'online',
+=======
+      staleTime: Infinity,
+      retry: false,
+    },
+    mutations: {
+      retry: false,
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)
     },
   },
 });

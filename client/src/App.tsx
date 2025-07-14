@@ -1,9 +1,13 @@
+<<<<<<< HEAD
 import { useState, useEffect, lazy, Suspense } from "react";
+=======
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+<<<<<<< HEAD
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 import { initSecurity } from "@/lib/securityProtection";
@@ -180,19 +184,58 @@ function Router() {
         <Route component={NotFound} />
       </Switch>
     </Suspense>
+=======
+import { LanguageProvider } from "@/contexts/LanguageContext";
+import { useAuth } from "@/hooks/useAuth";
+import NotFound from "@/pages/not-found";
+import Landing from "@/pages/Landing";
+import Home from "@/pages/Home";
+import Subscribe from "@/pages/Subscribe";
+import AdminPanel from "@/pages/AdminPanel";
+
+function Router() {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  return (
+    <Switch>
+      {isLoading || !isAuthenticated ? (
+        <Route path="/" component={Landing} />
+      ) : (
+        <>
+          <Route path="/" component={Home} />
+          <Route path="/subscribe" component={Subscribe} />
+          <Route path="/admin" component={AdminPanel} />
+        </>
+      )}
+      <Route component={NotFound} />
+    </Switch>
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)
   );
 }
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
+<<<<<<< HEAD
       <TooltipProvider>
         <Toaster />
 
         <Router />
       </TooltipProvider>
+=======
+      <LanguageProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+        </TooltipProvider>
+      </LanguageProvider>
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)
     </QueryClientProvider>
   );
 }
 
+<<<<<<< HEAD
 export default App;
+=======
+export default App;
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)

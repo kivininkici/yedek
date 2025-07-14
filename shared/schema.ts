@@ -8,14 +8,21 @@ import {
   serial,
   boolean,
   integer,
+<<<<<<< HEAD
   numeric,
   decimal,
+=======
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)
 } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+<<<<<<< HEAD
 // Session storage table.
 // (IMPORTANT) This table is mandatory for Replit Auth, don't drop it.
+=======
+// Session storage table for Replit Auth
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)
 export const sessions = pgTable(
   "sessions",
   {
@@ -26,20 +33,34 @@ export const sessions = pgTable(
   (table) => [index("IDX_session_expire").on(table.expire)],
 );
 
+<<<<<<< HEAD
 // User storage table.
 // (IMPORTANT) This table is mandatory for Replit Auth, don't drop it.
+=======
+// User storage table for Replit Auth
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().notNull(),
   email: varchar("email").unique(),
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
+<<<<<<< HEAD
   role: varchar("role", { length: 50 }).notNull().default("user"), // "user" or "admin"
   avatarId: integer("avatar_id").notNull().default(1), // 1-24 arası kedi avatar ID'si
+=======
+  role: varchar("role").default("free").notNull(), // free, premium, admin
+  premiumUntil: timestamp("premium_until"),
+  stripeCustomerId: varchar("stripe_customer_id"),
+  stripeSubscriptionId: varchar("stripe_subscription_id"),
+  checksToday: integer("checks_today").default(0).notNull(),
+  lastCheckDate: timestamp("last_check_date"),
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+<<<<<<< HEAD
 // Admin users table for separate admin authentication
 export const adminUsers = pgTable("admin_users", {
   id: serial("id").primaryKey(),
@@ -335,3 +356,44 @@ export type InsertComplaint = z.infer<typeof insertComplaintSchema>;
 export type Complaint = typeof complaints.$inferSelect;
 export type InsertPasswordResetToken = z.infer<typeof insertPasswordResetTokenSchema>;
 export type PasswordResetToken = typeof passwordResetTokens.$inferSelect;
+=======
+// Premium keys for manual activation
+export const premiumKeys = pgTable("premium_keys", {
+  id: serial("id").primaryKey(),
+  key: varchar("key").unique().notNull(),
+  duration: integer("duration").notNull(), // duration in days
+  isUsed: boolean("is_used").default(false).notNull(),
+  usedBy: varchar("used_by").references(() => users.id),
+  usedAt: timestamp("used_at"),
+  createdBy: varchar("created_by").references(() => users.id).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Token check history
+export const tokenChecks = pgTable("token_checks", {
+  id: serial("id").primaryKey(),
+  userId: varchar("user_id").references(() => users.id).notNull(),
+  tokenType: varchar("token_type").notNull(), // outlook, token, all
+  tokenInput: text("token_input").notNull(),
+  result: jsonb("result").notNull(), // validation results
+  status: varchar("status").notNull(), // valid, invalid, checking, error
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export type UpsertUser = typeof users.$inferInsert;
+export type User = typeof users.$inferSelect;
+export type InsertPremiumKey = typeof premiumKeys.$inferInsert;
+export type PremiumKey = typeof premiumKeys.$inferSelect;
+export type InsertTokenCheck = typeof tokenChecks.$inferInsert;
+export type TokenCheck = typeof tokenChecks.$inferSelect;
+
+export const insertUserSchema = createInsertSchema(users);
+export const insertPremiumKeySchema = createInsertSchema(premiumKeys).omit({
+  id: true,
+  createdAt: true,
+});
+export const insertTokenCheckSchema = createInsertSchema(tokenChecks).omit({
+  id: true,
+  createdAt: true,
+});
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)

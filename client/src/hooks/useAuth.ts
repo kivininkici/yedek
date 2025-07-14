@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+<<<<<<< HEAD
 import { getQueryFn } from "@/lib/queryClient";
 
 interface User {
@@ -28,6 +29,18 @@ export function useAuth() {
   return {
     user,
     isLoading: isLoading && !is401Error,
+=======
+
+export function useAuth() {
+  const { data: user, isLoading } = useQuery({
+    queryKey: ["/api/auth/user"],
+    retry: false,
+  });
+
+  return {
+    user,
+    isLoading,
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)
     isAuthenticated: !!user,
   };
 }

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # OtoKiwi - Key Yönetim Sistemi
 
 ## Overview
@@ -666,11 +667,19 @@ Changelog:
 - Admin login: iki aşamalı güvenlik (master şifre + admin giriş), modern UI, başarı animasyonları
 - Tüm sayfalar modern glassmorphism ve gradient tasarımına güncellendi
 - Responsive mobile tasarım ve smooth animasyonlar optimize edildi
+=======
+# QuantumChecker - Token Validation System
+
+## Overview
+
+QuantumChecker is a full-stack web application designed for validating Discord tokens. The system provides both individual and bulk token checking capabilities with a freemium model - free users get limited daily checks while premium users enjoy unlimited access. The application features a modern, responsive UI built with React and shadcn/ui components, backed by a Node.js/Express server with PostgreSQL database integration.
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)
 
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
 
+<<<<<<< HEAD
 ## Latest Optimizations (July 4, 2025)
 
 - Admin panel navigation system completely optimized for instant page transitions
@@ -681,3 +690,103 @@ Preferred communication style: Simple, everyday language.
 - All "Yükleniyor..." loading screens minimized through better caching
 - Service import/fetch functionality from external APIs working properly
 - Admin credentials: admin/123456, Master password configured
+=======
+## System Architecture
+
+The application follows a monorepo structure with clear separation between client, server, and shared components:
+
+- **Frontend**: React SPA with Vite bundler and TypeScript
+- **Backend**: Express.js server with TypeScript
+- **Database**: PostgreSQL with Drizzle ORM
+- **Authentication**: Replit OpenID Connect integration
+- **Payment Processing**: Stripe integration for premium subscriptions
+- **Styling**: Tailwind CSS with shadcn/ui component library
+
+## Key Components
+
+### Frontend Architecture
+
+The client application is built using modern React patterns:
+
+- **React Router**: Uses wouter for lightweight routing
+- **State Management**: React Query (TanStack Query) for server state management
+- **UI Components**: shadcn/ui component library built on Radix UI primitives
+- **Styling**: Tailwind CSS with custom design tokens and dark mode support
+- **Internationalization**: Custom language context supporting English and Turkish
+
+### Backend Architecture
+
+The server follows RESTful API design principles:
+
+- **Express.js**: Main web framework with middleware for logging and error handling
+- **Authentication**: Replit Auth integration with session management
+- **Database Layer**: Drizzle ORM with connection pooling via Neon serverless
+- **Payment Integration**: Stripe webhooks and subscription management
+- **Security**: Session-based authentication with PostgreSQL session storage
+
+### Database Schema
+
+The PostgreSQL database uses the following main entities:
+
+- **Users**: Core user information with role-based access (free/premium/admin)
+- **Sessions**: Secure session storage for authentication
+- **Premium Keys**: Manual activation keys for premium access
+- **Token Checks**: Historical record of all token validation attempts
+
+Key features include:
+- Daily usage limits for free users
+- Premium expiration tracking
+- Stripe customer and subscription linking
+- Comprehensive audit trail
+
+## Data Flow
+
+1. **Authentication Flow**: Users authenticate via Replit OAuth, creating sessions stored in PostgreSQL
+2. **Token Validation**: 
+   - Single tokens: Immediate validation with usage tracking
+   - Bulk tokens: Queue-based processing for premium users
+3. **Premium Management**: 
+   - Stripe subscription webhooks update user status
+   - Manual key activation for direct premium access
+4. **Usage Tracking**: All checks are logged with user attribution and daily limits enforced
+
+## External Dependencies
+
+### Third-Party Services
+
+- **Replit Authentication**: Primary authentication provider
+- **Stripe**: Payment processing and subscription management
+- **Neon Database**: Serverless PostgreSQL hosting
+- **Discord API**: Token validation endpoints (implied from token checking functionality)
+
+### Key Libraries
+
+- **Frontend**: React, TanStack Query, Radix UI, Tailwind CSS, wouter
+- **Backend**: Express, Drizzle ORM, Passport, Stripe SDK
+- **Shared**: Zod for validation schemas, nanoid for ID generation
+
+## Deployment Strategy
+
+The application is configured for Replit deployment with:
+
+- **Development**: Vite dev server with HMR and Express backend
+- **Production**: Static build served by Express with esbuild bundling
+- **Database**: Automated migrations via Drizzle Kit
+- **Environment**: Environment-based configuration for database and API keys
+
+### Build Process
+
+1. Frontend assets built with Vite to `dist/public`
+2. Backend bundled with esbuild to `dist/index.js`
+3. Shared schema and types available to both client and server
+4. Database migrations applied via `drizzle-kit push`
+
+### Key Configuration
+
+- TypeScript with strict mode and path mapping
+- Tailwind CSS with custom design system
+- PostCSS with autoprefixer
+- Replit-specific plugins for development experience
+
+The architecture prioritizes developer experience with hot reloading, type safety, and clear separation of concerns while maintaining production readiness with proper error handling, security measures, and scalable database design.
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)

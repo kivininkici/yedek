@@ -1,5 +1,6 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+<<<<<<< HEAD
 import { storage } from "./storage";
 import { setupAdminAuth, requireAdminAuth, hashPassword, comparePassword } from "./adminAuth";
 import { getCurrentMasterPassword, updateMasterPassword } from "./config/security";
@@ -601,6 +602,330 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/admin/keys", requireAdminAuth, async (req, res) => {
     try {
       const keys = await storage.getAllKeys();
+=======
+import Stripe from "stripe";
+import { storage } from "./storage";
+import { setupAuth, isAuthenticated } from "./replitAuth";
+import { insertPremiumKeySchema, insertTokenCheckSchema } from "@shared/schema";
+import { nanoid } from "nanoid";
+
+let stripe: Stripe | null = null;
+
+if (process.env.STRIPE_SECRET_KEY) {
+  stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+}
+
+export async function registerRoutes(app: Express): Promise<Server> {
+  // Auth middleware
+  await setupAuth(app);
+
+  // Auth routes
+  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Check if premium has expired
+      if (user.premiumUntil && new Date() > user.premiumUntil) {
+        await storage.updateUserRole(userId, "free");
+        const updatedUser = await storage.getUser(userId);
+        return res.json(updatedUser);
+      }
+
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // Token validation endpoint
+  app.post("/api/check-token", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { token, type = "all" } = req.body;
+
+      if (!token) {
+        return res.status(400).json({ message: "Token is required" });
+      }
+
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Check daily limits for free users
+      if (user.role === "free" && user.checksToday >= 50) {
+        return res.status(429).json({ 
+          message: "Daily check limit reached. Upgrade to premium for unlimited checks." 
+        });
+      }
+
+      // Parse token format: outlook:password:token
+      const parts = token.split(':');
+      if (parts.length !== 3) {
+        return res.status(400).json({ 
+          message: "Invalid token format. Use: outlook:password:token" 
+        });
+      }
+
+      const [email, password, tokenValue] = parts;
+
+      // Simulate token validation (replace with actual validation logic)
+      const isValid = Math.random() > 0.3; // 70% success rate for demo
+      const result = {
+        email,
+        token: tokenValue,
+        valid: isValid,
+        servers: isValid ? Math.floor(Math.random() * 5) + 1 : 0,
+        friends: isValid ? Math.floor(Math.random() * 100) + 10 : 0,
+        checkedAt: new Date().toISOString(),
+      };
+
+      // Save check history
+      const checkData = insertTokenCheckSchema.parse({
+        userId,
+        tokenType: type,
+        tokenInput: token,
+        result,
+        status: isValid ? "valid" : "invalid",
+      });
+
+      await storage.createTokenCheck(checkData);
+      await storage.incrementUserChecks(userId);
+
+      res.json({
+        success: true,
+        result,
+      });
+    } catch (error) {
+      console.error("Error checking token:", error);
+      res.status(500).json({ message: "Failed to check token" });
+    }
+  });
+
+  // Bulk token checking (premium only)
+  app.post("/api/check-tokens-bulk", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { tokens, type = "all" } = req.body;
+
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      if (user.role !== "premium" && user.role !== "admin") {
+        return res.status(403).json({ 
+          message: "Premium subscription required for bulk checking" 
+        });
+      }
+
+      if (!Array.isArray(tokens) || tokens.length === 0) {
+        return res.status(400).json({ message: "Tokens array is required" });
+      }
+
+      const results = [];
+      for (const token of tokens) {
+        const parts = token.split(':');
+        if (parts.length !== 3) continue;
+
+        const [email, password, tokenValue] = parts;
+        const isValid = Math.random() > 0.3;
+        
+        const result = {
+          email,
+          token: tokenValue,
+          valid: isValid,
+          servers: isValid ? Math.floor(Math.random() * 5) + 1 : 0,
+          friends: isValid ? Math.floor(Math.random() * 100) + 10 : 0,
+          checkedAt: new Date().toISOString(),
+        };
+
+        results.push(result);
+
+        // Save each check
+        const checkData = insertTokenCheckSchema.parse({
+          userId,
+          tokenType: type,
+          tokenInput: token,
+          result,
+          status: isValid ? "valid" : "invalid",
+        });
+
+        await storage.createTokenCheck(checkData);
+      }
+
+      res.json({
+        success: true,
+        results,
+        processed: results.length,
+      });
+    } catch (error) {
+      console.error("Error checking tokens:", error);
+      res.status(500).json({ message: "Failed to check tokens" });
+    }
+  });
+
+  // Get user's check history
+  app.get("/api/check-history", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const history = await storage.getUserTokenChecks(userId);
+      res.json(history);
+    } catch (error) {
+      console.error("Error fetching history:", error);
+      res.status(500).json({ message: "Failed to fetch history" });
+    }
+  });
+
+  // Premium key activation
+  app.post("/api/activate-key", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { key } = req.body;
+
+      if (!key) {
+        return res.status(400).json({ message: "Key is required" });
+      }
+
+      const success = await storage.usePremiumKey(key, userId);
+      
+      if (!success) {
+        return res.status(400).json({ message: "Invalid or already used key" });
+      }
+
+      res.json({ success: true, message: "Premium activated successfully" });
+    } catch (error) {
+      console.error("Error activating key:", error);
+      res.status(500).json({ message: "Failed to activate key" });
+    }
+  });
+
+  // Stripe subscription endpoint
+  app.post('/api/create-subscription', isAuthenticated, async (req: any, res) => {
+    if (!stripe) {
+      return res.status(400).json({ 
+        message: "Payment processing is not configured. Please contact support." 
+      });
+    }
+
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      if (user.stripeSubscriptionId) {
+        const subscription = await stripe.subscriptions.retrieve(user.stripeSubscriptionId);
+        return res.json({
+          subscriptionId: subscription.id,
+          clientSecret: (subscription.latest_invoice as any)?.payment_intent?.client_secret,
+        });
+      }
+
+      if (!user.email) {
+        return res.status(400).json({ message: 'No user email on file' });
+      }
+
+      let customerId = user.stripeCustomerId;
+
+      if (!customerId) {
+        const customer = await stripe.customers.create({
+          email: user.email,
+          name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
+        });
+        customerId = customer.id;
+        await storage.updateUserStripeInfo(userId, customerId);
+      }
+
+      const subscription = await stripe.subscriptions.create({
+        customer: customerId,
+        items: [{
+          price: process.env.STRIPE_PRICE_ID || 'price_1QABCDef0123456789', // Replace with actual price ID
+        }],
+        payment_behavior: 'default_incomplete',
+        expand: ['latest_invoice.payment_intent'],
+      });
+
+      await storage.updateUserStripeInfo(userId, customerId, subscription.id);
+      
+      res.json({
+        subscriptionId: subscription.id,
+        clientSecret: (subscription.latest_invoice as any)?.payment_intent?.client_secret,
+      });
+    } catch (error: any) {
+      console.error("Error creating subscription:", error);
+      res.status(400).json({ error: { message: error.message } });
+    }
+  });
+
+  // Admin routes
+  app.get("/api/admin/users", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+
+      if (!user || user.role !== "admin") {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const users = await storage.getAllUsers();
+      res.json(users);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      res.status(500).json({ message: "Failed to fetch users" });
+    }
+  });
+
+  app.post("/api/admin/create-key", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+
+      if (!user || user.role !== "admin") {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const { duration } = req.body;
+      
+      if (!duration || duration < 1) {
+        return res.status(400).json({ message: "Valid duration is required" });
+      }
+
+      const keyString = `QC-${nanoid(16)}`;
+      
+      const keyData = insertPremiumKeySchema.parse({
+        key: keyString,
+        duration,
+        createdBy: userId,
+      });
+
+      const premiumKey = await storage.createPremiumKey(keyData);
+      res.json(premiumKey);
+    } catch (error) {
+      console.error("Error creating key:", error);
+      res.status(500).json({ message: "Failed to create key" });
+    }
+  });
+
+  app.get("/api/admin/keys", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+
+      if (!user || user.role !== "admin") {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const keys = await storage.getPremiumKeys();
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)
       res.json(keys);
     } catch (error) {
       console.error("Error fetching keys:", error);
@@ -608,6 +933,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+<<<<<<< HEAD
   app.get("/api/admin/keys/stats", requireAdminAuth, async (req, res) => {
     try {
       const stats = await storage.getKeyStats();
@@ -4134,6 +4460,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+=======
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)
   const httpServer = createServer(app);
   return httpServer;
 }

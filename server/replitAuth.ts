@@ -27,6 +27,7 @@ export function getSession() {
   const pgStore = connectPg(session);
   const sessionStore = new pgStore({
     conString: process.env.DATABASE_URL,
+<<<<<<< HEAD
     createTableIfMissing: false, // Use existing table from Drizzle schema
     ttl: sessionTtl,
     tableName: "sessions",
@@ -38,12 +39,24 @@ export function getSession() {
   
   return session({
     secret: sessionSecret,
+=======
+    createTableIfMissing: false,
+    ttl: sessionTtl,
+    tableName: "sessions",
+  });
+  return session({
+    secret: process.env.SESSION_SECRET!,
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
+<<<<<<< HEAD
       secure: process.env.NODE_ENV === 'production',
+=======
+      secure: true,
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)
       maxAge: sessionTtl,
     },
   });
@@ -159,4 +172,8 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
     res.status(401).json({ message: "Unauthorized" });
     return;
   }
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)

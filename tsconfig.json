@@ -1,14 +1,23 @@
 {
   "include": ["client/src/**/*", "shared/**/*", "server/**/*"],
+<<<<<<< HEAD
   "exclude": ["node_modules", "build", "dist", "**/*.test.ts", "**/*.spec.ts", "**/test/**/*"],
+=======
+  "exclude": ["node_modules", "build", "dist", "**/*.test.ts"],
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)
   "compilerOptions": {
     "incremental": true,
     "tsBuildInfoFile": "./node_modules/typescript/tsbuildinfo",
     "noEmit": true,
     "module": "ESNext",
+<<<<<<< HEAD
     "target": "ES2022",
     "strict": false,
     "lib": ["ES2022", "dom", "dom.iterable"],
+=======
+    "strict": true,
+    "lib": ["esnext", "dom", "dom.iterable"],
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)
     "jsx": "preserve",
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -19,9 +28,13 @@
     "paths": {
       "@/*": ["./client/src/*"],
       "@shared/*": ["./shared/*"]
+<<<<<<< HEAD
     },
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "exactOptionalPropertyTypes": false
+=======
+    }
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)
   }
 }

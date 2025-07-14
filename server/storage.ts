@@ -1,5 +1,6 @@
 import {
   users,
+<<<<<<< HEAD
   normalUsers,
   keys,
   services,
@@ -42,11 +43,25 @@ import {
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, sql, and, isNull, isNotNull, count } from "drizzle-orm";
+=======
+  premiumKeys,
+  tokenChecks,
+  type User,
+  type UpsertUser,
+  type InsertPremiumKey,
+  type PremiumKey,
+  type InsertTokenCheck,
+  type TokenCheck,
+} from "@shared/schema";
+import { db } from "./db";
+import { eq, and, desc, gte, sql } from "drizzle-orm";
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)
 
 export interface IStorage {
   // User operations (mandatory for Replit Auth)
   getUser(id: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
+<<<<<<< HEAD
   getAllUsers(): Promise<User[]>;
   updateUserRole(id: string, role: string): Promise<User>;
   deleteUser(id: string): Promise<boolean>;
@@ -187,6 +202,27 @@ export interface IStorage {
 
 export class DatabaseStorage implements IStorage {
   // User operations
+=======
+  
+  // Premium key operations
+  createPremiumKey(key: InsertPremiumKey): Promise<PremiumKey>;
+  getPremiumKeys(): Promise<PremiumKey[]>;
+  usePremiumKey(keyString: string, userId: string): Promise<boolean>;
+  
+  // User management
+  updateUserRole(userId: string, role: string, premiumUntil?: Date): Promise<User>;
+  updateUserStripeInfo(userId: string, customerId: string, subscriptionId?: string): Promise<User>;
+  resetDailyChecks(): Promise<void>;
+  incrementUserChecks(userId: string): Promise<User>;
+  
+  // Token check history
+  createTokenCheck(check: InsertTokenCheck): Promise<TokenCheck>;
+  getUserTokenChecks(userId: string, limit?: number): Promise<TokenCheck[]>;
+  getAllUsers(): Promise<User[]>;
+}
+
+export class DatabaseStorage implements IStorage {
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)
   async getUser(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
@@ -207,6 +243,7 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
+<<<<<<< HEAD
   async getAllUsers(): Promise<User[]> {
     return await db.select().from(users).orderBy(desc(users.createdAt));
   }
@@ -1154,3 +1191,119 @@ export class DatabaseStorage implements IStorage {
 }
 
 export const storage = new DatabaseStorage();
+=======
+  async createPremiumKey(key: InsertPremiumKey): Promise<PremiumKey> {
+    const [premiumKey] = await db.insert(premiumKeys).values(key).returning();
+    return premiumKey;
+  }
+
+  async getPremiumKeys(): Promise<PremiumKey[]> {
+    return await db.select().from(premiumKeys).orderBy(desc(premiumKeys.createdAt));
+  }
+
+  async usePremiumKey(keyString: string, userId: string): Promise<boolean> {
+    const [key] = await db
+      .select()
+      .from(premiumKeys)
+      .where(and(eq(premiumKeys.key, keyString), eq(premiumKeys.isUsed, false)));
+
+    if (!key) return false;
+
+    // Mark key as used
+    await db
+      .update(premiumKeys)
+      .set({
+        isUsed: true,
+        usedBy: userId,
+        usedAt: new Date(),
+      })
+      .where(eq(premiumKeys.id, key.id));
+
+    // Update user premium status
+    const premiumUntil = new Date();
+    premiumUntil.setDate(premiumUntil.getDate() + key.duration);
+
+    await db
+      .update(users)
+      .set({
+        role: "premium",
+        premiumUntil,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, userId));
+
+    return true;
+  }
+
+  async updateUserRole(userId: string, role: string, premiumUntil?: Date): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({
+        role,
+        premiumUntil,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, userId))
+      .returning();
+    return user;
+  }
+
+  async updateUserStripeInfo(userId: string, customerId: string, subscriptionId?: string): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({
+        stripeCustomerId: customerId,
+        stripeSubscriptionId: subscriptionId,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, userId))
+      .returning();
+    return user;
+  }
+
+  async resetDailyChecks(): Promise<void> {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    await db
+      .update(users)
+      .set({
+        checksToday: 0,
+        lastCheckDate: new Date(),
+      })
+      .where(gte(users.lastCheckDate, today));
+  }
+
+  async incrementUserChecks(userId: string): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set({
+        checksToday: sql`${users.checksToday} + 1`,
+        lastCheckDate: new Date(),
+      })
+      .where(eq(users.id, userId))
+      .returning();
+    return user;
+  }
+
+  async createTokenCheck(check: InsertTokenCheck): Promise<TokenCheck> {
+    const [tokenCheck] = await db.insert(tokenChecks).values(check).returning();
+    return tokenCheck;
+  }
+
+  async getUserTokenChecks(userId: string, limit = 50): Promise<TokenCheck[]> {
+    return await db
+      .select()
+      .from(tokenChecks)
+      .where(eq(tokenChecks.userId, userId))
+      .orderBy(desc(tokenChecks.createdAt))
+      .limit(limit);
+  }
+
+  async getAllUsers(): Promise<User[]> {
+    return await db.select().from(users).orderBy(desc(users.createdAt));
+  }
+}
+
+export const storage = new DatabaseStorage();
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)

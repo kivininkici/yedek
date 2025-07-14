@@ -1,10 +1,17 @@
+<<<<<<< HEAD
 modules = ["nodejs-20", "php-8.2", "web"]
+=======
+modules = ["nodejs-20", "web", "postgresql-16"]
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)
 run = "npm run dev"
 hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
 
 [nix]
 channel = "stable-24_05"
+<<<<<<< HEAD
 packages = ["zip"]
+=======
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)
 
 [deployment]
 deploymentTarget = "autoscale"
@@ -35,7 +42,10 @@ waitForPort = 5000
 [[ports]]
 localPort = 5000
 externalPort = 80
+<<<<<<< HEAD
 
 [[ports]]
 localPort = 8080
 externalPort = 8080
+=======
+>>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)
