@@ -107,6 +107,88 @@ const translations = {
     'admin.generateKey': 'Generate Key',
     'admin.availableKeys': 'Available Keys',
     
+    // Admin Panel - Enhanced
+    adminDashboard: 'Admin Dashboard',
+    overview: 'Overview',
+    userManagement: 'User Management',
+    keyManagement: 'Key Management',
+    statistics: 'Statistics',
+    systemSettings: 'System Settings',
+    
+    // Admin Stats
+    totalUsers: 'Total Users',
+    premiumUsers: 'Premium Users',
+    freeUsers: 'Free Users',
+    totalKeys: 'Total Keys',
+    usedKeys: 'Used Keys',
+    activeKeys: 'Active Keys',
+    dailyChecks: 'Daily Checks',
+    monthlyRevenue: 'Monthly Revenue',
+    
+    // User Management
+    users: 'Users',
+    allUsers: 'All Users',
+    searchUsers: 'Search users...',
+    role: 'Role',
+    joinDate: 'Join Date',
+    lastActivity: 'Last Activity',
+    checksToday: 'Checks Today',
+    premiumUntil: 'Premium Until',
+    makeAdmin: 'Make Admin',
+    makePremium: 'Make Premium',
+    makeFree: 'Make Free',
+    resetChecks: 'Reset Daily Checks',
+    banUser: 'Ban User',
+    unbanUser: 'Unban User',
+    
+    // Key Management
+    premiumKeys: 'Premium Keys',
+    allKeys: 'All Keys',
+    createKey: 'Create Premium Key',
+    generateKeys: 'Generate Keys',
+    keyDuration: 'Duration (days)',
+    keyCount: 'Number of Keys',
+    generateKey: 'Generate Key',
+    bulkGenerate: 'Bulk Generate',
+    keyString: 'Key',
+    duration: 'Duration',
+    createdDate: 'Created',
+    usedDate: 'Used',
+    usedBy: 'Used By',
+    copyKey: 'Copy Key',
+    deleteKey: 'Delete Key',
+    exportKeys: 'Export Keys',
+    
+    // Key Status
+    unused: 'Unused',
+    used: 'Used',
+    expired: 'Expired',
+    days: 'days',
+    
+    // Actions
+    actions: 'Actions',
+    view: 'View',
+    promote: 'Promote',
+    demote: 'Demote',
+    ban: 'Ban',
+    unban: 'Unban',
+    refresh: 'Refresh',
+    export: 'Export',
+    filter: 'Filter',
+    
+    // Notifications
+    keysGenerated: 'Premium keys generated successfully',
+    userUpdated: 'User updated successfully',
+    keyDeleted: 'Key deleted successfully',
+    userPromoted: 'User promoted successfully',
+    userDemoted: 'User demoted successfully',
+    checksReset: 'Daily checks reset successfully',
+    keyCopied: 'Key copied to clipboard',
+    
+    // Errors
+    invalidDuration: 'Please enter a valid duration',
+    invalidKeyCount: 'Please enter a valid number of keys',
+    
     // Landing Page
     'landing.title': 'QuantumChecker',
     'landing.subtitle': 'Professional Token Validation Platform',

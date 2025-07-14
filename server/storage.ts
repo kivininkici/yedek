@@ -219,6 +219,9 @@ export class DatabaseStorage implements IStorage {
   createTokenCheck(check: InsertTokenCheck): Promise<TokenCheck>;
   getUserTokenChecks(userId: string, limit?: number): Promise<TokenCheck[]>;
   getAllUsers(): Promise<User[]>;
+  
+  // Admin operations
+  deletePremiumKey(keyId: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1302,6 +1305,10 @@ export const storage = new DatabaseStorage();
 
   async getAllUsers(): Promise<User[]> {
     return await db.select().from(users).orderBy(desc(users.createdAt));
+  }
+
+  async deletePremiumKey(keyId: number): Promise<void> {
+    await db.delete(premiumKeys).where(eq(premiumKeys.id, keyId));
   }
 }
 

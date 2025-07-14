@@ -867,6 +867,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Admin routes
+  app.get('/api/admin/stats', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const users = await storage.getAllUsers();
+      const keys = await storage.getPremiumKeys();
+
+      const stats = {
+        totalUsers: users.length,
+        premiumUsers: users.filter(u => u.role === 'premium' || 
+          (u.premiumUntil && new Date(u.premiumUntil) > new Date())).length,
+        freeUsers: users.filter(u => u.role === 'free' || 
+          (!u.premiumUntil || new Date(u.premiumUntil) <= new Date())).length,
+        totalKeys: keys.length,
+        usedKeys: keys.filter(k => k.isUsed).length,
+        activeKeys: keys.filter(k => !k.isUsed).length,
+        dailyChecks: users.reduce((sum, u) => sum + (u.checksToday || 0), 0),
+        monthlyRevenue: users.filter(u => u.role === 'premium' || 
+          (u.premiumUntil && new Date(u.premiumUntil) > new Date())).length * 9.99
+      };
+
+      res.json(stats);
+    } catch (error: any) {
+      console.error("Error fetching admin stats:", error);
+      res.status(500).json({ message: "Failed to fetch statistics" });
+    }
+  });
+
   app.get("/api/admin/users", isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
@@ -884,6 +917,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.get('/api/admin/keys', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const keys = await storage.getPremiumKeys();
+      res.json(keys);
+    } catch (error: any) {
+      console.error("Error fetching keys:", error);
+      res.status(500).json({ message: "Failed to fetch keys" });
+    }
+  });
+
   app.post("/api/admin/create-key", isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
@@ -893,43 +943,112 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "Admin access required" });
       }
 
-      const { duration } = req.body;
+      const { duration, count = 1 } = req.body;
       
       if (!duration || duration < 1) {
         return res.status(400).json({ message: "Valid duration is required" });
       }
 
-      const keyString = `QC-${nanoid(16)}`;
-      
-      const keyData = insertPremiumKeySchema.parse({
-        key: keyString,
-        duration,
-        createdBy: userId,
-      });
+      if (!count || count < 1 || count > 100) {
+        return res.status(400).json({ message: "Invalid key count (1-100)" });
+      }
 
-      const premiumKey = await storage.createPremiumKey(keyData);
-      res.json(premiumKey);
+      const createdKeys = [];
+      for (let i = 0; i < count; i++) {
+        const keyString = `QC-${nanoid(16)}`;
+        
+        const keyData = insertPremiumKeySchema.parse({
+          keyString,
+          duration,
+          isUsed: false,
+        });
+
+        const newKey = await storage.createPremiumKey(keyData);
+        createdKeys.push(newKey);
+      }
+
+      res.json({ 
+        success: true, 
+        keys: createdKeys,
+        message: `${count} premium key(s) created successfully`
+      });
     } catch (error) {
       console.error("Error creating key:", error);
       res.status(500).json({ message: "Failed to create key" });
     }
   });
 
-  app.get("/api/admin/keys", isAuthenticated, async (req: any, res) => {
+  app.post('/api/admin/update-user', isAuthenticated, async (req: any, res) => {
+    try {
+      const adminUserId = req.user.claims.sub;
+      const adminUser = await storage.getUser(adminUserId);
+
+      if (!adminUser || adminUser.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      const { userId, role, premiumDays } = req.body;
+
+      if (!userId || !role) {
+        return res.status(400).json({ message: "User ID and role are required" });
+      }
+
+      let premiumUntil;
+      if (role === 'premium' && premiumDays) {
+        premiumUntil = new Date();
+        premiumUntil.setDate(premiumUntil.getDate() + premiumDays);
+      }
+
+      const updatedUser = await storage.updateUserRole(userId, role, premiumUntil);
+      res.json({ success: true, user: updatedUser });
+    } catch (error: any) {
+      console.error("Error updating user:", error);
+      res.status(500).json({ message: "Failed to update user" });
+    }
+  });
+
+  app.delete('/api/admin/keys/:keyId', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       const user = await storage.getUser(userId);
 
-      if (!user || user.role !== "admin") {
+      if (!user || user.role !== 'admin') {
         return res.status(403).json({ message: "Admin access required" });
       }
 
+<<<<<<< HEAD
       const keys = await storage.getPremiumKeys();
 >>>>>>> 9cd9589 (Set up core functionalities and improve user interface components)
       res.json(keys);
     } catch (error) {
       console.error("Error fetching keys:", error);
       res.status(500).json({ message: "Failed to fetch keys" });
+=======
+      const keyId = parseInt(req.params.keyId);
+      await storage.deletePremiumKey(keyId);
+      
+      res.json({ success: true, message: "Key deleted successfully" });
+    } catch (error: any) {
+      console.error("Error deleting key:", error);
+      res.status(500).json({ message: "Failed to delete key" });
+    }
+  });
+
+  app.post('/api/admin/reset-checks', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+
+      if (!user || user.role !== 'admin') {
+        return res.status(403).json({ message: "Admin access required" });
+      }
+
+      await storage.resetDailyChecks();
+      res.json({ success: true, message: "Daily checks reset successfully" });
+    } catch (error: any) {
+      console.error("Error resetting checks:", error);
+      res.status(500).json({ message: "Failed to reset daily checks" });
+>>>>>>> d66bebd (Enhance the admin panel with key management and user overview features)
     }
   });
 
